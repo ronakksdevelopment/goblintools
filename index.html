@@ -405,6 +405,170 @@ h1,h2,h3,h4,h5{ font-weight:600; line-height:1.15; }
   .hero-actions, .hero-trust{ justify-content:center; }
   .nav-links{ display:none; }
 }
+
+/* ==========================================================================
+   11. SECTION SCAFFOLDING
+   ========================================================================== */
+.section{ padding: 88px 0; position:relative; }
+.section-tight{ padding: 56px 0; }
+.section-head{ max-width:640px; margin-bottom:48px; }
+.section-head.center{ margin-inline:auto; text-align:center; }
+.section-eyebrow{ display:inline-flex; align-items:center; gap:8px; font-size:12.5px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color: var(--moss-light); margin-bottom:14px; }
+[data-theme="dark"] .section-eyebrow{ color: var(--lantern-light); }
+.section-eyebrow svg{ width:14px; height:14px; }
+.section-title{ font-family: var(--font-display); font-size: clamp(1.9rem, 3.4vw, 2.7rem); font-weight:600; letter-spacing:-0.015em; margin-bottom:14px; }
+.section-sub{ font-size:16.5px; color: var(--text-soft); line-height:1.6; }
+.divider-squiggle{ display:block; margin: 0 auto 18px; color: var(--border-strong); }
+
+/* ==========================================================================
+   12. TOOLS / FEATURES GRID (landing)
+   ========================================================================== */
+.tools-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; }
+.tool-card{ padding:28px 26px; position:relative; overflow:hidden; }
+.tool-card .tool-icon-wrap{ width:52px; height:52px; border-radius: var(--r-md); display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:18px; background: var(--bg-sunken); border:1px solid var(--border); transition: transform var(--dur-base) var(--ease-spring); }
+.tool-card:hover .tool-icon-wrap{ transform: scale(1.08) rotate(-4deg); }
+.tool-card h3{ font-family: var(--font-display); font-size:19px; margin-bottom:8px; letter-spacing:-0.01em; }
+.tool-card p{ font-size:14.5px; color: var(--text-soft); line-height:1.55; margin-bottom:16px; }
+.tool-card .tool-link{ font-size:13.5px; font-weight:700; color: var(--accent-deep); display:inline-flex; align-items:center; gap:5px; }
+.tool-card .tool-link svg{ width:14px; height:14px; transition: transform var(--dur-fast) var(--ease-out); }
+.tool-card:hover .tool-link svg{ transform: translateX(3px); }
+.tool-card .badge-soon{ position:absolute; top:18px; right:18px; }
+
+.badge-soon{
+  display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:700;
+  letter-spacing:0.03em; text-transform:uppercase; padding:4px 10px; border-radius: var(--r-full);
+  background: rgba(107,140,174,0.14); color: var(--moonlit); border:1px solid rgba(107,140,174,0.3);
+}
+[data-theme="dark"] .badge-soon{ background: rgba(143,174,201,0.16); color: var(--moonlit-light); }
+.badge-soon .dot{ width:5px; height:5px; border-radius:50%; background: currentColor; }
+
+@media (max-width: 980px){ .tools-grid{ grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 640px){ .tools-grid{ grid-template-columns: 1fr; } }
+
+/* ==========================================================================
+   13. HOW IT WORKS (process — order matters here, so numbering is justified)
+   ========================================================================== */
+.steps-row{ display:grid; grid-template-columns: repeat(3,1fr); gap:0; position:relative; }
+.step-card{ padding:8px 28px; position:relative; }
+.step-card:not(:last-child)::after{
+  content:""; position:absolute; top:34px; right:-2px; width:calc(100% - 56px); height:2px;
+  background: repeating-linear-gradient(90deg, var(--border-strong) 0 8px, transparent 8px 16px);
+}
+.step-num{
+  width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-family: var(--font-display); font-weight:700; font-size:18px; margin-bottom:18px;
+  background: var(--ink); color: var(--mushroom); position:relative; z-index:1;
+}
+[data-theme="dark"] .step-num{ background: var(--lantern); color:#1A1208; }
+.step-card h3{ font-family: var(--font-display); font-size:19px; margin-bottom:8px; }
+.step-card p{ color: var(--text-soft); font-size:14.5px; line-height:1.6; }
+
+@media (max-width: 820px){
+  .steps-row{ grid-template-columns:1fr; gap:28px; }
+  .step-card:not(:last-child)::after{ display:none; }
+}
+
+/* ==========================================================================
+   14. FAQ ACCORDION
+   ========================================================================== */
+.faq-list{ max-width: var(--content); margin:0 auto; display:flex; flex-direction:column; gap:10px; }
+.faq-item{ border-radius: var(--r-md); background: var(--surface); border:1px solid var(--border); overflow:hidden; transition: border-color var(--dur-base); }
+.faq-item[open]{ border-color: var(--border-strong); }
+.faq-item summary{ list-style:none; cursor:pointer; padding:19px 22px; display:flex; align-items:center; justify-content:space-between; gap:16px; font-weight:600; font-size:15.5px; }
+.faq-item summary::-webkit-details-marker{ display:none; }
+.faq-item summary .faq-plus{ flex-shrink:0; width:26px; height:26px; border-radius:50%; background: var(--bg-sunken); display:flex; align-items:center; justify-content:center; transition: transform var(--dur-base) var(--ease-spring), background var(--dur-fast); }
+.faq-item[open] summary .faq-plus{ transform: rotate(135deg); background: var(--lantern); color:#1A1208; }
+.faq-answer{ padding: 0 22px 20px; color: var(--text-soft); font-size:14.5px; line-height:1.65; max-width: 680px; }
+
+/* ==========================================================================
+   15. CTA BANNER + FOOTER
+   ========================================================================== */
+.cta-banner{
+  border-radius: var(--r-xl); padding: 64px 48px; text-align:center; position:relative; overflow:hidden;
+  background: linear-gradient(150deg, var(--moss-deep), var(--moss) 60%, var(--moss-light));
+  color: var(--mushroom);
+}
+.cta-banner h2{ font-family: var(--font-display); font-size: clamp(1.8rem,3.6vw,2.6rem); margin-bottom:14px; color:#fff; }
+.cta-banner p{ font-size:16px; opacity:0.85; max-width:480px; margin:0 auto 28px; }
+.cta-banner .bg-blob{ opacity:0.6; }
+.cta-banner-inner{ position:relative; z-index:1; }
+
+.footer{ border-top:1px solid var(--border); padding: 56px 0 32px; margin-top: 40px; }
+.footer-top{ display:flex; justify-content:space-between; gap:40px; flex-wrap:wrap; margin-bottom:40px; }
+.footer-brand p{ color: var(--text-faint); font-size:13.5px; max-width:280px; margin-top:10px; line-height:1.6; }
+.footer-cols{ display:flex; gap:56px; flex-wrap:wrap; }
+.footer-col h4{ font-size:12.5px; text-transform:uppercase; letter-spacing:0.05em; color: var(--text-faint); margin-bottom:14px; }
+.footer-col ul{ display:flex; flex-direction:column; gap:10px; }
+.footer-col a{ font-size:14px; color: var(--text-soft); transition: color var(--dur-fast); }
+.footer-col a:hover{ color: var(--accent-deep); }
+.footer-bottom{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; padding-top:24px; border-top:1px solid var(--border); font-size:13px; color: var(--text-faint); }
+.footer-bottom .made-with{ display:flex; align-items:center; gap:6px; }
+
+@media (max-width: 700px){
+  .footer-top{ flex-direction:column; gap:28px; }
+  .cta-banner{ padding:44px 24px; }
+}
+
+/* ==========================================================================
+   16. ONBOARDING
+   ========================================================================== */
+.onboarding-overlay{
+  position:fixed; inset:0; z-index:2000; display:flex; align-items:center; justify-content:center;
+  background: rgba(15,24,19,0.55); backdrop-filter: blur(6px); padding:20px;
+  animation: fade-in var(--dur-base) var(--ease-out) both;
+}
+.onboarding-card{
+  width:100%; max-width:560px; background: var(--bg-elevated); border-radius: var(--r-xl);
+  box-shadow: var(--shadow-xl); padding: 40px 40px 32px; position:relative;
+  animation: slide-up-modal var(--dur-slow) var(--ease-spring) both;
+  max-height: 86vh; overflow-y:auto;
+}
+.onboarding-progress{ display:flex; gap:6px; margin-bottom:28px; }
+.onboarding-progress span{ height:4px; flex:1; border-radius: var(--r-full); background: var(--border); overflow:hidden; }
+.onboarding-progress span i{ display:block; height:100%; width:0%; background: var(--lantern); transition: width var(--dur-base) var(--ease-out); border-radius: inherit; }
+.onboarding-progress span.done i{ width:100%; }
+.onboarding-progress span.current i{ width:55%; }
+.onboarding-close{ position:absolute; top:18px; right:18px; }
+.onboarding-step{ display:none; }
+.onboarding-step.active{ display:block; animation: fade-up var(--dur-base) var(--ease-out) both; }
+.onboarding-icon{ font-size:38px; margin-bottom:16px; display:inline-block; }
+.onboarding-card h2{ font-family: var(--font-display); font-size:26px; margin-bottom:10px; letter-spacing:-0.01em; }
+.onboarding-card > .onboarding-step > p.lead{ color: var(--text-soft); font-size:15px; margin-bottom:26px; line-height:1.55; }
+.onboarding-options{ display:flex; flex-direction:column; gap:10px; margin-bottom:8px; }
+.onboarding-option{
+  display:flex; align-items:center; gap:14px; padding:14px 16px; border-radius: var(--r-md);
+  border:1.5px solid var(--border); background: var(--surface); text-align:left; transition: all var(--dur-fast) var(--ease-out); width:100%;
+}
+.onboarding-option:hover{ border-color: var(--accent); background: var(--bg-sunken); }
+.onboarding-option.selected{ border-color: var(--lantern); background: rgba(255,139,61,0.08); }
+.onboarding-option .opt-emoji{ font-size:22px; flex-shrink:0; }
+.onboarding-option .opt-text strong{ display:block; font-size:14.5px; font-weight:600; }
+.onboarding-option .opt-text span{ font-size:13px; color: var(--text-faint); }
+.onboarding-option .opt-check{ margin-left:auto; width:20px; height:20px; border-radius:50%; border:1.5px solid var(--border-strong); flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+.onboarding-option.selected .opt-check{ border-color: var(--lantern); background: var(--lantern); color:#1A1208; }
+.onboarding-input-group{ margin-bottom:8px; }
+.field-label{ display:block; font-size:13.5px; font-weight:600; margin-bottom:8px; color: var(--text-soft); }
+.field-input, .field-textarea, .field-select{
+  width:100%; padding:13px 16px; border-radius: var(--r-md); border:1.5px solid var(--border-strong);
+  background: var(--surface); font-size:15px; transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+}
+.field-input:focus, .field-textarea:focus, .field-select:focus{ border-color: var(--accent); box-shadow: 0 0 0 4px rgba(255,139,61,0.14); outline:none; }
+.field-textarea{ resize:vertical; min-height:96px; line-height:1.5; font-family:inherit; }
+.field-hint{ font-size:12.5px; color: var(--text-faint); margin-top:7px; }
+.onboarding-footer{ display:flex; justify-content:space-between; align-items:center; margin-top:28px; gap:12px; }
+.onboarding-skip{ font-size:13.5px; color: var(--text-faint); font-weight:600; }
+.onboarding-skip:hover{ color: var(--text-soft); }
+.onboarding-theme-row{ display:flex; gap:12px; }
+.theme-swatch-btn{
+  flex:1; padding:16px 10px; border-radius: var(--r-md); border:1.5px solid var(--border); display:flex; flex-direction:column; align-items:center; gap:8px; transition: all var(--dur-fast);
+}
+.theme-swatch-btn.selected{ border-color: var(--lantern); box-shadow: 0 0 0 3px rgba(255,139,61,0.15); }
+.theme-swatch-preview{ width:100%; height:38px; border-radius:8px; }
+.theme-swatch-btn span{ font-size:12.5px; font-weight:600; }
+
+@media (max-width: 560px){
+  .onboarding-card{ padding:28px 22px 24px; }
+}
 </style>
 </head>
 <body data-theme="light">
