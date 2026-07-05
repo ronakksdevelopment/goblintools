@@ -314,6 +314,7 @@ body:not(.using-mouse) :focus-visible{
   width: 100%;
 }
 .tool-card-shell{
+  position:relative;
   display:flex;
   flex-direction:column;
   min-width:0;
@@ -3907,6 +3908,7 @@ function initCompiler(tool){
    TOOL 9: THE CHEF
    ============================================================ */
 function buildChefView(tool){
+  const presets = ["eggs, spinach, rice, garlic", "chicken thighs, potatoes, rosemary", "canned beans, tortillas, cheese, salsa", "pasta, tomatoes, basil, parmesan"];
   const body = `
     <div class="panel">
       <div class="field-label"><span>What ingredients do you have?</span><span class="char-count" id="cf-charcount">0</span></div>
@@ -3914,6 +3916,7 @@ function buildChefView(tool){
         <input type="text" id="cf-input" class="gob-input-line" placeholder="e.g. eggs, spinach, rice, garlic" maxlength="300" autocomplete="off">
         <button class="mic-btn" id="cf-mic" aria-label="Use voice input" title="Voice input">${ICONS.mic}</button>
       </div>
+      <div class="preset-row">${presets.map(p=>`<button type="button" class="preset-chip" data-preset="${escapeHTML(p)}">${escapeHTML(p)}</button>`).join("")}</div>
       <div class="controls-row">
         <button class="btn btn-primary" id="cf-run"><span class="spinner"></span><span class="btn-label">${ICONS.chef} Suggest a recipe</span></button>
         ${spiceGroupHTML("cf-spice")}
@@ -3924,8 +3927,12 @@ function buildChefView(tool){
         <h3>Recipe idea</h3>
         <div class="output-actions">
           <span class="src-badge" id="cf-src"></span>
+          <button class="icon-btn" id="cf-undo" title="Undo" disabled>${ICONS.undo}</button>
+          <button class="icon-btn" id="cf-redo" title="Redo" disabled>${ICONS.redo}</button>
           <button class="icon-btn" id="cf-fav" title="Favorite this tool">${ICONS.starOutline}</button>
           <button class="icon-btn" id="cf-copy" title="Copy">${ICONS.copy}</button>
+          <button class="icon-btn" id="cf-share" title="Share">${ICONS.share}</button>
+          <button class="icon-btn" id="cf-print" title="Print">${ICONS.print}</button>
           <button class="icon-btn" id="cf-export" title="Export as text">${ICONS.download}</button>
         </div>
       </div>
@@ -3945,11 +3952,26 @@ function initChef(tool){
   const outputBody = document.getElementById("cf-output-body");
   const errorSlot = document.getElementById("cf-error-slot");
   const charcount = document.getElementById("cf-charcount");
+  const undoBtn = document.getElementById("cf-undo");
+  const redoBtn = document.getElementById("cf-redo");
   let spiceVal = state.settings.defaultSpice;
+  let lastText = "";
   updateSpiceGroupUI(spiceGroup, spiceVal);
   document.getElementById("cf-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
 
-  bindHelp(tool, `List whatever ingredients you have on hand, separated by commas, and The Chef suggests a simple dish along with steps to make it.`);
+  bindHelp(tool, `List whatever ingredients you have on hand, separated by commas, and The Chef suggests a simple dish along with steps to make it. Try a preset below to see it in action, and use undo/redo to compare past suggestions.`);
+
+  function updateUndoRedoUI(){
+    undoBtn.disabled = !ctrl.canUndo();
+    redoBtn.disabled = !ctrl.canRedo();
+  }
+
+  document.querySelector(`#view-${tool.id} .preset-row`).addEventListener("click", e=>{
+    const chip = e.target.closest("[data-preset]"); if(!chip) return;
+    input.value = chip.dataset.preset;
+    input.dispatchEvent(new Event("input"));
+    input.focus();
+  });
 
   spiceGroup.addEventListener("click", e=>{
     const btn = e.target.closest("button"); if(!btn) return;
@@ -3958,10 +3980,19 @@ function initChef(tool){
   });
   input.addEventListener("input", ()=> charcount.textContent = input.value.length);
   input.addEventListener("keydown", e=>{ if(e.key === "Enter") run(); });
+  document.addEventListener("keydown", e=>{
+    if((e.metaKey||e.ctrlKey) && e.key === "Enter" && document.getElementById("view-chef")?.classList.contains("active")) run();
+  });
 
   async function run(){
     const ingredients = input.value.trim();
-    if(!ingredients){ input.focus(); return; }
+    if(!ingredients){
+      input.classList.add("input-invalid");
+      showToast("List a few ingredients first");
+      input.focus();
+      setTimeout(()=> input.classList.remove("input-invalid"), 1200);
+      return;
+    }
     errorSlot.innerHTML = "";
     runBtn.classList.add("loading"); runBtn.disabled = true;
     outputPanel.style.display = "";
@@ -3972,7 +4003,10 @@ function initChef(tool){
       const result = await mockAICall("chef", {ingredients, spice: spiceVal}, {
         onToken: partial => outputBody.textContent = partial
       });
+      if(lastText) ctrl.recordUndo(lastText);
       outputBody.textContent = result.text;
+      lastText = result.text;
+      updateUndoRedoUI();
       ctrl.pushHistory(ingredients, result.text, {spice: spiceVal});
       document.getElementById("cf-src").innerHTML = modelBadgeHTML(result);
       document.getElementById("cf-src").className = "src-badge" + (result.cached ? " cached" : "");
@@ -3986,8 +4020,23 @@ function initChef(tool){
   }
   runBtn.addEventListener("click", run);
 
+  undoBtn.addEventListener("click", ()=>{
+    if(!ctrl.canUndo()) return;
+    lastText = ctrl.undo(lastText);
+    outputBody.textContent = lastText;
+    updateUndoRedoUI();
+  });
+  redoBtn.addEventListener("click", ()=>{
+    if(!ctrl.canRedo()) return;
+    lastText = ctrl.redo(lastText);
+    outputBody.textContent = lastText;
+    updateUndoRedoUI();
+  });
+
   document.getElementById("cf-copy").addEventListener("click", ()=> copyToClipboard(outputBody.textContent));
   document.getElementById("cf-export").addEventListener("click", ()=> downloadText("chef-recipe.txt", outputBody.textContent));
+  document.getElementById("cf-share").addEventListener("click", ()=> shareText("The Chef recipe idea", outputBody.textContent));
+  document.getElementById("cf-print").addEventListener("click", ()=> printOutput("The Chef recipe idea", outputBody.textContent));
   document.getElementById("cf-fav").addEventListener("click", ()=>{
     toggleFavorite(tool.id);
     document.getElementById("cf-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
@@ -3997,6 +4046,8 @@ function initChef(tool){
     input.value = item.input; charcount.textContent = item.input.length;
     outputPanel.style.display = "";
     outputBody.textContent = item.output;
+    lastText = item.output;
+    updateUndoRedoUI();
   };
 }
 
