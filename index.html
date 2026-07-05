@@ -11,6 +11,18 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
+<!--
+  Optional per-deployment config. Leave apiKey empty to require users to set
+  their own key via Settings → AI Behavior → API key (stored in their browser
+  only). Only set apiKey here for a strictly private/local copy of this file
+  that never leaves your machine — never commit a real key to a public repo.
+-->
+<script>
+  window.GOBLIN_CONFIG = {
+    apiKey: "" // e.g. "sk-or-v1-..." — leave blank to use per-user Settings key
+  };
+</script>
+
 <style>
 /* ============================================================
    GOBLIN AI — DESIGN TOKENS
@@ -730,8 +742,20 @@ select.gob-select:focus{ border-color: var(--accent); }
           <label class="switch"><input type="checkbox" id="setCompact"><span class="switch-track"></span></label>
         </div>
       </div>
-      <div class="settings-group">
+<div class="settings-group">
         <h3>AI Behavior</h3>
+        <div class="settings-row" style="flex-direction:column; align-items:stretch; gap:8px;">
+          <div>
+            <div class="settings-row-label">API key</div>
+            <div class="settings-row-desc">Stored only in this browser's local storage. Never uploaded, never shared. Get a free key at <a href="https://openrouter.ai/keys" target="_blank" rel="noopener">openrouter.ai/keys</a>.</div>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <input type="password" id="setApiKey" class="gob-input-line" placeholder="sk-or-v1-…" style="flex:1;" autocomplete="off">
+            <button class="btn btn-secondary btn-sm" id="setApiKeySave">Save</button>
+            <button class="btn btn-ghost btn-sm" id="setApiKeyClear">Clear</button>
+          </div>
+          <span class="src-badge" id="apiKeyStatus"></span>
+        </div>
         <div class="settings-row">
           <div><div class="settings-row-label">Response caching</div><div class="settings-row-desc">Reuse recent identical requests instantly</div></div>
           <label class="switch"><input type="checkbox" id="setCaching" checked><span class="switch-track"></span></label>
@@ -932,11 +956,23 @@ select.gob-select:focus{ border-color: var(--accent); }
 // views source on this page. Set a hard spend limit on this key in the
 // OpenRouter dashboard and rotate it periodically. Do not push this file to a
 // public repo without swapping to a server-side proxy.
-const OPENROUTER_KEY = "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";
+// SECURITY NOTE: never commit a real key here. This file is plain client-side
+// HTML/JS — anything placed in this constant is visible to any visitor via
+// "view source". Set OPENROUTER_KEY via one of:
+//   1) window.GOBLIN_CONFIG.apiKey (see the small <script> block right before
+//      this file's closing </body>, safe to edit per-deployment), or
+//   2) a localStorage value under "goblin.apiKeyOverride" (set from Settings).
+// For any real/public deployment, proxy this through a server-side function
+// instead of embedding a key at all.
+const OPENROUTER_KEY = (window.GOBLIN_CONFIG && window.GOBLIN_CONFIG.apiKey) || "YOUR_API_KEY_HERE";
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 
-// Ordered preference list of free models to try, best-first, with automatic fallback.
+// Model selection: "openrouter/auto" lets OpenRouter pick a suitable free-tier
+// model automatically per-request. MODEL_CHAIN is kept as an explicit fallback
+// list in case auto-routing fails or returns an error for a given prompt.
+const AUTO_MODEL = "openrouter/auto";
 const MODEL_CHAIN = [
+  AUTO_MODEL,
   "meta-llama/llama-3.3-70b-instruct:free",
   "google/gemini-2.0-flash-exp:free",
   "meta-llama/llama-3.1-405b-instruct:free",
@@ -944,6 +980,14 @@ const MODEL_CHAIN = [
   "qwen/qwen-2.5-72b-instruct:free",
   "google/gemma-2-9b-it:free"
 ];
+
+function hasUsableApiKey(){
+  const key = (window.GOBLIN_CONFIG && window.GOBLIN_CONFIG.apiKey) || localStorage.getItem("goblin.apiKeyOverride") || OPENROUTER_KEY;
+  return !!key && key !== "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" && key.trim().length > 10;
+}
+function getActiveApiKey(){
+  return localStorage.getItem("goblin.apiKeyOverride") || (window.GOBLIN_CONFIG && window.GOBLIN_CONFIG.apiKey) || OPENROUTER_KEY;
+}
 
 const MAX_RETRIES_PER_MODEL = 2;
 const REQUEST_TIMEOUT_MS = 30000;
@@ -1275,7 +1319,10 @@ function renderGreeting(){
 }
 
 document.body.addEventListener("click", (e)=>{
-  const favBtn = e.target.closest("[data-fav-toggle]");
+  if(e.target.closest("[data-open-settings-action]")){
+    openDrawer("settings");
+  }
+});
   if(favBtn){
     e.stopPropagation();
     toggleFavorite(favBtn.dataset.favToggle);
@@ -1558,9 +1605,30 @@ function initSettingsUI(){
     state.settings.caching = e.target.checked;
     saveJSON(LS_KEYS.settings, state.settings);
   });
-  document.getElementById("setStreaming").addEventListener("change", e=>{
-    state.settings.streaming = e.target.checked;
-    saveJSON(LS_KEYS.settings, state.settings);
+const apiKeyInput = document.getElementById("setApiKey");
+  const apiKeyStatus = document.getElementById("apiKeyStatus");
+  function refreshApiKeyStatus(){
+    const ok = hasUsableApiKey();
+    apiKeyStatus.innerHTML = ok
+      ? `<span class="sb-dot"></span>Key configured — ready to use`
+      : `<span class="sb-dot" style="background:var(--danger);"></span>No key set — tools will show an error until one is added`;
+  }
+  const existingOverride = localStorage.getItem("goblin.apiKeyOverride");
+  if(existingOverride) apiKeyInput.value = existingOverride;
+  refreshApiKeyStatus();
+
+  document.getElementById("setApiKeySave").addEventListener("click", ()=>{
+    const val = apiKeyInput.value.trim();
+    if(!val){ showToast("Enter a key first"); return; }
+    localStorage.setItem("goblin.apiKeyOverride", val);
+    refreshApiKeyStatus();
+    showToast("API key saved to this browser", {icon: ICONS.check});
+  });
+  document.getElementById("setApiKeyClear").addEventListener("click", ()=>{
+    localStorage.removeItem("goblin.apiKeyOverride");
+    apiKeyInput.value = "";
+    refreshApiKeyStatus();
+    showToast("API key cleared");
   });
   document.getElementById("setDefaultSpice").addEventListener("click", e=>{
     const btn = e.target.closest("button");
@@ -1736,10 +1804,16 @@ async function requestModel(model, messages, opts){
   const wantStream = state.settings.streaming && typeof opts.onToken === "function";
 
   try{
+if(!hasUsableApiKey()){
+      const err = new Error("No API key configured. Add one in Settings → AI Behavior → API Key.");
+      err.status = 401;
+      throw err;
+    }
+
     const res = await fetch(OPENROUTER_URL, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${OPENROUTER_KEY}`,
+        "Authorization": `Bearer ${getActiveApiKey()}`,
         "Content-Type": "application/json",
         "HTTP-Referer": location.href,
         "X-Title": "Goblin AI"
@@ -1872,14 +1946,15 @@ function loadingHTML(){
 }
 
 function errorHTML(message, {onRetry}={}){
+  const noKey = !hasUsableApiKey();
   return `
     <div class="error-banner">
       ${ICONS.alert}
       <div class="eb-body">
-        <strong>Something went wrong</strong>
+        <strong>${noKey ? "No API key configured" : "Something went wrong"}</strong>
         <span>${escapeHTML(message)}</span>
         <div class="eb-actions">
-          <button class="btn btn-secondary btn-sm" data-retry-action>Try again</button>
+          ${noKey ? `<button class="btn btn-secondary btn-sm" data-open-settings-action>Open Settings</button>` : `<button class="btn btn-secondary btn-sm" data-retry-action>Try again</button>`}
         </div>
       </div>
     </div>`;
