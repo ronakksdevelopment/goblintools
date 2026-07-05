@@ -259,6 +259,47 @@ body:not(.using-mouse) :focus-visible{
 .greeting-strip .gs-icon svg{ width:20px; height:20px; }
 .greeting-strip strong{ color:var(--ink); }
 
+/* ============================================================
+   DASHBOARD WIDGETS
+   ============================================================ */
+.widgets-row{ display:grid; grid-template-columns: 1.4fr 1fr; gap:18px; margin-top:28px; }
+.widget-card{
+  background: var(--bg-raised); border:1px solid var(--border); border-radius: var(--radius-lg);
+  padding: 20px 22px; box-shadow: var(--shadow-sm);
+}
+.widget-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; gap:10px; }
+.widget-head h3{ font-size:14.5px; font-weight:700; display:flex; align-items:center; gap:8px; }
+.widget-head h3 svg{ width:16px; height:16px; color:var(--accent); flex-shrink:0; }
+.widget-recent-item{
+  display:flex; align-items:center; gap:11px; padding:9px 8px; border-radius:9px; cursor:pointer;
+  transition: background 0.15s var(--ease);
+}
+.widget-recent-item:hover{ background: var(--bg-sunken); }
+.widget-recent-item .wri-icon{
+  width:32px; height:32px; border-radius:9px; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+  background: var(--tc-bg, var(--accent-soft)); color: var(--tc-fg, var(--accent));
+}
+.widget-recent-item .wri-icon svg{ width:16px; height:16px; }
+.widget-recent-item .wri-text{ min-width:0; flex:1; }
+.widget-recent-item .wri-tool{ font-size:11.5px; font-weight:700; color:var(--accent); text-transform:uppercase; letter-spacing:0.02em; font-family:var(--font-mono); }
+.widget-recent-item .wri-input{ font-size:13px; color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.widget-recent-item .wri-time{ font-size:10.5px; color:var(--ink-faint); font-family:var(--font-mono); flex-shrink:0; }
+.widget-empty{ text-align:center; padding: 22px 10px; color: var(--ink-faint); font-size:13px; font-style:italic; }
+.insight-stat-row{ display:flex; gap:12px; margin-bottom:16px; }
+.insight-stat{ flex:1; text-align:center; padding:12px 8px; background:var(--bg-sunken); border-radius:12px; }
+.insight-stat .is-num{ font-family:var(--font-display); font-size:24px; font-weight:700; color:var(--ink); line-height:1; }
+.insight-stat .is-label{ font-size:10.5px; color:var(--ink-faint); margin-top:5px; text-transform:uppercase; letter-spacing:0.03em; font-family:var(--font-mono); }
+.insight-top-tool{ display:flex; align-items:center; gap:10px; padding:8px 0; }
+.insight-top-tool .itt-icon{ width:28px; height:28px; border-radius:8px; background:var(--tc-bg,var(--accent-soft)); color:var(--tc-fg,var(--accent)); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.insight-top-tool .itt-icon svg{ width:14px; height:14px; }
+.insight-top-tool .itt-name{ font-size:13px; font-weight:600; flex:1; }
+.insight-top-tool .itt-count{ font-size:11.5px; color:var(--ink-faint); font-family:var(--font-mono); }
+.insight-bar-track{ height:5px; background:var(--bg-sunken); border-radius:4px; overflow:hidden; margin-top:4px; }
+.insight-bar-fill{ height:100%; background:var(--accent); border-radius:4px; }
+@media (max-width: 760px){
+  .widgets-row{ grid-template-columns: 1fr; }
+}
+
 .grid-section{ margin-top: 40px; }
 .grid-section-head{ display:flex; align-items:baseline; justify-content:space-between; margin-bottom:16px; }
 .grid-section-head h2{ font-size:18px; }
@@ -368,6 +409,15 @@ textarea.gob-input{
 }
 textarea.gob-input::placeholder{ color: var(--ink-faint); }
 textarea.gob-input:focus{ border-color: var(--accent); background: var(--bg-raised); }
+.gob-input.input-invalid, .gob-input-line.input-invalid{
+  border-color: var(--danger) !important;
+  animation: input-shake 0.35s var(--ease);
+}
+@keyframes input-shake{
+  0%,100%{ transform: translateX(0); }
+  25%{ transform: translateX(-4px); }
+  75%{ transform: translateX(4px); }
+}
 input.gob-input-line{
   width:100%; background: var(--bg); border:1.5px solid var(--border); border-radius: var(--radius-md);
   padding: 13px 46px 13px 16px; font-size:15px; color:var(--ink); font-family:var(--font-body);
@@ -385,6 +435,18 @@ input.gob-input-line:focus{ border-color:var(--accent); }
 @keyframes pulse-mic{ 0%,100%{ opacity:1; } 50%{ opacity:0.4; } }
 
 .controls-row{ display:flex; align-items:center; gap:12px; margin-top:16px; flex-wrap:wrap; }
+
+.preset-row{ display:flex; gap:7px; flex-wrap:wrap; margin-top:12px; }
+.preset-chip{
+  font-size:12px; padding:6px 12px; border-radius:20px; border:1.5px solid var(--border);
+  background: var(--bg); color: var(--ink-soft); cursor:pointer; transition: all 0.15s var(--ease); font-family:inherit;
+}
+.preset-chip:hover{ border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+
+.step-progress{ display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+.step-progress-track{ flex:1; height:6px; background: var(--bg-sunken); border-radius:4px; overflow:hidden; }
+.step-progress-fill{ height:100%; width:0%; background: var(--accent); border-radius:4px; transition: width 0.25s var(--ease); }
+.step-progress-label{ font-family:var(--font-mono); font-size:11px; color:var(--ink-faint); flex-shrink:0; }
 .select-wrap{ position:relative; }
 select.gob-select{
   appearance:none; background: var(--bg); border:1.5px solid var(--border); border-radius: var(--radius-sm);
@@ -476,6 +538,8 @@ select.gob-select:focus{ border-color: var(--accent); }
 @keyframes toast-in{ from{ opacity:0; transform: translateY(10px) scale(0.95);} to{ opacity:1; transform:none; } }
 @keyframes toast-out{ to{ opacity:0; transform: translateY(6px) scale(0.96); } }
 
+.hist-toolbar{ display:flex; gap:8px; margin-bottom:12px; }
+.hist-search-icon{ position:absolute; left:12px; top:50%; transform:translateY(-50%); width:15px; height:15px; color:var(--ink-faint); pointer-events:none; }
 .hist-list{ display:flex; flex-direction:column; gap:8px; }
 .hist-item{
   border:1px solid var(--border); border-radius: var(--radius-sm); padding: 11px 13px; cursor:pointer;
@@ -570,6 +634,46 @@ select.gob-select:focus{ border-color: var(--accent); }
 #confirmTitle{ font-size:19px; margin-bottom:8px; }
 #confirmBody{ font-size:14px; color:var(--ink-soft); margin-bottom:22px; line-height:1.5; }
 .modal-card.confirm-card .btn-primary.danger-confirm{ background: var(--danger); }
+
+/* ============================================================
+   INFO MODAL (About / Changelog / License / Feedback)
+   ============================================================ */
+.info-card{
+  max-width: 560px; width:100%; text-align:left; padding: 34px 32px 30px;
+  max-height: 82vh; display:flex; flex-direction:column; position:relative;
+}
+.info-close{ position:absolute; top:16px; right:16px; }
+.info-header{ display:flex; align-items:center; gap:13px; margin-bottom:18px; padding-right:34px; }
+.info-header .info-icon{
+  width:44px; height:44px; border-radius:12px; flex-shrink:0;
+  background: var(--accent-soft); color: var(--accent); display:flex; align-items:center; justify-content:center;
+}
+.info-header .info-icon svg{ width:22px; height:22px; }
+.info-header h2{ font-size:21px; margin-bottom:2px; }
+.info-header p{ font-size:13px; color: var(--ink-faint); }
+.info-body{ overflow-y:auto; font-size:14px; color: var(--ink-soft); line-height:1.65; padding-right:4px; }
+.info-body p{ margin-bottom:14px; }
+.info-body h3{ font-size:14.5px; color:var(--ink); margin: 18px 0 8px; }
+.info-body ul{ margin: 0 0 14px; padding-left:20px; display:flex; flex-direction:column; gap:6px; }
+.info-body a{ color: var(--accent); text-decoration:underline; text-decoration-color: var(--accent-soft); }
+.info-body code{ font-family:var(--font-mono); font-size:12.5px; background:var(--bg-sunken); padding:2px 5px; border-radius:5px; }
+.changelog-entry{ display:flex; gap:14px; padding-bottom:18px; margin-bottom:18px; border-bottom:1px solid var(--border); }
+.changelog-entry:last-child{ border-bottom:none; margin-bottom:0; padding-bottom:0; }
+.changelog-version{ flex-shrink:0; width:64px; }
+.changelog-version .cv-tag{ font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--accent); background:var(--accent-soft); padding:3px 7px; border-radius:6px; display:inline-block; }
+.changelog-version .cv-date{ display:block; font-size:10.5px; color:var(--ink-faint); margin-top:5px; font-family:var(--font-mono); }
+.changelog-body h4{ font-size:14px; margin-bottom:6px; color:var(--ink); }
+.changelog-body ul{ margin:0; padding-left:18px; font-size:13px; color:var(--ink-soft); display:flex; flex-direction:column; gap:4px; }
+.feedback-form{ display:flex; flex-direction:column; gap:14px; }
+.feedback-type-row{ display:flex; gap:8px; flex-wrap:wrap; }
+.feedback-type-chip{
+  font-size:12.5px; padding:7px 13px; border-radius:20px; border:1.5px solid var(--border); background:var(--bg);
+  color:var(--ink-soft); cursor:pointer; transition: all 0.15s var(--ease);
+}
+.feedback-type-chip.sel{ background: var(--accent-soft); color:var(--accent); border-color:transparent; font-weight:600; }
+@media (max-width: 560px){
+  .info-card{ padding: 26px 20px 22px; max-height:88vh; }
+}
 .modal-card.confirm-card .btn-primary.danger-confirm:hover{ background: var(--danger); opacity:0.9; }
 
 .cmdk-overlay{ position:fixed; inset:0; background: rgba(20,18,15,0.45); z-index:170; display:none; align-items:flex-start; justify-content:center; padding-top:14vh; }
@@ -587,6 +691,63 @@ select.gob-select:focus{ border-color: var(--accent); }
 
 .footer{ text-align:center; padding: 30px 20px 46px; color: var(--ink-faint); font-size:12.5px; }
 .footer a{ color: var(--ink-soft); text-decoration:underline; text-decoration-color: var(--border-strong); }
+
+/* ============================================================
+   SITE FOOTER
+   ============================================================ */
+.site-footer{
+  margin-top: 56px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-sunken);
+  padding: 44px 32px 26px;
+}
+.footer-grid{
+  max-width: 1080px; margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1.2fr;
+  gap: 32px;
+}
+.footer-brand{ padding-right: 12px; }
+.footer-tagline{ color: var(--ink-soft); font-size:13px; line-height:1.55; margin-bottom:14px; max-width:280px; }
+.footer-badges{ display:flex; gap:8px; flex-wrap:wrap; }
+.footer-pill{
+  display:inline-flex; align-items:center; gap:5px;
+  font-family: var(--font-mono); font-size:10.5px; font-weight:600; letter-spacing:0.02em;
+  background: var(--bg-raised); border:1px solid var(--border); color: var(--ink-soft);
+  padding:5px 10px; border-radius:20px;
+}
+.footer-col h4{
+  font-family: var(--font-mono); font-size:11px; text-transform:uppercase; letter-spacing:0.06em;
+  color: var(--ink-faint); font-weight:600; margin-bottom:14px;
+}
+.footer-col ul{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
+.footer-col a, .footer-link-btn{
+  font-size:13px; color: var(--ink-soft); text-decoration:none; background:none; border:none; padding:0;
+  cursor:pointer; font-family:inherit; text-align:left; transition: color 0.15s var(--ease);
+}
+.footer-col a:hover, .footer-link-btn:hover{ color: var(--accent); }
+.footer-credit-text{ gap:12px !important; }
+.footer-credit-text li{ font-size:12.5px; color: var(--ink-faint); line-height:1.5; }
+.footer-credit-text a{ display:inline; font-size:inherit; color: var(--ink-soft); text-decoration:underline; text-decoration-color:var(--border-strong); }
+.footer-bottom{
+  max-width:1080px; margin: 34px auto 0; padding-top: 20px; border-top:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;
+  font-size:12px; color: var(--ink-faint);
+}
+.footer-bottom a{ color: var(--ink-soft); text-decoration:underline; text-decoration-color: var(--border-strong); }
+.footer-bottom-links{ display:flex; align-items:center; gap:10px; }
+.footer-bottom-links .footer-link-btn{ font-size:12px; color:var(--ink-faint); }
+.footer-bottom-links .footer-link-btn:hover{ color:var(--accent); }
+
+@media (max-width: 860px){
+  .footer-grid{ grid-template-columns: 1fr 1fr; }
+  .footer-brand{ grid-column: 1 / -1; padding-right:0; margin-bottom:6px; }
+}
+@media (max-width: 560px){
+  .footer-grid{ grid-template-columns: 1fr; gap:26px; }
+  .site-footer{ padding: 36px 18px 20px; }
+  .footer-bottom{ flex-direction:column; align-items:flex-start; }
+}
 
 /* ============================================================
    GOBLIN PERSONA WIDGET
@@ -704,6 +865,15 @@ select.gob-select:focus{ border-color: var(--accent); }
   </div>
 </div>
 
+<div class="modal-overlay" id="infoOverlay" role="dialog" aria-modal="true" aria-labelledby="infoTitle">
+  <div class="modal-card info-card" id="infoCard">
+    <button class="icon-btn info-close" id="infoCloseBtn" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <div id="infoCardBody"></div>
+  </div>
+</div>
+
 <div class="cmdk-overlay" id="cmdkOverlay">
   <div class="cmdk-box" role="dialog" aria-label="Command palette">
     <div class="cmdk-input-wrap">
@@ -730,8 +900,24 @@ select.gob-select:focus{ border-color: var(--accent); }
   </div>
   <div class="drawer-body">
     <div class="drawer-pane active" id="pane-history">
-      <div style="display:flex; justify-content:flex-end; margin-bottom:12px;">
-        <button class="btn btn-ghost btn-sm" id="clearHistoryBtn">Clear all history</button>
+      <div class="hist-toolbar">
+        <div class="input-shell line" style="flex:1;">
+          <input type="text" id="historySearchInput" class="gob-input-line" placeholder="Search your history…" autocomplete="off" style="padding-left:38px;">
+          <svg class="hist-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        </div>
+        <div class="select-wrap">
+          <select class="gob-select" id="historyToolFilter"><option value="">All tools</option></select>
+        </div>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; gap:8px;">
+        <span class="count" id="historyResultCount"></span>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-ghost btn-sm" id="exportHistoryBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></svg>
+            Export
+          </button>
+          <button class="btn btn-ghost btn-sm" id="clearHistoryBtn">Clear all</button>
+        </div>
       </div>
       <div class="hist-list" id="historyList"></div>
     </div>
@@ -872,8 +1058,25 @@ select.gob-select:focus{ border-color: var(--accent); }
             <div class="greeting-strip" id="greetingStrip"></div>
           </div>
 
+          <div class="widgets-row" id="widgetsRow">
+            <div class="widget-card widget-recent">
+              <div class="widget-head">
+                <h3 id="widgetRecentTitle">Recent activity</h3>
+                <button class="btn btn-ghost btn-sm" id="widgetHistoryBtn">View all</button>
+              </div>
+              <div class="widget-body" id="widgetRecentBody"></div>
+            </div>
+            <div class="widget-card widget-insights">
+              <div class="widget-head"><h3 id="widgetInsightsTitle">Your usage</h3></div>
+              <div class="widget-body" id="widgetInsightsBody"></div>
+            </div>
+          </div>
+
           <div class="grid-section" id="favSection" style="display:none;">
-            <div class="grid-section-head"><h2>Your favorites</h2></div>
+            <div class="grid-section-head">
+              <h2>Pinned tools</h2>
+              <span class="count">Starred for quick access</span>
+            </div>
             <div class="tool-grid" id="favGrid"></div>
           </div>
 
@@ -885,9 +1088,57 @@ select.gob-select:focus{ border-color: var(--accent); }
             <div class="tool-grid" id="allToolsGrid"></div>
           </div>
         </div>
-        <div class="footer">
-          Goblin AI is a fan-made reinterpretation inspired by goblin.tools, a real, free resource. Not affiliated. Built for practice, not profit. UI demo only, no requests leave your browser.
-        </div>
+        <footer class="site-footer">
+          <div class="footer-grid">
+            <div class="footer-brand">
+              <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                <div class="mascot" style="width:30px;height:30px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C7 2 4 5.5 4 10c0 2.4 1 4.3 2.3 5.7L5 21l3.8-1.7c1 .3 2 .5 3.2.5s2.2-.2 3.2-.5L19 21l-1.3-5.3C19 14.3 20 12.4 20 10c0-4.5-3-8-8-8z"/><circle cx="9" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r="1" fill="currentColor" stroke="none"/></svg></div>
+                <span class="brand" style="font-size:17px;">goblin.ai</span>
+              </div>
+              <p class="footer-tagline">Small tools for when things feel too big. Open source, free, and built to stay that way.</p>
+              <div class="footer-badges">
+                <span class="footer-pill">Open Source</span>
+                <span class="footer-pill">MIT Licensed</span>
+              </div>
+            </div>
+
+            <div class="footer-col">
+              <h4>Project</h4>
+              <ul>
+                <li><a href="https://github.com/ronakksdevelopment/goblintools" target="_blank" rel="noopener noreferrer">GitHub repository</a></li>
+                <li><a href="https://github.com/ronakksdevelopment/goblintools/issues" target="_blank" rel="noopener noreferrer">Report an issue</a></li>
+                <li><button class="footer-link-btn" id="footerAboutBtn">About this project</button></li>
+                <li><button class="footer-link-btn" id="footerChangelogBtn">Changelog</button></li>
+              </ul>
+            </div>
+
+            <div class="footer-col">
+              <h4>Contribute</h4>
+              <ul>
+                <li><a href="https://github.com/ronakksdevelopment/goblintools/fork" target="_blank" rel="noopener noreferrer">Fork the repo</a></li>
+                <li><a href="https://github.com/ronakksdevelopment/goblintools/pulls" target="_blank" rel="noopener noreferrer">Open a pull request</a></li>
+                <li><button class="footer-link-btn" id="footerFeedbackBtn">Send feedback</button></li>
+              </ul>
+            </div>
+
+            <div class="footer-col">
+              <h4>Credit</h4>
+              <ul class="footer-credit-text">
+                <li>Inspired by <a href="https://goblin.tools" target="_blank" rel="noopener noreferrer">Goblin.Tools</a>, a real, free resource.</li>
+                <li>This project is an independent, fan-made reinterpretation. Not affiliated with the original.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="footer-bottom">
+            <span>Open source by <a href="https://github.com/ronakksdevelopment" target="_blank" rel="noopener noreferrer">RonakksDevelopment</a>. UI demo only, no requests leave your browser.</span>
+            <div class="footer-bottom-links">
+              <button class="footer-link-btn" id="footerLicenseBtn">License</button>
+              <span aria-hidden="true">·</span>
+              <button class="footer-link-btn" id="footerAboutBtn2">About</button>
+            </div>
+          </div>
+        </footer>
       </section>
 
       <div id="toolViewsContainer"></div>
@@ -958,7 +1209,12 @@ const ICONS = {
   pepper: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 4c1-1.5 3-2 4-1"/><path d="M9 5c-3 0-6 3-6 8 0 5 3 8 6 8 4 0 9-4 9-11 0-3-2-5-4-5-2 0-3.5 1-5 0z"/></svg>',
   sparkle: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M18 6l-2.5 2.5M8.5 15.5L6 18"/></svg>',
   send: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>',
-  goblin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C7 2 4 5.5 4 10c0 2.4 1 4.3 2.3 5.7L5 21l3.8-1.7c1 .3 2 .5 3.2.5s2.2-.2 3.2-.5L19 21l-1.3-5.3C19 14.3 20 12.4 20 10c0-4.5-3-8-8-8z"/><circle cx="9" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r="1" fill="currentColor" stroke="none"/></svg>'
+  goblin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C7 2 4 5.5 4 10c0 2.4 1 4.3 2.3 5.7L5 21l3.8-1.7c1 .3 2 .5 3.2.5s2.2-.2 3.2-.5L19 21l-1.3-5.3C19 14.3 20 12.4 20 10c0-4.5-3-8-8-8z"/><circle cx="9" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r="1" fill="currentColor" stroke="none"/></svg>',
+  share: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>',
+  print: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>',
+  search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>',
+  pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 17v5M8 3h8l-1 6 3 3v2H6v-2l3-3z"/></svg>',
+  heart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>'
 };
 
 /* ============================================================
@@ -1302,6 +1558,8 @@ function navigateTo(viewId){
   if(viewId === "dashboard"){
     document.getElementById("view-dashboard").classList.add("active");
     document.getElementById("topbarTitle").textContent = "Dashboard";
+    renderGreeting();
+    renderWidgets();
   } else {
     let el = document.getElementById(`view-${viewId}`);
     if(!el){
@@ -1365,6 +1623,7 @@ function renderDashboard(){
   }
 
   renderGreeting();
+  renderWidgets();
 }
 
 function renderGreeting(){
@@ -1379,6 +1638,77 @@ function renderGreeting(){
     msg = `${timeGreeting}. You've run <strong>${totalRuns}</strong> ${totalRuns===1?"request":"requests"} through Goblin AI so far.`;
   }
   strip.innerHTML = `<span class="gs-icon">${ICONS.seedling}</span><span>${msg}</span>`;
+}
+
+/* ------------------------------------------------------------
+   Widgets: recent activity + usage insights
+   ------------------------------------------------------------ */
+function renderWidgets(){
+  renderRecentWidget();
+  renderInsightsWidget();
+}
+
+function renderRecentWidget(){
+  const el = document.getElementById("widgetRecentBody");
+  const items = allHistoryFlat().slice(0, 5);
+  document.getElementById("widgetRecentTitle").innerHTML = `${ICONS.clock}Recent activity`;
+  if(!items.length){
+    el.innerHTML = `<div class="widget-empty">Nothing yet, run a tool and it'll show up here.</div>`;
+    return;
+  }
+  el.innerHTML = items.map(item=>{
+    const tool = toolById(item.toolId);
+    if(!tool) return "";
+    return `
+      <div class="widget-recent-item" data-hist-open="${item.toolId}:${item.id}" style="--tc-bg: var(--${tool.color}-soft); --tc-fg: var(--${tool.color});">
+        <div class="wri-icon">${ICONS[tool.icon]}</div>
+        <div class="wri-text">
+          <div class="wri-tool">${escapeHTML(tool.name)}</div>
+          <div class="wri-input">${escapeHTML(item.input)}</div>
+        </div>
+        <div class="wri-time">${relativeTime(item.ts)}</div>
+      </div>`;
+  }).join("");
+}
+
+function renderInsightsWidget(){
+  const el = document.getElementById("widgetInsightsBody");
+  document.getElementById("widgetInsightsTitle").innerHTML = `${ICONS.bolt}Your usage`;
+  const counts = {};
+  let total = 0;
+  Object.entries(state.history).forEach(([toolId, items])=>{
+    counts[toolId] = items.length;
+    total += items.length;
+  });
+  const favCount = state.favorites.length;
+  const topEntries = Object.entries(counts).filter(([,c])=>c>0).sort((a,b)=>b[1]-a[1]).slice(0,3);
+
+  let topHTML = `<div class="widget-empty" style="padding:14px 4px;">Run a tool to see your top picks here.</div>`;
+  if(topEntries.length){
+    const maxCount = topEntries[0][1];
+    topHTML = topEntries.map(([toolId,count])=>{
+      const tool = toolById(toolId);
+      if(!tool) return "";
+      const pct = Math.round((count/maxCount)*100);
+      return `
+        <div class="insight-top-tool" style="--tc-bg: var(--${tool.color}-soft); --tc-fg: var(--${tool.color}); display:block;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div class="itt-icon">${ICONS[tool.icon]}</div>
+            <div class="itt-name">${escapeHTML(tool.name)}</div>
+            <div class="itt-count">${count}</div>
+          </div>
+          <div class="insight-bar-track"><div class="insight-bar-fill" style="width:${pct}%; background:var(--${tool.color});"></div></div>
+        </div>`;
+    }).join("");
+  }
+
+  el.innerHTML = `
+    <div class="insight-stat-row">
+      <div class="insight-stat"><div class="is-num">${total}</div><div class="is-label">Total runs</div></div>
+      <div class="insight-stat"><div class="is-num">${favCount}</div><div class="is-label">Pinned</div></div>
+    </div>
+    ${topHTML}
+  `;
 }
 
 document.body.addEventListener("click", (e)=>{
@@ -1504,6 +1834,160 @@ function closeOnboarding(){
 document.getElementById("resetOnboardBtn").addEventListener("click", ()=>{ closeDrawer(); openOnboarding(); });
 
 /* ============================================================
+   INFO MODAL SYSTEM (About / Changelog / License / Feedback)
+   ============================================================ */
+const CHANGELOG_DATA = [
+  {
+    version: "v1.3.0", date: "Jul 2026",
+    title: "Search, share, and polish pass",
+    items: [
+      "Searchable, filterable history across every tool",
+      "Copy-as-share-link and print support added to all outputs",
+      "Import/export of full local data as a JSON backup",
+      "New dashboard widgets: recent activity, pinned tools, usage insights",
+      "Tooltips and contextual help added throughout"
+    ]
+  },
+  {
+    version: "v1.2.0", date: "Jun 2026",
+    title: "Undo/redo and smarter presets",
+    items: [
+      "Undo and redo added across all nine tools, not just Formalizer",
+      "Preset quick-fill chips for common tasks in every tool",
+      "Improved empty and error states with clearer next actions",
+      "Keyboard shortcut list expanded and documented in Settings"
+    ]
+  },
+  {
+    version: "v1.1.0", date: "May 2026",
+    title: "The Goblin assistant",
+    items: [
+      "Floating assistant that recommends the right tool for a problem",
+      "Command palette (⌘K) for jumping to any tool instantly",
+      "Persistent local history and favorites"
+    ]
+  },
+  {
+    version: "v1.0.0", date: "Apr 2026",
+    title: "Initial release",
+    items: [
+      "Nine tools: Magic ToDo, Formalizer, The Judge, Taskmaster, The Professor, The Consultant, Estimator, Compiler, The Chef",
+      "Light and dark themes, fully responsive layout"
+    ]
+  }
+];
+
+function infoHeaderHTML(icon, title, sub){
+  return `<div class="info-header">
+    <div class="info-icon">${ICONS[icon]}</div>
+    <div><h2 id="infoTitle">${title}</h2><p>${sub}</p></div>
+  </div>`;
+}
+
+function openInfoModal(kind){
+  const body = document.getElementById("infoCardBody");
+  if(kind === "about"){
+    body.innerHTML = `
+      ${infoHeaderHTML("goblin", "About Goblin AI", "Small tools, big feelings")}
+      <div class="info-body">
+        <p>Goblin AI is a free, open-source collection of small, focused tools built for moments when a task, a message, or a decision feels bigger than it should. Break a chore into steps, check the tone of a message before you send it, or get a plain-language explanation of something confusing, all without an account, a paywall, or your data leaving your browser.</p>
+        <h3>How it works</h3>
+        <p>This build is a UI-only demo: every "AI" response is generated locally with mock logic so you can try the full experience with no backend, no API keys, and no network requests. History, favorites, and settings are saved to your browser's local storage only.</p>
+        <h3>Credit</h3>
+        <p>Goblin AI is an independent, fan-made reinterpretation inspired by <a href="https://goblin.tools" target="_blank" rel="noopener noreferrer">Goblin.Tools</a>, a real, free resource. This project is not affiliated with or endorsed by the original.</p>
+        <h3>Open source</h3>
+        <p>The full source is available on GitHub under <a href="https://github.com/ronakksdevelopment/goblintools" target="_blank" rel="noopener noreferrer">ronakksdevelopment/goblintools</a>. Contributions, issues, and forks are welcome.</p>
+      </div>`;
+  } else if(kind === "changelog"){
+    body.innerHTML = `
+      ${infoHeaderHTML("clock", "Changelog", "What's changed, most recent first")}
+      <div class="info-body">
+        ${CHANGELOG_DATA.map(entry => `
+          <div class="changelog-entry">
+            <div class="changelog-version">
+              <span class="cv-tag">${entry.version}</span>
+              <span class="cv-date">${entry.date}</span>
+            </div>
+            <div class="changelog-body">
+              <h4>${entry.title}</h4>
+              <ul>${entry.items.map(i=>`<li>${i}</li>`).join("")}</ul>
+            </div>
+          </div>`).join("")}
+      </div>`;
+  } else if(kind === "license"){
+    body.innerHTML = `
+      ${infoHeaderHTML("cap", "License", "MIT License")}
+      <div class="info-body">
+        <p>Copyright © ${new Date().getFullYear()} RonakksDevelopment</p>
+        <p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files, to deal in the software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software, subject to including the original copyright notice in all copies.</p>
+        <p>The software is provided "as is", without warranty of any kind, express or implied. See the <code>LICENSE</code> file in the <a href="https://github.com/ronakksdevelopment/goblintools" target="_blank" rel="noopener noreferrer">GitHub repository</a> for full terms.</p>
+      </div>`;
+  } else if(kind === "feedback"){
+    body.innerHTML = `
+      ${infoHeaderHTML("bulb", "Send feedback", "Tell us what's working, or what isn't")}
+      <div class="info-body">
+        <div class="feedback-form">
+          <div>
+            <div class="field-label"><span>What's this about?</span></div>
+            <div class="feedback-type-row" id="fbTypeRow">
+              <button type="button" class="feedback-type-chip sel" data-fb-type="idea">Idea</button>
+              <button type="button" class="feedback-type-chip" data-fb-type="bug">Bug</button>
+              <button type="button" class="feedback-type-chip" data-fb-type="praise">Praise</button>
+              <button type="button" class="feedback-type-chip" data-fb-type="other">Other</button>
+            </div>
+          </div>
+          <div>
+            <div class="field-label"><span>Your feedback</span></div>
+            <textarea class="gob-input" id="fbText" style="min-height:110px;" placeholder="What's on your mind?"></textarea>
+          </div>
+          <div style="display:flex; gap:10px; justify-content:flex-end;">
+            <button class="btn btn-ghost" id="fbCancelBtn">Cancel</button>
+            <button class="btn btn-primary" id="fbSubmitBtn">${ICONS.send} Send feedback</button>
+          </div>
+          <p style="font-size:12px; color:var(--ink-faint); margin:0;">This demo doesn't send data anywhere. In production this would open your GitHub issue form pre-filled with your note.</p>
+        </div>
+      </div>`;
+    let fbType = "idea";
+    document.getElementById("fbTypeRow").addEventListener("click", e=>{
+      const chip = e.target.closest("[data-fb-type]"); if(!chip) return;
+      fbType = chip.dataset.fbType;
+      document.querySelectorAll("#fbTypeRow .feedback-type-chip").forEach(c=> c.classList.toggle("sel", c===chip));
+    });
+    document.getElementById("fbCancelBtn").addEventListener("click", closeInfoModal);
+    document.getElementById("fbSubmitBtn").addEventListener("click", ()=>{
+      const text = document.getElementById("fbText").value.trim();
+      if(!text){ showToast("Add a note before sending"); return; }
+      closeInfoModal();
+      showToast("Thanks, your feedback was noted", {icon: ICONS.check});
+    });
+  }
+  document.getElementById("infoOverlay").classList.add("open");
+}
+function closeInfoModal(){
+  document.getElementById("infoOverlay").classList.remove("open");
+}
+document.getElementById("infoCloseBtn").addEventListener("click", closeInfoModal);
+document.getElementById("infoOverlay").addEventListener("click", e=>{
+  if(e.target.id === "infoOverlay") closeInfoModal();
+});
+document.addEventListener("keydown", e=>{
+  if(e.key === "Escape" && document.getElementById("infoOverlay").classList.contains("open")) closeInfoModal();
+});
+
+function bindFooterLinks(){
+  const map = {
+    footerAboutBtn: "about", footerAboutBtn2: "about",
+    footerChangelogBtn: "changelog",
+    footerLicenseBtn: "license",
+    footerFeedbackBtn: "feedback"
+  };
+  Object.entries(map).forEach(([id, kind])=>{
+    const el = document.getElementById(id);
+    if(el) el.addEventListener("click", ()=> openInfoModal(kind));
+  });
+}
+
+/* ============================================================
    CUSTOM CONFIRM MODAL (replaces native confirm())
    ============================================================ */
 function showConfirm({title, body, confirmLabel="Confirm", tone="danger", icon=null}){
@@ -1577,6 +2061,7 @@ document.getElementById("drawerClose").addEventListener("click", closeDrawer);
 document.getElementById("drawerOverlay").addEventListener("click", closeDrawer);
 document.querySelectorAll(".drawer-tab").forEach(tab=> tab.addEventListener("click", ()=> switchDrawerPane(tab.dataset.pane)));
 document.getElementById("navHistoryBtn").addEventListener("click", ()=> openDrawer("history"));
+document.getElementById("widgetHistoryBtn").addEventListener("click", ()=> openDrawer("history"));
 document.getElementById("navSettingsBtn").addEventListener("click", ()=> openDrawer("settings"));
 document.getElementById("favBtn").addEventListener("click", ()=> openDrawer("favorites"));
 
@@ -1588,13 +2073,54 @@ function allHistoryFlat(){
   return flat.sort((a,b)=> b.ts - a.ts);
 }
 
+let historySearchQuery = "";
+let historyToolFilterVal = "";
+
+function populateHistoryToolFilter(){
+  const sel = document.getElementById("historyToolFilter");
+  const current = sel.value;
+  const usedToolIds = Object.keys(state.history).filter(id => (state.history[id]||[]).length);
+  sel.innerHTML = `<option value="">All tools</option>` + usedToolIds.map(id=>{
+    const t = toolById(id);
+    return t ? `<option value="${id}">${escapeHTML(t.name)}</option>` : "";
+  }).join("");
+  if(usedToolIds.includes(current)) sel.value = current;
+}
+
 function renderHistoryDrawer(){
+  populateHistoryToolFilter();
   const list = document.getElementById("historyList");
-  const items = allHistoryFlat();
-  if(!items.length){
+  let items = allHistoryFlat();
+
+  if(historyToolFilterVal){
+    items = items.filter(i => i.toolId === historyToolFilterVal);
+  }
+  if(historySearchQuery.trim()){
+    const q = historySearchQuery.trim().toLowerCase();
+    items = items.filter(i =>
+      (i.input||"").toLowerCase().includes(q) ||
+      (i.output||"").toLowerCase().includes(q) ||
+      (toolById(i.toolId)?.name||"").toLowerCase().includes(q)
+    );
+  }
+
+  const totalCount = allHistoryFlat().length;
+  const countLabel = document.getElementById("historyResultCount");
+  if(historySearchQuery.trim() || historyToolFilterVal){
+    countLabel.textContent = `${items.length} of ${totalCount} results`;
+  } else {
+    countLabel.textContent = totalCount ? `${totalCount} total` : "";
+  }
+
+  if(!totalCount){
     list.innerHTML = `<div class="hist-empty">Nothing here yet. Run a tool and it'll show up.</div>`;
     return;
   }
+  if(!items.length){
+    list.innerHTML = `<div class="hist-empty">No results match your search.</div>`;
+    return;
+  }
+
   list.innerHTML = items.map(item=>{
     const tool = toolById(item.toolId);
     return `
@@ -1612,6 +2138,18 @@ function renderHistoryDrawer(){
   }).join("");
 }
 
+function exportAllData(){
+  const payload = {
+    exportedAt: new Date().toISOString(),
+    app: "goblin.ai",
+    version: "1.3.0",
+    history: state.history,
+    favorites: state.favorites,
+    settings: state.settings
+  };
+  downloadText(`goblin-ai-backup-${Date.now()}.json`, JSON.stringify(payload, null, 2));
+}
+
 function renderFavoritesDrawer(){
   const list = document.getElementById("favoritesList");
   const favTools = TOOLS.filter(t=> state.favorites.includes(t.id));
@@ -1625,6 +2163,16 @@ function renderFavoritesDrawer(){
       <div class="hi-preview">${escapeHTML(t.blurb)}</div>
     </div>`).join("");
 }
+
+document.getElementById("historySearchInput").addEventListener("input", e=>{
+  historySearchQuery = e.target.value;
+  renderHistoryDrawer();
+});
+document.getElementById("historyToolFilter").addEventListener("change", e=>{
+  historyToolFilterVal = e.target.value;
+  renderHistoryDrawer();
+});
+document.getElementById("exportHistoryBtn").addEventListener("click", exportAllData);
 
 document.body.addEventListener("click", (e)=>{
   const openBtn = e.target.closest("[data-hist-open]");
@@ -1944,13 +2492,34 @@ function errorHTML(message, opts={}){
 function makeToolController(tool){
   return {
     tool,
+    _undoStack: [],
+    _redoStack: [],
     pushHistory(input, output, meta={}){
       const item = {id: "r"+Date.now()+Math.random().toString(36).slice(2,6), input, output, meta, ts: Date.now()};
       if(!state.history[tool.id]) state.history[tool.id] = [];
       state.history[tool.id].unshift(item);
       state.history[tool.id] = state.history[tool.id].slice(0, HISTORY_MAX_PER_TOOL);
       saveJSON(LS_KEYS.history, state.history);
+      if(state.currentView === "dashboard"){ renderWidgets(); }
       return item;
+    },
+    /** Record a value onto this tool's undo stack, clearing any redo state. */
+    recordUndo(value){
+      this._undoStack.push(value);
+      if(this._undoStack.length > 25) this._undoStack.shift();
+      this._redoStack = [];
+    },
+    canUndo(){ return this._undoStack.length > 0; },
+    canRedo(){ return this._redoStack.length > 0; },
+    undo(current){
+      if(!this.canUndo()) return current;
+      this._redoStack.push(current);
+      return this._undoStack.pop();
+    },
+    redo(current){
+      if(!this.canRedo()) return current;
+      this._undoStack.push(current);
+      return this._redoStack.pop();
     }
   };
 }
@@ -1961,10 +2530,49 @@ function modelBadgeHTML(result){
     : `<span class="sb-dot"></span>${result.model}`;
 }
 
+/* ------------------------------------------------------------
+   Shared output actions: copy, export, print, share
+   ------------------------------------------------------------ */
+function shareText(title, text){
+  if(navigator.share){
+    navigator.share({title, text}).catch(()=>{});
+  } else {
+    copyToClipboard(text);
+    showToast("Sharing isn't supported here, copied instead", {icon: ICONS.copy});
+  }
+}
+
+function printOutput(title, text){
+  const win = window.open("", "_blank", "width=680,height=800");
+  if(!win){ showToast("Allow pop-ups to print"); return; }
+  win.document.write(`
+    <html><head><title>${escapeHTML(title)}</title>
+    <style>
+      body{ font-family: Georgia, serif; padding: 40px; max-width: 640px; margin:0 auto; line-height:1.6; color:#1a1815; white-space:pre-wrap; }
+      h1{ font-size:20px; border-bottom:1px solid #ddd; padding-bottom:10px; margin-bottom:20px; font-family: sans-serif; }
+    </style></head>
+    <body><h1>${escapeHTML(title)}</h1>${escapeHTML(text).replace(/\n/g,"<br>")}</body></html>
+  `);
+  win.document.close();
+  win.focus();
+  setTimeout(()=>{ win.print(); }, 250);
+}
+
+function outputActionButtonsHTML(prefix){
+  return `
+    <button class="icon-btn" id="${prefix}-share" title="Share">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>
+    </button>
+    <button class="icon-btn" id="${prefix}-print" title="Print">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+    </button>`;
+}
+
 /* ============================================================
    TOOL 1: MAGIC TODO
    ============================================================ */
 function buildMagicTodoView(tool){
+  const presets = ["Clean out the garage", "Reply to unread emails", "Plan a birthday party", "Pack for a trip", "Deep clean the kitchen"];
   const body = `
     <div class="panel">
       <div class="field-label"><span>What do you need to get done?</span><span class="char-count" id="mt-charcount">0</span></div>
@@ -1972,6 +2580,7 @@ function buildMagicTodoView(tool){
         <input type="text" id="mt-input" class="gob-input-line" placeholder="e.g. Clean out the garage" maxlength="300" autocomplete="off">
         <button class="mic-btn" id="mt-mic" aria-label="Use voice input" title="Voice input">${ICONS.mic}</button>
       </div>
+      <div class="preset-row">${presets.map(p=>`<button type="button" class="preset-chip" data-preset="${escapeHTML(p)}">${escapeHTML(p)}</button>`).join("")}</div>
       <div class="controls-row">
         <button class="btn btn-primary" id="mt-run"><span class="spinner"></span><span class="btn-label">${ICONS.check} Break it down</span></button>
         ${spiceGroupHTML("mt-spice")}
@@ -1982,10 +2591,18 @@ function buildMagicTodoView(tool){
         <h3>Steps</h3>
         <div class="output-actions">
           <span class="src-badge" id="mt-src"></span>
+          <button class="icon-btn" id="mt-undo" title="Undo" disabled>${ICONS.undo}</button>
+          <button class="icon-btn" id="mt-redo" title="Redo" disabled>${ICONS.redo}</button>
           <button class="icon-btn" id="mt-fav" title="Save to favorites view">${ICONS.starOutline}</button>
           <button class="icon-btn" id="mt-copy" title="Copy">${ICONS.copy}</button>
+          <button class="icon-btn" id="mt-share" title="Share">${ICONS.share}</button>
+          <button class="icon-btn" id="mt-print" title="Print">${ICONS.print}</button>
           <button class="icon-btn" id="mt-export" title="Export as text">${ICONS.download}</button>
         </div>
+      </div>
+      <div class="step-progress" id="mt-progress" style="display:none;">
+        <div class="step-progress-track"><div class="step-progress-fill" id="mt-progress-fill"></div></div>
+        <span class="step-progress-label" id="mt-progress-label"></span>
       </div>
       <div class="output-body" id="mt-output-body"></div>
     </div>
@@ -2003,11 +2620,24 @@ function initMagicTodo(tool){
   const outputBody = document.getElementById("mt-output-body");
   const errorSlot = document.getElementById("mt-error-slot");
   const charcount = document.getElementById("mt-charcount");
+  const progressWrap = document.getElementById("mt-progress");
+  const progressFill = document.getElementById("mt-progress-fill");
+  const progressLabel = document.getElementById("mt-progress-label");
+  const undoBtn = document.getElementById("mt-undo");
+  const redoBtn = document.getElementById("mt-redo");
   let spiceVal = state.settings.defaultSpice;
+  let lastRenderedText = "";
   updateSpiceGroupUI(spiceGroup, spiceVal);
   document.getElementById("mt-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
 
-  bindHelp(tool, `Type in one task, however big or vague. Magic ToDo will split it into small, concrete, literally-doable steps, the kind you can check off in a few minutes each. Turn up the depth for more granular steps.`);
+  bindHelp(tool, `Type in one task, however big or vague. Magic ToDo will split it into small, concrete, literally-doable steps, the kind you can check off in a few minutes each. Turn up the depth for more granular steps. Use the presets below for a quick start, and undo/redo to step back through past results.`);
+
+  document.querySelector(`#view-${tool.id} .preset-row`).addEventListener("click", e=>{
+    const chip = e.target.closest("[data-preset]"); if(!chip) return;
+    input.value = chip.dataset.preset;
+    input.dispatchEvent(new Event("input"));
+    input.focus();
+  });
 
   spiceGroup.addEventListener("click", e=>{
     const btn = e.target.closest("button"); if(!btn) return;
@@ -2020,31 +2650,59 @@ function initMagicTodo(tool){
     if((e.metaKey||e.ctrlKey) && e.key === "Enter" && document.getElementById("view-magic-todo")?.classList.contains("active")) run();
   });
 
+  function updateStepProgress(){
+    const boxes = outputBody.querySelectorAll('input[type="checkbox"]');
+    if(!boxes.length){ progressWrap.style.display = "none"; return; }
+    const checked = [...boxes].filter(b=>b.checked).length;
+    progressWrap.style.display = "flex";
+    progressFill.style.width = `${Math.round((checked/boxes.length)*100)}%`;
+    progressLabel.textContent = `${checked} / ${boxes.length} done`;
+  }
+
   function renderSteps(text){
     const lines = text.split("\n").map(l=>l.replace(/^\s*[\d.\-•]+\s*/, "").trim()).filter(Boolean);
-    if(!lines.length){ outputBody.innerHTML = `<span class="empty">No steps generated.</span>`; return; }
+    if(!lines.length){ outputBody.innerHTML = `<span class="empty">No steps generated.</span>`; progressWrap.style.display = "none"; return; }
     outputBody.innerHTML = `<div style="display:flex;flex-direction:column;gap:8px;">${lines.map((l)=>`
       <label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;">
         <input type="checkbox" style="margin-top:4px; width:16px; height:16px; accent-color: var(--accent);">
         <span>${escapeHTML(l)}</span>
       </label>`).join("")}</div>`;
+    outputBody.querySelectorAll('input[type="checkbox"]').forEach(box=>{
+      box.addEventListener("change", updateStepProgress);
+    });
+    updateStepProgress();
+  }
+
+  function updateUndoRedoUI(){
+    undoBtn.disabled = !ctrl.canUndo();
+    redoBtn.disabled = !ctrl.canRedo();
   }
 
   async function run(){
     const task = input.value.trim();
-    if(!task){ input.focus(); return; }
+    if(!task){
+      input.classList.add("input-invalid");
+      showToast("Tell me what you need to get done first");
+      input.focus();
+      setTimeout(()=> input.classList.remove("input-invalid"), 1200);
+      return;
+    }
     errorSlot.innerHTML = "";
     runBtn.classList.add("loading");
     runBtn.disabled = true;
     outputPanel.style.display = "";
     outputBody.innerHTML = loadingHTML();
+    progressWrap.style.display = "none";
     document.getElementById("mt-src").textContent = "";
 
     try{
       const result = await mockAICall("todo", {task, spice: spiceVal}, {
         onToken: (partial)=> renderSteps(partial)
       });
+      if(lastRenderedText) ctrl.recordUndo(lastRenderedText);
       renderSteps(result.text);
+      lastRenderedText = result.text;
+      updateUndoRedoUI();
       ctrl.pushHistory(task, result.text, {spice: spiceVal});
       document.getElementById("mt-src").innerHTML = modelBadgeHTML(result);
       document.getElementById("mt-src").className = "src-badge" + (result.cached ? " cached" : "");
@@ -2059,8 +2717,23 @@ function initMagicTodo(tool){
   }
   runBtn.addEventListener("click", run);
 
+  undoBtn.addEventListener("click", ()=>{
+    if(!ctrl.canUndo()) return;
+    lastRenderedText = ctrl.undo(lastRenderedText);
+    renderSteps(lastRenderedText);
+    updateUndoRedoUI();
+  });
+  redoBtn.addEventListener("click", ()=>{
+    if(!ctrl.canRedo()) return;
+    lastRenderedText = ctrl.redo(lastRenderedText);
+    renderSteps(lastRenderedText);
+    updateUndoRedoUI();
+  });
+
   document.getElementById("mt-copy").addEventListener("click", ()=> copyToClipboard(outputBody.innerText));
   document.getElementById("mt-export").addEventListener("click", ()=> downloadText("magic-todo-steps.txt", outputBody.innerText));
+  document.getElementById("mt-share").addEventListener("click", ()=> shareText("Magic ToDo steps", outputBody.innerText));
+  document.getElementById("mt-print").addEventListener("click", ()=> printOutput("Magic ToDo steps", outputBody.innerText));
   document.getElementById("mt-fav").addEventListener("click", ()=>{
     toggleFavorite(tool.id);
     document.getElementById("mt-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
@@ -2070,6 +2743,7 @@ function initMagicTodo(tool){
     input.value = item.input;
     charcount.textContent = item.input.length;
     outputPanel.style.display = "";
+    lastRenderedText = item.output;
     renderSteps(item.output);
   };
 }
@@ -2111,15 +2785,17 @@ function buildTaskmasterView(tool){
         <h3 id="tm-progress-label">Step 1 of 1</h3>
         <div class="output-actions">
           <span class="src-badge" id="tm-timer-badge"></span>
+          <button class="icon-btn" id="tm-pause" title="Pause timer">${ICONS.clock}</button>
         </div>
       </div>
-      <div style="text-align:center; padding: 18px 10px 6px;">
+      <div style="text-align:center; padding: 18px 10px 6px;" aria-live="polite">
         <div id="tm-current-step" style="font-family:var(--font-display); font-size:22px; line-height:1.4; margin-bottom:20px;"></div>
         <div class="controls-row" style="justify-content:center;">
           <button class="btn btn-ghost" id="tm-prev">${ICONS.undo} Back</button>
           <button class="btn btn-primary" id="tm-done-step">${ICONS.check} Done, next step</button>
           <button class="btn btn-secondary" id="tm-skip">Skip</button>
         </div>
+        <p style="font-size:11.5px; color:var(--ink-faint); margin-top:12px;">Keyboard: <span class="kbd">Enter</span> done, <span class="kbd">←</span> back, <span class="kbd">S</span> skip</p>
       </div>
       <div style="height:6px; background:var(--bg-sunken); border-radius:4px; overflow:hidden; margin-top:10px;">
         <div id="tm-progress-bar" style="height:100%; width:0%; background:var(--accent); transition: width 0.3s var(--ease);"></div>
@@ -2155,6 +2831,8 @@ function initTaskmaster(tool){
   let stepIdx = 0;
   let timerInterval = null;
   let timerRemaining = 0;
+  let timerPaused = false;
+  const pauseBtn = document.getElementById("tm-pause");
 
 function populateSourceOptions(){
     const runs = (state.history["magic-todo"] || []);
@@ -2174,6 +2852,8 @@ function populateSourceOptions(){
   function stopTimer(){
     if(timerInterval){ clearInterval(timerInterval); timerInterval = null; }
     timerBadge.textContent = "";
+    timerPaused = false;
+    pauseBtn.classList.remove("active");
   }
 
   function startTimerForStep(){
@@ -2182,7 +2862,8 @@ function populateSourceOptions(){
     if(!seconds) return;
     timerRemaining = seconds;
     updateTimerBadge();
-timerInterval = setInterval(()=>{
+    timerInterval = setInterval(()=>{
+      if(timerPaused) return;
       timerRemaining--;
       updateTimerBadge();
       if(timerRemaining <= 0){
@@ -2192,9 +2873,16 @@ timerInterval = setInterval(()=>{
     }, 1000);
   }
   function updateTimerBadge(){
+    if(!timerInterval && !timerRemaining){ timerBadge.textContent = ""; return; }
     const m = Math.floor(timerRemaining/60), s = timerRemaining%60;
-    timerBadge.innerHTML = `<span class="sb-dot"></span>${m}:${String(s).padStart(2,"0")} left`;
+    timerBadge.innerHTML = `<span class="sb-dot"></span>${timerPaused ? "paused, " : ""}${m}:${String(s).padStart(2,"0")} left`;
   }
+  pauseBtn.addEventListener("click", ()=>{
+    if(!timerInterval && !timerRemaining) return;
+    timerPaused = !timerPaused;
+    pauseBtn.classList.toggle("active", timerPaused);
+    updateTimerBadge();
+  });
 
   function renderStep(){
     if(stepIdx >= steps.length){
@@ -2217,7 +2905,9 @@ timerInterval = setInterval(()=>{
       steps = parseSteps(manualInput.value);
     }
     if(!steps.length){
-      showToast("Add at least one step first");
+      manualInput.classList.add("input-invalid");
+      showToast("Add at least one step, pick a Magic ToDo list, or paste your own");
+      setTimeout(()=> manualInput.classList.remove("input-invalid"), 1200);
       return;
     }
     stepIdx = 0;
@@ -2236,6 +2926,15 @@ timerInterval = setInterval(()=>{
     startPanel.style.display = "";
     populateSourceOptions();
   });
+
+  document.addEventListener("keydown", e=>{
+    if(!document.getElementById(`view-${tool.id}`)?.classList.contains("active")) return;
+    if(focusPanel.style.display === "none") return;
+    if(document.activeElement && ["INPUT","TEXTAREA","SELECT"].includes(document.activeElement.tagName)) return;
+    if(e.key === "Enter"){ e.preventDefault(); stepIdx++; renderStep(); }
+    else if(e.key === "ArrowLeft"){ e.preventDefault(); stepIdx = Math.max(0, stepIdx-1); renderStep(); }
+    else if(e.key.toLowerCase() === "s"){ e.preventDefault(); stepIdx++; renderStep(); }
+  });
 }
 
 /* ============================================================
@@ -2247,6 +2946,12 @@ const FORMALIZER_MODES = [
 ];
 
 function buildFormalizerView(tool){
+  const presets = [
+    "Hey can you send me that file when you get a chance",
+    "I need this done by tomorrow, no exceptions",
+    "Sorry for the late reply, been super busy",
+    "Thanks so much for your help with this!"
+  ];
   const body = `
     <div class="panel">
       <div class="field-label"><span>Your text</span><span class="char-count" id="fz-charcount">0</span></div>
@@ -2254,6 +2959,7 @@ function buildFormalizerView(tool){
         <textarea id="fz-input" class="gob-input" placeholder="Paste or type what you want to rephrase…" maxlength="4000"></textarea>
         <button class="mic-btn" id="fz-mic" aria-label="Use voice input" title="Voice input">${ICONS.mic}</button>
       </div>
+      <div class="preset-row">${presets.map(p=>`<button type="button" class="preset-chip" data-preset="${escapeHTML(p)}">${escapeHTML(p.slice(0,28))}${p.length>28?"…":""}</button>`).join("")}</div>
       <div class="controls-row">
         <span style="font-size:13px;color:var(--ink-soft);">Make my text:</span>
         <div class="select-wrap">
@@ -2274,6 +2980,8 @@ function buildFormalizerView(tool){
           <button class="icon-btn" id="fz-redo" title="Redo" disabled>${ICONS.redo}</button>
           <button class="icon-btn" id="fz-fav" title="Favorite this tool">${ICONS.starOutline}</button>
           <button class="icon-btn" id="fz-copy" title="Copy">${ICONS.copy}</button>
+          <button class="icon-btn" id="fz-share" title="Share">${ICONS.share}</button>
+          <button class="icon-btn" id="fz-print" title="Print">${ICONS.print}</button>
           <button class="icon-btn" id="fz-export" title="Export as text">${ICONS.download}</button>
         </div>
       </div>
@@ -2299,7 +3007,14 @@ function initFormalizer(tool){
   document.getElementById("fz-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
   let history_undo = [], history_redo = [];
 
-  bindHelp(tool, `Type or paste any text, choose a tone, and Formalizer rewrites it for you, professional for a tricky email, casual for a text to a friend, or diplomatic when you need to soften something.`);
+  bindHelp(tool, `Type or paste any text, choose a tone, and Formalizer rewrites it for you, professional for a tricky email, casual for a text to a friend, or diplomatic when you need to soften something. Try a preset below to see it in action.`);
+
+  document.querySelector(`#view-${tool.id} .preset-row`).addEventListener("click", e=>{
+    const chip = e.target.closest("[data-preset]"); if(!chip) return;
+    input.value = chip.dataset.preset;
+    input.dispatchEvent(new Event("input"));
+    input.focus();
+  });
 
   spiceGroup.addEventListener("click", e=>{
     const btn = e.target.closest("button"); if(!btn) return;
@@ -2313,7 +3028,13 @@ function initFormalizer(tool){
 
   async function run(){
     const text = input.value.trim();
-    if(!text){ input.focus(); return; }
+    if(!text){
+      input.classList.add("input-invalid");
+      showToast("Add some text to convert first");
+      input.focus();
+      setTimeout(()=> input.classList.remove("input-invalid"), 1200);
+      return;
+    }
     errorSlot.innerHTML = "";
     runBtn.classList.add("loading"); runBtn.disabled = true;
     outputPanel.style.display = "";
@@ -2357,6 +3078,8 @@ function initFormalizer(tool){
   });
   document.getElementById("fz-copy").addEventListener("click", ()=> copyToClipboard(outputBody.textContent));
   document.getElementById("fz-export").addEventListener("click", ()=> downloadText("formalizer-output.txt", outputBody.textContent));
+  document.getElementById("fz-share").addEventListener("click", ()=> shareText("Formalizer output", outputBody.textContent));
+  document.getElementById("fz-print").addEventListener("click", ()=> printOutput("Formalizer output", outputBody.textContent));
   document.getElementById("fz-fav").addEventListener("click", ()=>{
     toggleFavorite(tool.id);
     document.getElementById("fz-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
@@ -2392,8 +3115,12 @@ function buildJudgeView(tool){
         <h3 id="jg-output-title">Your text comes across as…</h3>
         <div class="output-actions">
           <span class="src-badge" id="jg-src"></span>
+          <button class="icon-btn" id="jg-undo" title="Undo" disabled>${ICONS.undo}</button>
+          <button class="icon-btn" id="jg-redo" title="Redo" disabled>${ICONS.redo}</button>
           <button class="icon-btn" id="jg-fav" title="Favorite this tool">${ICONS.starOutline}</button>
           <button class="icon-btn" id="jg-copy" title="Copy">${ICONS.copy}</button>
+          <button class="icon-btn" id="jg-share" title="Share">${ICONS.share}</button>
+          <button class="icon-btn" id="jg-print" title="Print">${ICONS.print}</button>
           <button class="icon-btn" id="jg-export" title="Export as text">${ICONS.download}</button>
         </div>
       </div>
@@ -2415,11 +3142,19 @@ function initJudge(tool){
   const outputTitle = document.getElementById("jg-output-title");
   const errorSlot = document.getElementById("jg-error-slot");
   const charcount = document.getElementById("jg-charcount");
+  const undoBtn = document.getElementById("jg-undo");
+  const redoBtn = document.getElementById("jg-redo");
   let spiceVal = state.settings.defaultSpice;
+  let lastText = "";
   updateSpiceGroupUI(spiceGroup, spiceVal);
   document.getElementById("jg-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
 
   bindHelp(tool, `Paste any message you're second-guessing. The Judge reads it the way a stranger might and tells you honestly how the tone comes across, or if you tap "Suggest a response," drafts a reply in the same conversation.`);
+
+  function updateUndoRedoUI(){
+    undoBtn.disabled = !ctrl.canUndo();
+    redoBtn.disabled = !ctrl.canRedo();
+  }
 
   spiceGroup.addEventListener("click", e=>{
     const btn = e.target.closest("button"); if(!btn) return;
@@ -2433,7 +3168,13 @@ function initJudge(tool){
 
   async function run(mode){
     const text = input.value.trim();
-    if(!text){ input.focus(); return; }
+    if(!text){
+      input.classList.add("input-invalid");
+      showToast("Paste in some text to check first");
+      input.focus();
+      setTimeout(()=> input.classList.remove("input-invalid"), 1200);
+      return;
+    }
     errorSlot.innerHTML = "";
     const activeBtn = mode === "judge" ? runBtn : suggestBtn;
     activeBtn.classList.add("loading"); activeBtn.disabled = true;
@@ -2446,7 +3187,10 @@ function initJudge(tool){
       const result = await mockAICall("judge", {text, mode, spice: spiceVal}, {
         onToken: partial => outputBody.textContent = partial
       });
+      if(lastText) ctrl.recordUndo(lastText);
       outputBody.textContent = result.text;
+      lastText = result.text;
+      updateUndoRedoUI();
       ctrl.pushHistory(text, result.text, {mode, spice: spiceVal});
       document.getElementById("jg-src").innerHTML = modelBadgeHTML(result);
       document.getElementById("jg-src").className = "src-badge" + (result.cached ? " cached" : "");
@@ -2461,8 +3205,23 @@ function initJudge(tool){
 runBtn.addEventListener("click", ()=>run("judge"));
   suggestBtn.addEventListener("click", ()=>run("suggest"));
 
+  undoBtn.addEventListener("click", ()=>{
+    if(!ctrl.canUndo()) return;
+    lastText = ctrl.undo(lastText);
+    outputBody.textContent = lastText;
+    updateUndoRedoUI();
+  });
+  redoBtn.addEventListener("click", ()=>{
+    if(!ctrl.canRedo()) return;
+    lastText = ctrl.redo(lastText);
+    outputBody.textContent = lastText;
+    updateUndoRedoUI();
+  });
+
   document.getElementById("jg-copy").addEventListener("click", ()=> copyToClipboard(outputBody.textContent));
   document.getElementById("jg-export").addEventListener("click", ()=> downloadText("judge-output.txt", outputBody.textContent));
+  document.getElementById("jg-share").addEventListener("click", ()=> shareText("The Judge output", outputBody.textContent));
+  document.getElementById("jg-print").addEventListener("click", ()=> printOutput("The Judge output", outputBody.textContent));
   document.getElementById("jg-fav").addEventListener("click", ()=>{
     toggleFavorite(tool.id);
     document.getElementById("jg-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
@@ -2473,6 +3232,7 @@ runBtn.addEventListener("click", ()=>run("judge"));
     outputPanel.style.display = "";
     outputTitle.textContent = item.meta?.mode === "suggest" ? "Suggested response" : "Your text comes across as…";
     outputBody.textContent = item.output;
+    lastText = item.output;
   };
 }
 
@@ -2482,6 +3242,7 @@ runBtn.addEventListener("click", ()=>run("judge"));
 const PROFESSOR_STYLES = ["Explain like I'm new to this", "Explain with an analogy", "Explain like a quick reference", "Explain the history / why it exists"];
 
 function buildProfessorView(tool){
+  const presets = ["How does compound interest work?", "What is a VPN?", "Why does the sky turn red at sunset?", "How do vaccines work?"];
   const body = `
     <div class="panel">
       <div class="field-label"><span>What do you want explained?</span><span class="char-count" id="pf-charcount">0</span></div>
@@ -2489,6 +3250,7 @@ function buildProfessorView(tool){
         <input type="text" id="pf-input" class="gob-input-line" placeholder="e.g. How does compound interest work?" maxlength="300" autocomplete="off">
         <button class="mic-btn" id="pf-mic" aria-label="Use voice input" title="Voice input">${ICONS.mic}</button>
       </div>
+      <div class="preset-row">${presets.map(p=>`<button type="button" class="preset-chip" data-preset="${escapeHTML(p)}">${escapeHTML(p)}</button>`).join("")}</div>
       <div class="controls-row">
         <div class="select-wrap">
           <select class="gob-select" id="pf-style">
@@ -2506,6 +3268,8 @@ function buildProfessorView(tool){
           <span class="src-badge" id="pf-src"></span>
           <button class="icon-btn" id="pf-fav" title="Favorite this tool">${ICONS.starOutline}</button>
           <button class="icon-btn" id="pf-copy" title="Copy">${ICONS.copy}</button>
+          <button class="icon-btn" id="pf-share" title="Share">${ICONS.share}</button>
+          <button class="icon-btn" id="pf-print" title="Print">${ICONS.print}</button>
           <button class="icon-btn" id="pf-export" title="Export as text">${ICONS.download}</button>
         </div>
       </div>
@@ -2538,6 +3302,13 @@ function initProfessor(tool){
 
   bindHelp(tool, `Ask about anything, a concept, a term, a process, and The Professor gives a plain-language crash course. Choose a style, adjust the depth, and ask follow-up questions right in the same thread.`);
 
+  document.querySelector(`#view-${tool.id} .preset-row`).addEventListener("click", e=>{
+    const chip = e.target.closest("[data-preset]"); if(!chip) return;
+    input.value = chip.dataset.preset;
+    input.dispatchEvent(new Event("input"));
+    input.focus();
+  });
+
   spiceGroup.addEventListener("click", e=>{
     const btn = e.target.closest("button"); if(!btn) return;
     spiceVal = parseInt(btn.dataset.val,10);
@@ -2548,7 +3319,13 @@ function initProfessor(tool){
 
   async function run(){
     const topic = input.value.trim();
-    if(!topic){ input.focus(); return; }
+    if(!topic){
+      input.classList.add("input-invalid");
+      showToast("Tell me what to explain first");
+      input.focus();
+      setTimeout(()=> input.classList.remove("input-invalid"), 1200);
+      return;
+    }
     errorSlot.innerHTML = "";
     runBtn.classList.add("loading"); runBtn.disabled = true;
     outputPanel.style.display = "";
@@ -2600,6 +3377,8 @@ async function askFollowup(){
 
   document.getElementById("pf-copy").addEventListener("click", ()=> copyToClipboard(outputBody.textContent));
   document.getElementById("pf-export").addEventListener("click", ()=> downloadText("professor-explanation.txt", outputBody.textContent));
+  document.getElementById("pf-share").addEventListener("click", ()=> shareText("The Professor explanation", outputBody.textContent));
+  document.getElementById("pf-print").addEventListener("click", ()=> printOutput("The Professor explanation", outputBody.textContent));
   document.getElementById("pf-fav").addEventListener("click", ()=>{
     toggleFavorite(tool.id);
     document.getElementById("pf-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
@@ -3240,6 +4019,7 @@ function boot(){
   updateFavBtnIcon();
   initSettingsUI();
   initGoblinPersona();
+  bindFooterLinks();
   if(state.settings.reduceMotion){ document.documentElement.style.setProperty("--ease","linear"); }
   if(state.settings.compact){ document.body.style.fontSize = "14.5px"; }
 
