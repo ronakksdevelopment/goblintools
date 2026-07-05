@@ -3298,6 +3298,8 @@ function buildProfessorView(tool){
         <h3>Explanation</h3>
         <div class="output-actions">
           <span class="src-badge" id="pf-src"></span>
+          <button class="icon-btn" id="pf-undo" title="Undo" disabled>${ICONS.undo}</button>
+          <button class="icon-btn" id="pf-redo" title="Redo" disabled>${ICONS.redo}</button>
           <button class="icon-btn" id="pf-fav" title="Favorite this tool">${ICONS.starOutline}</button>
           <button class="icon-btn" id="pf-copy" title="Copy">${ICONS.copy}</button>
           <button class="icon-btn" id="pf-share" title="Share">${ICONS.share}</button>
@@ -3328,11 +3330,19 @@ function initProfessor(tool){
   const charcount = document.getElementById("pf-charcount");
   const followupInput = document.getElementById("pf-followup");
   const followupBtn = document.getElementById("pf-followup-btn");
+  const undoBtn = document.getElementById("pf-undo");
+  const redoBtn = document.getElementById("pf-redo");
   let spiceVal = state.settings.defaultSpice;
+  let lastText = "";
   updateSpiceGroupUI(spiceGroup, spiceVal);
   document.getElementById("pf-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
 
   bindHelp(tool, `Ask about anything, a concept, a term, a process, and The Professor gives a plain-language crash course. Choose a style, adjust the depth, and ask follow-up questions right in the same thread.`);
+
+  function updateUndoRedoUI(){
+    undoBtn.disabled = !ctrl.canUndo();
+    redoBtn.disabled = !ctrl.canRedo();
+  }
 
   document.querySelector(`#view-${tool.id} .preset-row`).addEventListener("click", e=>{
     const chip = e.target.closest("[data-preset]"); if(!chip) return;
@@ -3369,7 +3379,10 @@ function initProfessor(tool){
       const result = await mockAICall("professor", {topic, style, spice: spiceVal}, {
         onToken: partial => outputBody.textContent = partial
       });
+      if(lastText) ctrl.recordUndo(lastText);
       outputBody.textContent = result.text;
+      lastText = result.text;
+      updateUndoRedoUI();
       ctrl.pushHistory(topic, result.text, {style, spice: spiceVal});
       document.getElementById("pf-src").innerHTML = modelBadgeHTML(result);
       document.getElementById("pf-src").className = "src-badge" + (result.cached ? " cached" : "");
@@ -3383,18 +3396,34 @@ function initProfessor(tool){
   }
   runBtn.addEventListener("click", run);
 
+  undoBtn.addEventListener("click", ()=>{
+    if(!ctrl.canUndo()) return;
+    lastText = ctrl.undo(lastText);
+    outputBody.textContent = lastText;
+    updateUndoRedoUI();
+  });
+  redoBtn.addEventListener("click", ()=>{
+    if(!ctrl.canRedo()) return;
+    lastText = ctrl.redo(lastText);
+    outputBody.textContent = lastText;
+    updateUndoRedoUI();
+  });
+
 async function askFollowup(){
     if(followupBtn.disabled) return;
     const q = followupInput.value.trim();
     if(!q) return;
     followupBtn.disabled = true;
     const prevText = outputBody.textContent;
+    ctrl.recordUndo(prevText);
     outputBody.textContent = prevText + "\n\n> " + q + "\n";
     try{
       const result = await mockAICall("professor", {topic: q, style: styleSel.value, spice: spiceVal}, {
         onToken: partial => outputBody.textContent = prevText + "\n\n> " + q + "\n" + partial
       });
       outputBody.textContent = prevText + "\n\n> " + q + "\n" + result.text;
+      lastText = outputBody.textContent;
+      updateUndoRedoUI();
       followupInput.value = "";
     }catch(err){
       showToast("Follow-up failed, try again");
@@ -3421,6 +3450,8 @@ async function askFollowup(){
     if(item.meta?.style) styleSel.value = item.meta.style;
     outputPanel.style.display = "";
     outputBody.textContent = item.output;
+    lastText = item.output;
+    updateUndoRedoUI();
   };
 }
 
@@ -3428,6 +3459,7 @@ async function askFollowup(){
    TOOL 6: THE CONSULTANT
    ============================================================ */
 function buildConsultantView(tool){
+  const presets = ["Should I switch jobs this year?", "Should I move to a new city?", "Should I buy or keep renting?", "Should I go back to school?"];
   const body = `
     <div class="panel">
       <div class="field-label"><span>What decision are you weighing?</span><span class="char-count" id="cn-charcount">0</span></div>
@@ -3435,6 +3467,7 @@ function buildConsultantView(tool){
         <textarea id="cn-input" class="gob-input" placeholder="e.g. Should I switch from a standing desk back to sitting?" maxlength="1000"></textarea>
         <button class="mic-btn" id="cn-mic" aria-label="Use voice input" title="Voice input">${ICONS.mic}</button>
       </div>
+      <div class="preset-row">${presets.map(p=>`<button type="button" class="preset-chip" data-preset="${escapeHTML(p)}">${escapeHTML(p)}</button>`).join("")}</div>
       <div class="field-label" style="margin-top:14px;"><span>Anything specific to weigh in? (optional)</span></div>
       <input type="text" id="cn-context" class="gob-input-line" placeholder="e.g. I have chronic back pain and a small apartment">
       <div class="controls-row">
@@ -3447,8 +3480,12 @@ function buildConsultantView(tool){
         <h3>Pros, cons, and a call</h3>
         <div class="output-actions">
           <span class="src-badge" id="cn-src"></span>
+          <button class="icon-btn" id="cn-undo" title="Undo" disabled>${ICONS.undo}</button>
+          <button class="icon-btn" id="cn-redo" title="Redo" disabled>${ICONS.redo}</button>
           <button class="icon-btn" id="cn-fav" title="Favorite this tool">${ICONS.starOutline}</button>
           <button class="icon-btn" id="cn-copy" title="Copy">${ICONS.copy}</button>
+          <button class="icon-btn" id="cn-share" title="Share">${ICONS.share}</button>
+          <button class="icon-btn" id="cn-print" title="Print">${ICONS.print}</button>
           <button class="icon-btn" id="cn-export" title="Export as text">${ICONS.download}</button>
         </div>
       </div>
@@ -3469,11 +3506,26 @@ function initConsultant(tool){
   const outputBody = document.getElementById("cn-output-body");
   const errorSlot = document.getElementById("cn-error-slot");
   const charcount = document.getElementById("cn-charcount");
+  const undoBtn = document.getElementById("cn-undo");
+  const redoBtn = document.getElementById("cn-redo");
   let spiceVal = state.settings.defaultSpice;
+  let lastText = "";
   updateSpiceGroupUI(spiceGroup, spiceVal);
   document.getElementById("cn-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
 
   bindHelp(tool, `Describe a decision you're stuck on. The Consultant lays out genuine pros and cons, not just a list, a clear-eyed weigh-up, and gives you a lightly-held recommendation. It's a thinking partner, not the final word.`);
+
+  function updateUndoRedoUI(){
+    undoBtn.disabled = !ctrl.canUndo();
+    redoBtn.disabled = !ctrl.canRedo();
+  }
+
+  document.querySelector(`#view-${tool.id} .preset-row`).addEventListener("click", e=>{
+    const chip = e.target.closest("[data-preset]"); if(!chip) return;
+    input.value = chip.dataset.preset;
+    input.dispatchEvent(new Event("input"));
+    input.focus();
+  });
 
   spiceGroup.addEventListener("click", e=>{
     const btn = e.target.closest("button"); if(!btn) return;
@@ -3481,10 +3533,19 @@ function initConsultant(tool){
     updateSpiceGroupUI(spiceGroup, spiceVal);
   });
   input.addEventListener("input", ()=> charcount.textContent = input.value.length);
+  document.addEventListener("keydown", e=>{
+    if((e.metaKey||e.ctrlKey) && e.key === "Enter" && document.getElementById("view-consultant")?.classList.contains("active")) run();
+  });
 
   async function run(){
     const decision = input.value.trim();
-    if(!decision){ input.focus(); return; }
+    if(!decision){
+      input.classList.add("input-invalid");
+      showToast("Describe the decision you're weighing first");
+      input.focus();
+      setTimeout(()=> input.classList.remove("input-invalid"), 1200);
+      return;
+    }
     errorSlot.innerHTML = "";
     runBtn.classList.add("loading"); runBtn.disabled = true;
     outputPanel.style.display = "";
@@ -3496,7 +3557,10 @@ function initConsultant(tool){
       const result = await mockAICall("consultant", {decision, extra, spice: spiceVal}, {
         onToken: partial => outputBody.textContent = partial
       });
+      if(lastText) ctrl.recordUndo(lastText);
       outputBody.textContent = result.text;
+      lastText = result.text;
+      updateUndoRedoUI();
       ctrl.pushHistory(decision, result.text, {spice: spiceVal, context: extra});
       document.getElementById("cn-src").innerHTML = modelBadgeHTML(result);
       document.getElementById("cn-src").className = "src-badge" + (result.cached ? " cached" : "");
@@ -3510,8 +3574,23 @@ function initConsultant(tool){
   }
   runBtn.addEventListener("click", run);
 
+  undoBtn.addEventListener("click", ()=>{
+    if(!ctrl.canUndo()) return;
+    lastText = ctrl.undo(lastText);
+    outputBody.textContent = lastText;
+    updateUndoRedoUI();
+  });
+  redoBtn.addEventListener("click", ()=>{
+    if(!ctrl.canRedo()) return;
+    lastText = ctrl.redo(lastText);
+    outputBody.textContent = lastText;
+    updateUndoRedoUI();
+  });
+
   document.getElementById("cn-copy").addEventListener("click", ()=> copyToClipboard(outputBody.textContent));
   document.getElementById("cn-export").addEventListener("click", ()=> downloadText("consultant-output.txt", outputBody.textContent));
+  document.getElementById("cn-share").addEventListener("click", ()=> shareText("The Consultant output", outputBody.textContent));
+  document.getElementById("cn-print").addEventListener("click", ()=> printOutput("The Consultant output", outputBody.textContent));
   document.getElementById("cn-fav").addEventListener("click", ()=>{
     toggleFavorite(tool.id);
     document.getElementById("cn-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
@@ -3522,6 +3601,8 @@ function initConsultant(tool){
     if(item.meta?.context) contextInput.value = item.meta.context;
     outputPanel.style.display = "";
     outputBody.textContent = item.output;
+    lastText = item.output;
+    updateUndoRedoUI();
   };
 }
 
@@ -3529,6 +3610,7 @@ function initConsultant(tool){
    TOOL 7: ESTIMATOR
    ============================================================ */
 function buildEstimatorView(tool){
+  const presets = ["Repainting the spare room", "Deep cleaning the fridge", "Writing a cover letter", "Setting up a new laptop"];
   const body = `
     <div class="panel">
       <div class="field-label"><span>What's the task?</span><span class="char-count" id="es-charcount">0</span></div>
@@ -3536,6 +3618,7 @@ function buildEstimatorView(tool){
         <input type="text" id="es-input" class="gob-input-line" placeholder="e.g. Repainting the spare room" maxlength="300" autocomplete="off">
         <button class="mic-btn" id="es-mic" aria-label="Use voice input" title="Voice input">${ICONS.mic}</button>
       </div>
+      <div class="preset-row">${presets.map(p=>`<button type="button" class="preset-chip" data-preset="${escapeHTML(p)}">${escapeHTML(p)}</button>`).join("")}</div>
       <div class="controls-row">
         <button class="btn btn-primary" id="es-run"><span class="spinner"></span><span class="btn-label">${ICONS.clock} Estimate time</span></button>
         ${spiceGroupHTML("es-spice")}
@@ -3546,8 +3629,12 @@ function buildEstimatorView(tool){
         <h3>Time estimate</h3>
         <div class="output-actions">
           <span class="src-badge" id="es-src"></span>
+          <button class="icon-btn" id="es-undo" title="Undo" disabled>${ICONS.undo}</button>
+          <button class="icon-btn" id="es-redo" title="Redo" disabled>${ICONS.redo}</button>
           <button class="icon-btn" id="es-fav" title="Favorite this tool">${ICONS.starOutline}</button>
           <button class="icon-btn" id="es-copy" title="Copy">${ICONS.copy}</button>
+          <button class="icon-btn" id="es-share" title="Share">${ICONS.share}</button>
+          <button class="icon-btn" id="es-print" title="Print">${ICONS.print}</button>
           <button class="icon-btn" id="es-export" title="Export as text">${ICONS.download}</button>
         </div>
       </div>
@@ -3567,11 +3654,26 @@ function initEstimator(tool){
   const outputBody = document.getElementById("es-output-body");
   const errorSlot = document.getElementById("es-error-slot");
   const charcount = document.getElementById("es-charcount");
+  const undoBtn = document.getElementById("es-undo");
+  const redoBtn = document.getElementById("es-redo");
   let spiceVal = state.settings.defaultSpice;
+  let lastText = "";
   updateSpiceGroupUI(spiceGroup, spiceVal);
   document.getElementById("es-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
 
   bindHelp(tool, `Describe a task, chore, or errand and Estimator gives you a realistic time range, including the setup and wind down most people forget to account for. Turn up the depth for a wider, more cautious range.`);
+
+  function updateUndoRedoUI(){
+    undoBtn.disabled = !ctrl.canUndo();
+    redoBtn.disabled = !ctrl.canRedo();
+  }
+
+  document.querySelector(`#view-${tool.id} .preset-row`).addEventListener("click", e=>{
+    const chip = e.target.closest("[data-preset]"); if(!chip) return;
+    input.value = chip.dataset.preset;
+    input.dispatchEvent(new Event("input"));
+    input.focus();
+  });
 
   spiceGroup.addEventListener("click", e=>{
     const btn = e.target.closest("button"); if(!btn) return;
@@ -3580,10 +3682,19 @@ function initEstimator(tool){
   });
   input.addEventListener("input", ()=> charcount.textContent = input.value.length);
   input.addEventListener("keydown", e=>{ if(e.key === "Enter") run(); });
+  document.addEventListener("keydown", e=>{
+    if((e.metaKey||e.ctrlKey) && e.key === "Enter" && document.getElementById("view-estimator")?.classList.contains("active")) run();
+  });
 
   async function run(){
     const task = input.value.trim();
-    if(!task){ input.focus(); return; }
+    if(!task){
+      input.classList.add("input-invalid");
+      showToast("Tell me what task to estimate first");
+      input.focus();
+      setTimeout(()=> input.classList.remove("input-invalid"), 1200);
+      return;
+    }
     errorSlot.innerHTML = "";
     runBtn.classList.add("loading"); runBtn.disabled = true;
     outputPanel.style.display = "";
@@ -3594,7 +3705,10 @@ function initEstimator(tool){
       const result = await mockAICall("estimator", {task, spice: spiceVal}, {
         onToken: partial => outputBody.textContent = partial
       });
+      if(lastText) ctrl.recordUndo(lastText);
       outputBody.textContent = result.text;
+      lastText = result.text;
+      updateUndoRedoUI();
       ctrl.pushHistory(task, result.text, {spice: spiceVal});
       document.getElementById("es-src").innerHTML = modelBadgeHTML(result);
       document.getElementById("es-src").className = "src-badge" + (result.cached ? " cached" : "");
@@ -3608,8 +3722,23 @@ function initEstimator(tool){
   }
   runBtn.addEventListener("click", run);
 
+  undoBtn.addEventListener("click", ()=>{
+    if(!ctrl.canUndo()) return;
+    lastText = ctrl.undo(lastText);
+    outputBody.textContent = lastText;
+    updateUndoRedoUI();
+  });
+  redoBtn.addEventListener("click", ()=>{
+    if(!ctrl.canRedo()) return;
+    lastText = ctrl.redo(lastText);
+    outputBody.textContent = lastText;
+    updateUndoRedoUI();
+  });
+
   document.getElementById("es-copy").addEventListener("click", ()=> copyToClipboard(outputBody.textContent));
   document.getElementById("es-export").addEventListener("click", ()=> downloadText("estimator-output.txt", outputBody.textContent));
+  document.getElementById("es-share").addEventListener("click", ()=> shareText("Estimator output", outputBody.textContent));
+  document.getElementById("es-print").addEventListener("click", ()=> printOutput("Estimator output", outputBody.textContent));
   document.getElementById("es-fav").addEventListener("click", ()=>{
     toggleFavorite(tool.id);
     document.getElementById("es-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
@@ -3619,6 +3748,8 @@ function initEstimator(tool){
     input.value = item.input; charcount.textContent = item.input.length;
     outputPanel.style.display = "";
     outputBody.textContent = item.output;
+    lastText = item.output;
+    updateUndoRedoUI();
   };
 }
 
@@ -3626,6 +3757,11 @@ function initEstimator(tool){
    TOOL 8: COMPILER
    ============================================================ */
 function buildCompilerView(tool){
+  const presets = [
+    "so much to do this week, dentist thurs, need to email landlord, mom's bday coming up, laundry piling up, forgot to renew car insurance",
+    "work project due friday but half the slides are missing, also need to book flights before prices go up, gym membership renewal",
+    "so tired, groceries, need new phone case, texts I haven't replied to, that form I keep putting off"
+  ];
   const body = `
     <div class="panel">
       <div class="field-label"><span>Dump your thoughts here</span><span class="char-count" id="cp-charcount">0</span></div>
@@ -3633,6 +3769,7 @@ function buildCompilerView(tool){
         <textarea id="cp-input" class="gob-input" placeholder="Write out everything on your mind, in any order, no need to organize it…" maxlength="3000"></textarea>
         <button class="mic-btn" id="cp-mic" aria-label="Use voice input" title="Voice input">${ICONS.mic}</button>
       </div>
+      <div class="preset-row">${presets.map(p=>`<button type="button" class="preset-chip" data-preset="${escapeHTML(p)}">${escapeHTML(p.slice(0,32))}…</button>`).join("")}</div>
       <div class="controls-row">
         <button class="btn btn-primary" id="cp-run"><span class="spinner"></span><span class="btn-label">${ICONS.brain} Turn into actions</span></button>
         ${spiceGroupHTML("cp-spice")}
@@ -3643,8 +3780,12 @@ function buildCompilerView(tool){
         <h3>Action list</h3>
         <div class="output-actions">
           <span class="src-badge" id="cp-src"></span>
+          <button class="icon-btn" id="cp-undo" title="Undo" disabled>${ICONS.undo}</button>
+          <button class="icon-btn" id="cp-redo" title="Redo" disabled>${ICONS.redo}</button>
           <button class="icon-btn" id="cp-fav" title="Favorite this tool">${ICONS.starOutline}</button>
           <button class="icon-btn" id="cp-copy" title="Copy">${ICONS.copy}</button>
+          <button class="icon-btn" id="cp-share" title="Share">${ICONS.share}</button>
+          <button class="icon-btn" id="cp-print" title="Print">${ICONS.print}</button>
           <button class="icon-btn" id="cp-export" title="Export as text">${ICONS.download}</button>
         </div>
       </div>
@@ -3664,11 +3805,26 @@ function initCompiler(tool){
   const outputBody = document.getElementById("cp-output-body");
   const errorSlot = document.getElementById("cp-error-slot");
   const charcount = document.getElementById("cp-charcount");
+  const undoBtn = document.getElementById("cp-undo");
+  const redoBtn = document.getElementById("cp-redo");
   let spiceVal = state.settings.defaultSpice;
+  let lastText = "";
   updateSpiceGroupUI(spiceGroup, spiceVal);
   document.getElementById("cp-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
 
   bindHelp(tool, `Paste in a messy stream of thoughts, no structure needed, and Compiler sorts it into a clean, ordered list of actual next steps.`);
+
+  function updateUndoRedoUI(){
+    undoBtn.disabled = !ctrl.canUndo();
+    redoBtn.disabled = !ctrl.canRedo();
+  }
+
+  document.querySelector(`#view-${tool.id} .preset-row`).addEventListener("click", e=>{
+    const chip = e.target.closest("[data-preset]"); if(!chip) return;
+    input.value = chip.dataset.preset;
+    input.dispatchEvent(new Event("input"));
+    input.focus();
+  });
 
   spiceGroup.addEventListener("click", e=>{
     const btn = e.target.closest("button"); if(!btn) return;
@@ -3676,10 +3832,19 @@ function initCompiler(tool){
     updateSpiceGroupUI(spiceGroup, spiceVal);
   });
   input.addEventListener("input", ()=> charcount.textContent = input.value.length);
+  document.addEventListener("keydown", e=>{
+    if((e.metaKey||e.ctrlKey) && e.key === "Enter" && document.getElementById("view-compiler")?.classList.contains("active")) run();
+  });
 
   async function run(){
     const braindump = input.value.trim();
-    if(!braindump){ input.focus(); return; }
+    if(!braindump){
+      input.classList.add("input-invalid");
+      showToast("Add a braindump to compile first");
+      input.focus();
+      setTimeout(()=> input.classList.remove("input-invalid"), 1200);
+      return;
+    }
     errorSlot.innerHTML = "";
     runBtn.classList.add("loading"); runBtn.disabled = true;
     outputPanel.style.display = "";
@@ -3690,7 +3855,10 @@ function initCompiler(tool){
       const result = await mockAICall("compiler", {braindump, spice: spiceVal}, {
         onToken: partial => outputBody.textContent = partial
       });
+      if(lastText) ctrl.recordUndo(lastText);
       outputBody.textContent = result.text;
+      lastText = result.text;
+      updateUndoRedoUI();
       ctrl.pushHistory(braindump, result.text, {spice: spiceVal});
       document.getElementById("cp-src").innerHTML = modelBadgeHTML(result);
       document.getElementById("cp-src").className = "src-badge" + (result.cached ? " cached" : "");
@@ -3704,8 +3872,23 @@ function initCompiler(tool){
   }
   runBtn.addEventListener("click", run);
 
+  undoBtn.addEventListener("click", ()=>{
+    if(!ctrl.canUndo()) return;
+    lastText = ctrl.undo(lastText);
+    outputBody.textContent = lastText;
+    updateUndoRedoUI();
+  });
+  redoBtn.addEventListener("click", ()=>{
+    if(!ctrl.canRedo()) return;
+    lastText = ctrl.redo(lastText);
+    outputBody.textContent = lastText;
+    updateUndoRedoUI();
+  });
+
   document.getElementById("cp-copy").addEventListener("click", ()=> copyToClipboard(outputBody.textContent));
   document.getElementById("cp-export").addEventListener("click", ()=> downloadText("compiler-output.txt", outputBody.textContent));
+  document.getElementById("cp-share").addEventListener("click", ()=> shareText("Compiler action list", outputBody.textContent));
+  document.getElementById("cp-print").addEventListener("click", ()=> printOutput("Compiler action list", outputBody.textContent));
   document.getElementById("cp-fav").addEventListener("click", ()=>{
     toggleFavorite(tool.id);
     document.getElementById("cp-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
@@ -3715,6 +3898,8 @@ function initCompiler(tool){
     input.value = item.input; charcount.textContent = item.input.length;
     outputPanel.style.display = "";
     outputBody.textContent = item.output;
+    lastText = item.output;
+    updateUndoRedoUI();
   };
 }
 
