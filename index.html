@@ -1030,7 +1030,7 @@ function mockFormalizerOutput(text, mode){
 }
 
 function mockJudgeOutput(text, mode){
-if(mode === "suggest"){
+  if(mode === "suggest"){
     return `Thanks for sending this over, I've read it and wanted to reply directly. I think the core point comes through clearly, and I'm happy to move forward on this basis. Let me know if you'd like to talk it through further.`;
   }
   const readings = [
@@ -1699,7 +1699,7 @@ function relativeTime(ts){
 
 function copyToClipboard(text){
   if(!text) return;
-navigator.clipboard?.writeText(text).then(()=>{
+  navigator.clipboard?.writeText(text).then(()=>{
     showToast("Copied to clipboard", {icon: ICONS.copy});
   }).catch(()=>{
     showToast("Couldn't copy, try selecting manually");
@@ -2156,9 +2156,9 @@ function initTaskmaster(tool){
   let timerInterval = null;
   let timerRemaining = 0;
 
-  function populateSourceOptions(){
+function populateSourceOptions(){
     const runs = (state.history["magic-todo"] || []);
-   sourceSel.innerHTML = `<option value="">Use pasted list below</option>` +
+    sourceSel.innerHTML = `<option value="">Use pasted list below</option>` +
       runs.map((r,i)=> `<option value="${i}">${escapeHTML(r.input.slice(0,50))} (${relativeTime(r.ts)})</option>`).join("");
   }
   populateSourceOptions();
@@ -2182,10 +2182,10 @@ function initTaskmaster(tool){
     if(!seconds) return;
     timerRemaining = seconds;
     updateTimerBadge();
-    timerInterval = setInterval(()=>{
+timerInterval = setInterval(()=>{
       timerRemaining--;
       updateTimerBadge();
-if(timerRemaining <= 0){
+      if(timerRemaining <= 0){
         stopTimer();
         showToast("Time's up on this step, move on when ready", {icon: ICONS.clock});
       }
@@ -2291,7 +2291,7 @@ function initFormalizer(tool){
   const runBtn = document.getElementById("fz-run");
   const spiceGroup = document.getElementById("fz-spice");
   const outputPanel = document.getElementById("fz-output-panel");
- const outputBody = document.getElementById("fz-output-body");
+  const outputBody = document.getElementById("fz-output-body");
   const errorSlot = document.getElementById("fz-error-slot");
   const charcount = document.getElementById("fz-charcount");
   let spiceVal = state.settings.defaultSpice;
@@ -2357,7 +2357,7 @@ function initFormalizer(tool){
   });
   document.getElementById("fz-copy").addEventListener("click", ()=> copyToClipboard(outputBody.textContent));
   document.getElementById("fz-export").addEventListener("click", ()=> downloadText("formalizer-output.txt", outputBody.textContent));
- document.getElementById("fz-fav").addEventListener("click", ()=>{
+  document.getElementById("fz-fav").addEventListener("click", ()=>{
     toggleFavorite(tool.id);
     document.getElementById("fz-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
   });
@@ -2458,10 +2458,10 @@ function initJudge(tool){
       activeBtn.classList.remove("loading"); activeBtn.disabled = false;
     }
   }
-  runBtn.addEventListener("click", ()=>run("judge"));
+runBtn.addEventListener("click", ()=>run("judge"));
   suggestBtn.addEventListener("click", ()=>run("suggest"));
 
-document.getElementById("jg-copy").addEventListener("click", ()=> copyToClipboard(outputBody.textContent));
+  document.getElementById("jg-copy").addEventListener("click", ()=> copyToClipboard(outputBody.textContent));
   document.getElementById("jg-export").addEventListener("click", ()=> downloadText("judge-output.txt", outputBody.textContent));
   document.getElementById("jg-fav").addEventListener("click", ()=>{
     toggleFavorite(tool.id);
@@ -2574,12 +2574,12 @@ function initProfessor(tool){
   }
   runBtn.addEventListener("click", run);
 
-  async function askFollowup(){
+async function askFollowup(){
     if(followupBtn.disabled) return;
     const q = followupInput.value.trim();
     if(!q) return;
     followupBtn.disabled = true;
-const prevText = outputBody.textContent;
+    const prevText = outputBody.textContent;
     outputBody.textContent = prevText + "\n\n> " + q + "\n";
     try{
       const result = await mockAICall("professor", {topic: q, style: styleSel.value, spice: spiceVal}, {
@@ -2587,7 +2587,7 @@ const prevText = outputBody.textContent;
       });
       outputBody.textContent = prevText + "\n\n> " + q + "\n" + result.text;
       followupInput.value = "";
-}catch(err){
+    }catch(err){
       showToast("Follow-up failed, try again");
     }finally{
       followupBtn.disabled = false;
@@ -2600,7 +2600,7 @@ const prevText = outputBody.textContent;
 
   document.getElementById("pf-copy").addEventListener("click", ()=> copyToClipboard(outputBody.textContent));
   document.getElementById("pf-export").addEventListener("click", ()=> downloadText("professor-explanation.txt", outputBody.textContent));
-document.getElementById("pf-fav").addEventListener("click", ()=>{
+  document.getElementById("pf-fav").addEventListener("click", ()=>{
     toggleFavorite(tool.id);
     document.getElementById("pf-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
   });
@@ -3049,7 +3049,7 @@ function initToolView(tool){
 }
 
 /* ============================================================
-   GOBLIN PERSONA — tool-aware mock assistant
+   GOBLIN PERSONA, tool-aware mock assistant
    ============================================================ */
 const GOBLIN_LS_KEY = "goblin.persona.chat";
 
@@ -3169,7 +3169,7 @@ function initGoblinPersona(){
   document.getElementById("goblinFab").addEventListener("click", toggleGoblinPanel);
   document.getElementById("goblinCloseBtn").addEventListener("click", closeGoblinPanel);
 
-document.getElementById("goblinClearBtn").addEventListener("click", async ()=>{
+  document.getElementById("goblinClearBtn").addEventListener("click", async ()=>{
     if(!goblinState.messages.length) return;
     const ok = await showConfirm({
       title: "Clear this chat?",
@@ -3178,14 +3178,14 @@ document.getElementById("goblinClearBtn").addEventListener("click", async ()=>{
       tone: "neutral",
       icon: ICONS.goblin
     });
-    if(ok){
+if(ok){
       goblinState.messages = [];
       saveGoblinChat();
       renderGoblinMessages();
       renderGoblinSuggestions();
     }
   });
-   
+
   const textarea = document.getElementById("goblinInput");
   const sendBtn = document.getElementById("goblinSendBtn");
   function autoGrow(){ textarea.style.height = "auto"; textarea.style.height = Math.min(textarea.scrollHeight, 100) + "px"; }
