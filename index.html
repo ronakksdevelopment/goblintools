@@ -50,8 +50,8 @@
   --bg-raised:     #1E1B17;
   --bg-sunken:     #0E0C0A;
   --ink:           #FFFFFF;
-  --ink-soft:      #D4CCBC;
-  --ink-faint:     #93897A;
+  --ink-soft:      #E4DECF;
+  --ink-faint:     #A69C8C;
   --border:        #322E27;
   --border-strong: #423D33;
   --accent:        #6FA87F;
@@ -245,7 +245,7 @@ body:not(.using-mouse) :focus-visible{
   color: var(--accent); background: var(--accent-soft); padding:5px 10px; border-radius:20px; margin-bottom:16px;
 }
 .dash-eyebrow .dot{ width:6px; height:6px; border-radius:50%; background:var(--accent); }
-.dash-title{ font-size: clamp(32px, 5vw, 48px); line-height:1.05; margin-bottom:14px; color: var(--ink); }
+.dash-title{ font-size: clamp(32px, 5vw, 48px); line-height:1.05; margin-bottom:14px; color: var(--ink); font-weight:600; }
 .dash-title em{ font-style:italic; color: var(--accent); font-weight:500; }
 .dash-sub{ font-size:16.5px; color: var(--ink-soft); max-width:520px; }
 
@@ -266,8 +266,8 @@ body:not(.using-mouse) :focus-visible{
 
 .tool-grid{
   display:grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
 }
 .tool-card-shell{ display:flex; }
 .tool-card{
@@ -279,7 +279,8 @@ body:not(.using-mouse) :focus-visible{
   cursor:pointer;
   text-align:left;
   display:flex; flex-direction:column; gap:12px;
-  transition: transform 0.18s var(--ease), box-shadow 0.18s var(--ease), border-color 0.18s var(--ease);
+  min-height:172px;
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), border-color 0.2s var(--ease), background 0.2s var(--ease);
 }
 .tool-card:hover{ transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--border-strong); }
 .tool-card:focus-visible{ outline: 2.5px solid var(--focus-ring); outline-offset: 3px; }
@@ -302,11 +303,11 @@ body:not(.using-mouse) :focus-visible{
 .chip-new{ background:var(--clay); color:#fff; }
 .chip-soon{ background: var(--bg-sunken); color:var(--ink-faint); }
 .fav-toggle{
-  position:absolute; top:16px; right:16px; width:26px; height:26px; border-radius:7px;
+  position:absolute; top:16px; right:16px; width:30px; height:30px; border-radius:8px;
   display:flex; align-items:center; justify-content:center; background:transparent; border:none; cursor:pointer;
-  color: var(--border-strong); transition: color 0.15s var(--ease), transform 0.15s var(--ease);
+  color: var(--border-strong); transition: color 0.15s var(--ease), transform 0.15s var(--ease), background 0.15s var(--ease);
 }
-.fav-toggle:hover{ color: var(--clay); transform: scale(1.12); }
+.fav-toggle:hover{ color: var(--clay); background: var(--clay-soft); transform: scale(1.1); }
 .fav-toggle:focus-visible{ outline: 2px solid var(--focus-ring); outline-offset: 2px; }
 @media (max-width: 480px){
   .fav-toggle{ width:30px; height:30px; }
@@ -314,8 +315,8 @@ body:not(.using-mouse) :focus-visible{
 .fav-toggle.is-fav{ color: var(--clay); }
 .fav-toggle svg{ width:16px; height:16px; }
 
-@media (max-width: 980px){ .tool-grid{ grid-template-columns: repeat(2,1fr); } }
-@media (max-width: 620px){ .tool-grid{ grid-template-columns: 1fr; } .dash-wrap{ padding: 28px 18px 80px; } }
+@media (max-width: 860px){ .tool-grid{ grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media (max-width: 560px){ .tool-grid{ grid-template-columns: 1fr; } .dash-wrap{ padding: 28px 18px 80px; } }
 
 /* ============================================================
    TOOL VIEW SHELL
@@ -329,8 +330,11 @@ body:not(.using-mouse) :focus-visible{
   background: var(--tc-bg, var(--accent-soft));
 }
 .tool-head-icon svg{ width:24px; height:24px; color: var(--tc-fg, var(--accent)); }
-.tool-head h1{ font-size:27px; margin-bottom:4px; color: var(--ink); }
+.tool-head h1{ font-size:27px; margin-bottom:4px; color: var(--ink); font-weight:700; }
 .tool-head .tool-tagline{ color: var(--ink-soft); font-size:14.5px; }
+:root[data-theme="dark"] .tool-head h1{ color:#FFFFFF; }
+:root[data-theme="dark"] .dash-title{ color:#FFFFFF; }
+:root[data-theme="dark"] .tool-card h3{ color:#FFFFFF; }
 .tool-head-actions{ display:flex; gap:8px; flex-shrink:0; }
 
 .panel{
@@ -817,7 +821,7 @@ select.gob-select:focus{ border-color: var(--accent); }
           </button>
         </div>
 <button class="icon-btn" id="favBtn" aria-label="Favorites" title="Favorites">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="favBtnIcon"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.1 5 5.6 5c2 0 3.3 1 4.4 2.5C11.1 6 12.4 5 14.4 5c3.5 0 5.2 3.4 3.6 6.7C19.5 16.4 12 21 12 21z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="favBtnIcon"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.27 5.82 21 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
         </button>
       </div>
     </div>
@@ -827,9 +831,9 @@ select.gob-select:focus{ border-color: var(--accent); }
       <section class="view active" id="view-dashboard">
         <div class="dash-wrap">
           <div class="dash-hero">
-            <span class="dash-eyebrow"><span class="dot"></span> Free · Powered by open models</span>
+<span class="dash-eyebrow"><span class="dot"></span> Free, powered by open models</span>
             <h1 class="dash-title">Small tools for when<br>things feel <em>too big</em>.</h1>
-            <p class="dash-sub">Goblin AI breaks down tasks, softens hard words, and reads the room — so your brain doesn't have to do it alone.</p>
+            <p class="dash-sub">Goblin AI breaks down tasks, softens hard words, and reads the room, so your brain doesn't have to do it alone.</p>
             <div class="greeting-strip" id="greetingStrip"></div>
           </div>
 
@@ -1081,11 +1085,11 @@ async function mockAICall(kind, payload, opts={}){
 function mockPersonaReply(userText){
   const lower = userText.toLowerCase();
   const map = [
-    {kw:["start", "overwhelm", "big task", "where do i"], tool:"magic-todo", msg:"Sounds like Magic ToDo is the move here — hand it one task and it'll split it into small, doable steps."},
-    {kw:["email", "soften", "tone", "professional", "rewrite"], tool:"formalizer", msg:"Formalizer can rework the wording for you — pick a tone and it rewrites the whole thing."},
-    {kw:["come across", "misread", "reading this wrong", "harsh"], tool:"judge", msg:"The Judge is built exactly for this — paste the message in and it'll tell you honestly how it reads."},
+    {kw:["start", "overwhelm", "big task", "where do i"], tool:"magic-todo", msg:"Sounds like Magic ToDo is the move here. Hand it one task and it'll split it into small, doable steps."},
+    {kw:["email", "soften", "tone", "professional", "rewrite"], tool:"formalizer", msg:"Formalizer can rework the wording for you. Pick a tone and it rewrites the whole thing."},
+    {kw:["come across", "misread", "reading this wrong", "harsh"], tool:"judge", msg:"The Judge is built exactly for this. Paste the message in and it'll tell you honestly how it reads."},
     {kw:["focus", "one step", "distracted"], tool:"taskmaster", msg:"Taskmaster walks through a step list one item at a time with an optional timer — good for staying with just one thing."},
-    {kw:["explain", "what is", "how does", "learn"], tool:"professor", msg:"The Professor gives a plain-language crash course on pretty much anything — want me to send you there?"},
+    {kw:["explain", "what is", "how does", "learn"], tool:"professor", msg:"The Professor gives a plain-language crash course on pretty much anything. Want me to send you there?"},
     {kw:["decide", "pros and cons", "should i"], tool:"consultant", msg:"The Consultant lays out honest pros and cons for a decision like that, plus a lightly-held recommendation."},
     {kw:["how long", "estimate", "how much time"], tool:"estimator", msg:"Estimator can give you a realistic time range for that so it feels less like a guess."},
     {kw:["braindump", "messy thoughts", "brain dump", "so many thoughts"], tool:"compiler", msg:"Compiler takes a messy braindump and turns it into a clean list of actions."},
@@ -1909,8 +1913,9 @@ function initMagicTodo(tool){
   const charcount = document.getElementById("mt-charcount");
   let spiceVal = state.settings.defaultSpice;
   updateSpiceGroupUI(spiceGroup, spiceVal);
+  document.getElementById("mt-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
 
-  bindHelp(tool, `Type in one task, however big or vague. Magic ToDo will split it into small, concrete, literally-doable steps — the kind you can check off in a few minutes each. Turn up the depth for more granular steps.`);
+  bindHelp(tool, `Type in one task, however big or vague. Magic ToDo will split it into small, concrete, literally-doable steps, the kind you can check off in a few minutes each. Turn up the depth for more granular steps.`);
 
   spiceGroup.addEventListener("click", e=>{
     const btn = e.target.closest("button"); if(!btn) return;
@@ -2052,7 +2057,7 @@ function initTaskmaster(tool){
   const progressBar = document.getElementById("tm-progress-bar");
   const timerBadge = document.getElementById("tm-timer-badge");
 
-  bindHelp(tool, `Taskmaster takes a step list — either one you generated with Magic ToDo, or one you paste in — and shows you exactly one step at a time, with an optional timer, so you're never staring at the whole list at once.`);
+  bindHelp(tool, `Taskmaster takes a step list, either one you generated with Magic ToDo or one you paste in, and shows you exactly one step at a time, with an optional timer, so you're never staring at the whole list at once.`);
 
   let steps = [];
   let stepIdx = 0;
@@ -2194,14 +2199,15 @@ function initFormalizer(tool){
   const runBtn = document.getElementById("fz-run");
   const spiceGroup = document.getElementById("fz-spice");
   const outputPanel = document.getElementById("fz-output-panel");
-  const outputBody = document.getElementById("fz-output-body");
+ const outputBody = document.getElementById("fz-output-body");
   const errorSlot = document.getElementById("fz-error-slot");
   const charcount = document.getElementById("fz-charcount");
   let spiceVal = state.settings.defaultSpice;
   updateSpiceGroupUI(spiceGroup, spiceVal);
+  document.getElementById("fz-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
   let history_undo = [], history_redo = [];
 
-  bindHelp(tool, `Type or paste any text, choose a tone, and Formalizer rewrites it for you — professional for a tricky email, casual for a text to a friend, or diplomatic when you need to soften something.`);
+  bindHelp(tool, `Type or paste any text, choose a tone, and Formalizer rewrites it for you, professional for a tricky email, casual for a text to a friend, or diplomatic when you need to soften something.`);
 
   spiceGroup.addEventListener("click", e=>{
     const btn = e.target.closest("button"); if(!btn) return;
@@ -2320,7 +2326,7 @@ function initJudge(tool){
   let spiceVal = state.settings.defaultSpice;
   updateSpiceGroupUI(spiceGroup, spiceVal);
 
-  bindHelp(tool, `Paste any message you're second-guessing. The Judge reads it the way a stranger might and tells you honestly how the tone comes across — or, if you tap "Suggest a response," drafts a reply in the same conversation.`);
+  bindHelp(tool, `Paste any message you're second-guessing. The Judge reads it the way a stranger might and tells you honestly how the tone comes across, or if you tap "Suggest a response," drafts a reply in the same conversation.`);
 
   spiceGroup.addEventListener("click", e=>{
     const btn = e.target.closest("button"); if(!btn) return;
@@ -2362,11 +2368,11 @@ function initJudge(tool){
   runBtn.addEventListener("click", ()=>run("judge"));
   suggestBtn.addEventListener("click", ()=>run("suggest"));
 
-  document.getElementById("jg-copy").addEventListener("click", ()=> copyToClipboard(outputBody.textContent));
+document.getElementById("jg-copy").addEventListener("click", ()=> copyToClipboard(outputBody.textContent));
   document.getElementById("jg-export").addEventListener("click", ()=> downloadText("judge-output.txt", outputBody.textContent));
-document.getElementById("pf-fav").addEventListener("click", ()=>{
+  document.getElementById("jg-fav").addEventListener("click", ()=>{
     toggleFavorite(tool.id);
-    document.getElementById("pf-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
+    document.getElementById("jg-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
   });
 
   window["restoreToolResult_judge"] = (item)=>{
@@ -2435,8 +2441,9 @@ function initProfessor(tool){
   const followupBtn = document.getElementById("pf-followup-btn");
   let spiceVal = state.settings.defaultSpice;
   updateSpiceGroupUI(spiceGroup, spiceVal);
+  document.getElementById("pf-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
 
-  bindHelp(tool, `Ask about anything — a concept, a term, a process — and The Professor gives a plain-language crash course. Choose a style, adjust the depth, and ask follow-up questions right in the same thread.`);
+  bindHelp(tool, `Ask about anything, a concept, a term, a process, and The Professor gives a plain-language crash course. Choose a style, adjust the depth, and ask follow-up questions right in the same thread.`);
 
   spiceGroup.addEventListener("click", e=>{
     const btn = e.target.closest("button"); if(!btn) return;
@@ -2560,8 +2567,9 @@ function initConsultant(tool){
   const charcount = document.getElementById("cn-charcount");
   let spiceVal = state.settings.defaultSpice;
   updateSpiceGroupUI(spiceGroup, spiceVal);
+  document.getElementById("cn-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
 
-  bindHelp(tool, `Describe a decision you're stuck on. The Consultant lays out genuine pros and cons — not just a list, a clear-eyed weigh-up — and gives you a lightly-held recommendation. It's a thinking partner, not the final word.`);
+  bindHelp(tool, `Describe a decision you're stuck on. The Consultant lays out genuine pros and cons, not just a list, a clear-eyed weigh-up, and gives you a lightly-held recommendation. It's a thinking partner, not the final word.`);
 
   spiceGroup.addEventListener("click", e=>{
     const btn = e.target.closest("button"); if(!btn) return;
@@ -2657,6 +2665,7 @@ function initEstimator(tool){
   const charcount = document.getElementById("es-charcount");
   let spiceVal = state.settings.defaultSpice;
   updateSpiceGroupUI(spiceGroup, spiceVal);
+  document.getElementById("es-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
 
   bindHelp(tool, `Describe a task, chore, or errand and Estimator gives you a realistic time range, including the setup and wind down most people forget to account for. Turn up the depth for a wider, more cautious range.`);
 
@@ -2753,6 +2762,7 @@ function initCompiler(tool){
   const charcount = document.getElementById("cp-charcount");
   let spiceVal = state.settings.defaultSpice;
   updateSpiceGroupUI(spiceGroup, spiceVal);
+  document.getElementById("cp-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
 
   bindHelp(tool, `Paste in a messy stream of thoughts, no structure needed, and Compiler sorts it into a clean, ordered list of actual next steps.`);
 
@@ -2848,6 +2858,7 @@ function initChef(tool){
   const charcount = document.getElementById("cf-charcount");
   let spiceVal = state.settings.defaultSpice;
   updateSpiceGroupUI(spiceGroup, spiceVal);
+  document.getElementById("cf-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
 
   bindHelp(tool, `List whatever ingredients you have on hand, separated by commas, and The Chef suggests a simple dish along with steps to make it.`);
 
