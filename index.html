@@ -1307,6 +1307,16 @@ const ONBOARD_SLIDES = [
     ]
   },
   {
+    icon: "🧠",
+    title: "More ways to think things through",
+    body: "A few more tools to help you focus, learn, and decide.",
+    features: [
+      {icon:"play", title:"Focus one step at a time", desc:"Taskmaster walks through your steps with an optional timer"},
+      {icon:"cap", title:"Get a crash course", desc:"The Professor explains anything in plain language"},
+      {icon:"bulb", title:"Weigh a decision", desc:"The Consultant lays out honest pros and cons"}
+    ]
+  },
+  {
     icon: "⌨️",
     title: "Built for speed",
     body: "Everything here is keyboard-friendly, works offline for your saved data, and remembers what you've made.",
@@ -1314,6 +1324,16 @@ const ONBOARD_SLIDES = [
       {icon:"bolt", title:"Command palette", desc:"Press ⌘K / Ctrl+K to jump anywhere instantly"},
       {icon:"clockFav", title:"History & favorites", desc:"Every result is saved locally — nothing leaves your device"},
       {icon:"undo", title:"Undo & redo", desc:"Re-run, tweak, and step back through your results freely"}
+    ]
+  },
+  {
+    icon: "🧌",
+    title: "Meet the Goblin",
+    body: "Not sure which tool fits? Ask the floating Goblin in the corner — it knows every tool and can recommend one, explain a result, or just chat.",
+    features: [
+      {icon:"wand", title:"Tool recommendations", desc:"Describe your problem and get pointed to the right tool"},
+      {icon:"cap", title:"Explains results", desc:"Paste an output and ask what it means"},
+      {icon:"bolt", title:"Always one tap away", desc:"Press ⌘G / Ctrl+G or tap the icon in the corner"}
     ]
   }
 ];
@@ -1676,8 +1696,11 @@ function setCached(cacheKey, output, model){
  * @returns {Promise<{text, model, cached}>}
  */
 async function callGoblinAI(messages, opts={}){
-  const cacheKey = opts.cacheKey || hashKey(JSON.stringify(messages));
-  const cached = getCached(cacheKey);
+  // Explicitly passing cacheKey: null means "do not cache this call" (e.g. live chat).
+  // Only fall back to an auto-generated key when cacheKey is undefined (not provided).
+  const noCache = opts.cacheKey === null;
+  const cacheKey = noCache ? null : (opts.cacheKey || hashKey(JSON.stringify(messages)));
+  const cached = noCache ? null : getCached(cacheKey);
   if(cached){
     return {text: cached.output, model: cached.model, cached: true};
   }
@@ -1688,7 +1711,7 @@ async function callGoblinAI(messages, opts={}){
     for(let attempt=0; attempt <= MAX_RETRIES_PER_MODEL; attempt++){
       try{
         const result = await requestModel(model, messages, opts);
-        setCached(cacheKey, result.text, model);
+        if(!noCache) setCached(cacheKey, result.text, model);
         return {text: result.text, model, cached:false};
       }catch(err){
         lastError = err;
@@ -2024,7 +2047,7 @@ function initMagicTodo(tool){
    ============================================================ */
 function buildTaskmasterView(tool){
   const body = `
-    <div class="panel">
+    <div class="panel" id="tm-start-panel">
       <div class="field-label"><span>Pick a step list to focus on</span></div>
       <div class="controls-row" style="margin-top:0;">
         <div class="select-wrap" style="flex:1; min-width:220px;">
@@ -2088,7 +2111,7 @@ function initTaskmaster(tool){
   const timerSel = document.getElementById("tm-timer");
   const focusPanel = document.getElementById("tm-focus-panel");
   const donePanel = document.getElementById("tm-done-panel");
-  const startPanel = document.querySelector("#view-taskmaster .panel");
+  const startPanel = document.getElementById("tm-start-panel");
   const progressLabel = document.getElementById("tm-progress-label");
   const currentStepEl = document.getElementById("tm-current-step");
   const progressBar = document.getElementById("tm-progress-bar");
@@ -2540,7 +2563,8 @@ function initProfessor(tool){
   }
   runBtn.addEventListener("click", run);
 
-  async function askFollowup(){
+async function askFollowup(){
+    if(followupBtn.disabled) return;
     const q = followupInput.value.trim();
     if(!q || !convo.length) return;
     convo.push({role:"user", content: q});
@@ -2560,8 +2584,10 @@ function initProfessor(tool){
       followupBtn.disabled = false;
     }
   }
-  followupBtn.addEventListener("click", askFollowup);
-  followupInput.addEventListener("keydown", e=>{ if(e.key === "Enter") askFollowup(); });
+followupBtn.addEventListener("click", askFollowup);
+  followupInput.addEventListener("keydown", e=>{
+    if(e.key === "Enter" && !followupBtn.disabled) askFollowup();
+  });
 
   document.getElementById("pf-copy").addEventListener("click", ()=> copyToClipboard(outputBody.textContent));
   document.getElementById("pf-export").addEventListener("click", ()=> downloadText("professor-explanation.txt", outputBody.textContent));
@@ -2766,13 +2792,16 @@ function renderGoblinMessages(){
     if(m.role === "system") return "";
     let content = escapeHTML(m.content);
     let toolBtn = "";
-    const match = m.content.match(/\[\[tool:([a-z-]+)\]\]/);
+const match = m.content.match(/\[\[tool:([a-z-]+)\]\]/);
     if(match){
       content = escapeHTML(m.content.replace(match[0], "").trim());
       const t = toolById(match[1]);
       if(t && t.status === "live"){
         toolBtn = `<button class="goblin-tool-link" data-goblin-open-tool="${t.id}">${ICONS[t.icon]} Open ${t.name}</button>`;
       }
+    } else {
+      // Defensive: strip any dangling/truncated tag fragment that never closed
+      content = escapeHTML(m.content.replace(/\[\[tool:[a-z-]*$/,"").trim());
     }
     return `<div class="goblin-msg ${m.role === "user" ? "user" : "assistant"}">${content.replace(/\n/g,"<br>")}${toolBtn}</div>`;
   }).join("");
@@ -2834,14 +2863,19 @@ async function sendGoblinMessage(text){
   try{
     const result = await callGoblinAI(contextMessages, {
       cacheKey: null, // persona chat should not be cached — it's conversational
-      onToken: (partial)=>{
+onToken: (partial)=>{
         if(!liveBubble){
           typing.remove();
           liveBubble = document.createElement("div");
           liveBubble.className = "goblin-msg assistant";
           wrap.appendChild(liveBubble);
         }
-        liveBubble.textContent = partial.replace(/\[\[tool:[a-z-]+\]\]/,"").trim();
+        // Strip both complete tags and any in-progress/dangling tag fragment
+        // (e.g. "[[tool:mag" while still streaming, or a truncated tag at the end).
+        liveBubble.textContent = partial
+          .replace(/\[\[tool:[a-z-]+\]\]/g, "")
+          .replace(/\[\[tool:[a-z-]*$/,"")
+          .trim();
         wrap.scrollTop = wrap.scrollHeight;
       }
     });
@@ -2883,9 +2917,10 @@ function initGoblinPersona(){
   const sendBtn = document.getElementById("goblinSendBtn");
   function autoGrow(){ textarea.style.height = "auto"; textarea.style.height = Math.min(textarea.scrollHeight, 100) + "px"; }
   textarea.addEventListener("input", autoGrow);
-  textarea.addEventListener("keydown", e=>{
+textarea.addEventListener("keydown", e=>{
     if(e.key === "Enter" && !e.shiftKey){
       e.preventDefault();
+      if(goblinState.streaming) return;
       const val = textarea.value;
       textarea.value = "";
       autoGrow();
@@ -2893,6 +2928,7 @@ function initGoblinPersona(){
     }
   });
   sendBtn.addEventListener("click", ()=>{
+    if(goblinState.streaming) return;
     const val = textarea.value;
     textarea.value = "";
     autoGrow();
@@ -2915,14 +2951,6 @@ function initGoblinPersona(){
 
   document.addEventListener("keydown", e=>{
     if((e.metaKey||e.ctrlKey) && e.key.toLowerCase() === "g"){ e.preventDefault(); toggleGoblinPanel(); }
-  });
-
-  document.addEventListener("click", e=>{
-    const panel = document.getElementById("goblinPanel");
-    if(goblinState.open && !panel.contains(e.target) && !e.target.closest("#goblinFab")){
-      // allow clicks elsewhere in the app without forcibly closing (non-modal),
-      // so intentionally no auto-close here.
-    }
   });
 
   renderGoblinMessages();
