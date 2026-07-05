@@ -6,29 +6,15 @@
 <title>Goblin AI — small tools for big feelings</title>
 <meta name="description" content="A collection of small, simple AI tools for when things feel too big or complicated.">
 
-<!-- Google Fonts: Fraunces (display), Inter (body), JetBrains Mono (utility) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
-<!--
-  Optional per-deployment config. Leave apiKey empty to require users to set
-  their own key via Settings → AI Behavior → API key (stored in their browser
-  only). Only set apiKey here for a strictly private/local copy of this file
-  that never leaves your machine — never commit a real key to a public repo.
--->
-<script>
-  window.GOBLIN_CONFIG = {
-    apiKey: "" // e.g. "sk-or-v1-..." — leave blank to use per-user Settings key
-  };
-</script>
 
 <style>
 /* ============================================================
    GOBLIN AI — DESIGN TOKENS
    ============================================================ */
 :root{
-  /* Light theme (cream/ink) */
   --bg:            #F7F3EC;
   --bg-raised:     #FFFFFF;
   --bg-sunken:     #EFE9DC;
@@ -105,7 +91,6 @@ button{ font-family: inherit; }
 a{ color: inherit; }
 ::selection{ background: var(--accent); color: var(--accent-ink); }
 
-/* Visible focus ring everywhere, keyboard-only */
 :focus{ outline: none; }
 body:not(.using-mouse) :focus-visible{
   outline: 2.5px solid var(--focus-ring);
@@ -114,15 +99,11 @@ body:not(.using-mouse) :focus-visible{
 }
 .using-mouse :focus{ outline: none; }
 
-/* Scrollbar */
 ::-webkit-scrollbar{ width: 10px; height: 10px; }
 ::-webkit-scrollbar-track{ background: transparent; }
 ::-webkit-scrollbar-thumb{ background: var(--border-strong); border-radius: 8px; }
 ::-webkit-scrollbar-thumb:hover{ background: var(--ink-faint); }
 
-/* ============================================================
-   SKIP LINK / SR-ONLY
-   ============================================================ */
 .sr-only{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
 .skip-link{
   position:absolute; left:-999px; top:0; z-index:999;
@@ -135,7 +116,6 @@ body:not(.using-mouse) :focus-visible{
    ============================================================ */
 .app{ display:flex; min-height:100vh; }
 
-/* --- Sidebar (desktop/tablet) --- */
 .sidebar{
   width: var(--nav-w);
   flex-shrink:0;
@@ -156,8 +136,9 @@ body:not(.using-mouse) :focus-visible{
   border-radius: 10px;
   background: var(--accent-soft);
   display:flex; align-items:center; justify-content:center;
-  font-size:18px;
+  color: var(--accent);
 }
+.mascot svg{ width:19px; height:19px; }
 .brand{
   font-family: var(--font-display); font-weight:700; font-size: 19px; letter-spacing:-0.02em;
 }
@@ -203,7 +184,6 @@ body:not(.using-mouse) :focus-visible{
   display:flex; flex-direction:column; gap: 6px;
 }
 
-/* --- Mobile top bar + bottom nav --- */
 .mobile-topbar{
   display:none;
   position: sticky; top:0; z-index:45;
@@ -212,11 +192,8 @@ body:not(.using-mouse) :focus-visible{
   background: var(--bg-raised);
   border-bottom: 1px solid var(--border);
 }
-.mobile-bottomnav{
-  display:none;
-}
+.mobile-bottomnav{ display:none; }
 
-/* --- Main column --- */
 .main{ flex:1; min-width:0; display:flex; flex-direction:column; }
 .topbar{
   display:flex; align-items:center; justify-content:space-between;
@@ -277,6 +254,8 @@ body:not(.using-mouse) :focus-visible{
   background: var(--bg-raised); border:1px solid var(--border); border-radius: var(--radius-md);
   font-size:14px; color: var(--ink-soft);
 }
+.greeting-strip .gs-icon{ width:20px; height:20px; color:var(--accent); flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+.greeting-strip .gs-icon svg{ width:20px; height:20px; }
 .greeting-strip strong{ color:var(--ink); }
 
 .grid-section{ margin-top: 40px; }
@@ -306,7 +285,7 @@ body:not(.using-mouse) :focus-visible{
 .tool-card.disabled:hover{ transform:none; box-shadow:none; }
 .tool-icon-wrap{
   width:44px; height:44px; border-radius:12px;
-  display:flex; align-items:center; justify-content:center; font-size:21px;
+  display:flex; align-items:center; justify-content:center;
   background: var(--tc-bg, var(--accent-soft));
 }
 .tool-icon-wrap svg{ width:22px; height:22px; color: var(--tc-fg, var(--accent)); }
@@ -332,7 +311,7 @@ body:not(.using-mouse) :focus-visible{
 @media (max-width: 620px){ .tool-grid{ grid-template-columns: 1fr; } .dash-wrap{ padding: 28px 18px 80px; } }
 
 /* ============================================================
-   TOOL VIEW SHELL (shared by every tool)
+   TOOL VIEW SHELL
    ============================================================ */
 .tool-wrap{ max-width: 860px; margin:0 auto; padding: 40px 32px 90px; }
 .tool-head{ display:flex; align-items:flex-start; justify-content:space-between; gap: 16px; margin-bottom: 30px; }
@@ -404,6 +383,7 @@ select.gob-select:focus{ border-color: var(--accent); }
   font-size:14px; font-weight:600; font-family:inherit; white-space:nowrap;
   transition: background 0.15s var(--ease), transform 0.1s var(--ease), box-shadow 0.15s var(--ease), opacity 0.15s;
 }
+.btn svg{ width:15px; height:15px; }
 .btn:active{ transform: scale(0.97); }
 .btn-primary{ background: var(--accent); color: var(--accent-ink); }
 .btn-primary:hover{ background: var(--accent-hover); box-shadow: var(--shadow-sm); }
@@ -422,18 +402,17 @@ select.gob-select:focus{ border-color: var(--accent); }
 .spinner{ width:14px; height:14px; border-radius:50%; border:2px solid rgba(255,255,255,0.35); border-top-color: currentColor; animation: spin 0.7s linear infinite; }
 @keyframes spin{ to{ transform: rotate(360deg); } }
 
-/* Difficulty ("spice") selector */
 .spice-group{ display:inline-flex; align-items:center; gap:2px; background: var(--bg); border:1.5px solid var(--border); border-radius: var(--radius-sm); padding:5px 8px; }
 .spice-group button{
   width:26px; height:26px; border:none; background:transparent; cursor:pointer; border-radius:6px;
-  display:flex; align-items:center; justify-content:center; font-size:14px; color: var(--border-strong);
+  display:flex; align-items:center; justify-content:center; color: var(--border-strong);
   transition: color 0.15s, transform 0.1s;
 }
+.spice-group button svg{ width:14px; height:14px; }
 .spice-group button.lit{ color: var(--clay); }
 .spice-group button:hover{ transform: scale(1.15); }
 .spice-label{ font-family:var(--font-mono); font-size:10.5px; color:var(--ink-faint); margin-left:4px; padding-right:2px; }
 
-/* Output area */
 .output-panel{ position:relative; }
 .output-panel .panel-toolbar{ display:flex; align-items:center; justify-content:space-between; margin-bottom: 14px; }
 .output-panel .panel-toolbar h3{ font-size:12.5px; font-weight:600; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.03em; font-family:var(--font-mono); }
@@ -442,7 +421,6 @@ select.gob-select:focus{ border-color: var(--accent); }
 .output-body.empty{ color: var(--ink-faint); font-style:italic; }
 .output-body strong{ font-weight:700; }
 
-/* Root-motif loading state (signature element) */
 .roots-loading{ display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 26px 10px; gap:14px; }
 .roots-loading svg{ width:120px; height:64px; overflow:visible; }
 .roots-loading .rl-path{
@@ -455,7 +433,6 @@ select.gob-select:focus{ border-color: var(--accent); }
 @keyframes root-grow{ 0%{ stroke-dashoffset: 90; } 100%{ stroke-dashoffset:0; } }
 .roots-loading .rl-text{ font-family:var(--font-mono); font-size:12px; color: var(--ink-faint); letter-spacing:0.02em; }
 
-/* Error state */
 .error-banner{
   display:flex; align-items:flex-start; gap:11px; background: var(--danger-soft); border:1px solid transparent;
   border-radius: var(--radius-md); padding:14px 16px; margin-bottom:16px; font-size:13.5px; color: var(--danger);
@@ -464,7 +441,6 @@ select.gob-select:focus{ border-color: var(--accent); }
 .error-banner .eb-body strong{ display:block; margin-bottom:2px; }
 .error-banner .eb-actions{ margin-top:8px; display:flex; gap:8px; }
 
-/* Toast */
 .toast-stack{ position:fixed; bottom:22px; right:22px; z-index:200; display:flex; flex-direction:column; gap:8px; align-items:flex-end; }
 .toast{
   background: var(--ink); color: var(--bg); padding:11px 16px; border-radius:10px; font-size:13.5px;
@@ -478,7 +454,6 @@ select.gob-select:focus{ border-color: var(--accent); }
 @keyframes toast-in{ from{ opacity:0; transform: translateY(10px) scale(0.95);} to{ opacity:1; transform:none; } }
 @keyframes toast-out{ to{ opacity:0; transform: translateY(6px) scale(0.96); } }
 
-/* History / favorites drawer content */
 .hist-list{ display:flex; flex-direction:column; gap:8px; }
 .hist-item{
   border:1px solid var(--border); border-radius: var(--radius-sm); padding: 11px 13px; cursor:pointer;
@@ -492,7 +467,6 @@ select.gob-select:focus{ border-color: var(--accent); }
 .hist-item-actions{ display:flex; gap:4px; margin-top:8px; }
 .hist-empty, .fav-empty{ color:var(--ink-faint); font-size:13.5px; text-align:center; padding: 30px 10px; font-style:italic; }
 
-/* Help tooltip popover */
 .help-pop{
   position:absolute; top:calc(100% + 8px); right:0; width:280px; z-index:60;
   background: var(--bg-raised); border:1px solid var(--border); border-radius: var(--radius-md);
@@ -501,7 +475,6 @@ select.gob-select:focus{ border-color: var(--accent); }
 }
 @keyframes pop-in{ from{ opacity:0; transform: translateY(-4px) scale(0.98); } to{ opacity:1; transform:none; } }
 
-/* Side drawer (history/favorites/settings) */
 .overlay{ position:fixed; inset:0; background: rgba(20,18,15,0.4); z-index:80; opacity:0; pointer-events:none; transition: opacity 0.25s var(--ease); }
 .overlay.open{ opacity:1; pointer-events:auto; }
 .drawer{
@@ -523,7 +496,6 @@ select.gob-select:focus{ border-color: var(--accent); }
 .drawer-pane{ display:none; }
 .drawer-pane.active{ display:block; }
 
-/* Settings */
 .settings-group{ margin-bottom:26px; }
 .settings-group h3{ font-size:12.5px; text-transform:uppercase; letter-spacing:0.04em; color:var(--ink-faint); font-family:var(--font-mono); margin-bottom:12px; }
 .settings-row{ display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--border); gap:14px; }
@@ -540,7 +512,6 @@ select.gob-select:focus{ border-color: var(--accent); }
 
 .kbd{ font-family:var(--font-mono); font-size:11px; background: var(--bg-sunken); border:1px solid var(--border-strong); border-radius:5px; padding:2px 6px; }
 
-/* Onboarding modal */
 .modal-overlay{ position:fixed; inset:0; background: rgba(20,18,15,0.55); z-index:150; display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity 0.25s var(--ease); }
 .modal-overlay.open{ opacity:1; pointer-events:auto; }
 .modal-card{
@@ -549,7 +520,11 @@ select.gob-select:focus{ border-color: var(--accent); }
   transform: scale(0.94) translateY(10px); transition: transform 0.3s var(--ease);
 }
 .modal-overlay.open .modal-card{ transform:none; }
-.onboard-icon{ font-size:44px; margin-bottom:14px; display:block; }
+.onboard-icon{
+  width:64px; height:64px; margin:0 auto 14px; border-radius:16px;
+  background: var(--accent-soft); color:var(--accent); display:flex; align-items:center; justify-content:center;
+}
+.onboard-icon svg{ width:30px; height:30px; }
 .modal-card h2{ font-size:24px; margin-bottom:10px; }
 .modal-card p{ color:var(--ink-soft); font-size:14.5px; margin-bottom:22px; }
 .onboard-steps{ display:flex; justify-content:center; gap:6px; margin-bottom:22px; }
@@ -563,7 +538,6 @@ select.gob-select:focus{ border-color: var(--accent); }
 .onboard-feature .of-text span{ font-size:12.5px; color:var(--ink-faint); }
 .modal-actions{ display:flex; gap:10px; justify-content:center; }
 
-/* Command palette */
 .cmdk-overlay{ position:fixed; inset:0; background: rgba(20,18,15,0.45); z-index:170; display:none; align-items:flex-start; justify-content:center; padding-top:14vh; }
 .cmdk-overlay.open{ display:flex; }
 .cmdk-box{ background: var(--bg-raised); border-radius: var(--radius-lg); width:560px; max-width:90vw; box-shadow:var(--shadow-lg); overflow:hidden; border:1px solid var(--border); }
@@ -577,7 +551,6 @@ select.gob-select:focus{ border-color: var(--accent); }
 .cmdk-item .nav-icon svg{ width:16px; height:16px; }
 .cmdk-empty{ padding: 24px; text-align:center; color:var(--ink-faint); font-size:13.5px; }
 
-/* Footer */
 .footer{ text-align:center; padding: 30px 20px 46px; color: var(--ink-faint); font-size:12.5px; }
 .footer a{ color: var(--ink-soft); text-decoration:underline; text-decoration-color: var(--border-strong); }
 
@@ -588,10 +561,11 @@ select.gob-select:focus{ border-color: var(--accent); }
   position:fixed; bottom:22px; right:22px; z-index:120;
   width:56px; height:56px; border-radius:50%;
   background: var(--accent); color:var(--accent-ink); border:none; cursor:pointer;
-  font-size:26px; display:flex; align-items:center; justify-content:center;
+  display:flex; align-items:center; justify-content:center;
   box-shadow: var(--shadow-lg);
   transition: transform 0.18s var(--ease), background 0.15s var(--ease);
 }
+.goblin-fab svg{ width:24px; height:24px; }
 .goblin-fab:hover{ transform: scale(1.06); background: var(--accent-hover); }
 .goblin-fab:active{ transform: scale(0.95); }
 .goblin-fab.has-panel-open{ transform: scale(0.9) rotate(8deg); }
@@ -610,11 +584,12 @@ select.gob-select:focus{ border-color: var(--accent); }
 .goblin-msg{ max-width:86%; padding:10px 13px; border-radius: 14px; font-size:13.5px; line-height:1.5; white-space:pre-wrap; }
 .goblin-msg.user{ align-self:flex-end; background: var(--accent); color: var(--accent-ink); border-bottom-right-radius:4px; }
 .goblin-msg.assistant{ align-self:flex-start; background: var(--bg-sunken); color: var(--ink); border-bottom-left-radius:4px; }
-.goblin-msg.assistant a, .goblin-msg.assistant button.goblin-tool-link{
+.goblin-msg.assistant button.goblin-tool-link{
   display:inline-flex; align-items:center; gap:4px; margin-top:6px;
   background: var(--accent-soft); color: var(--accent); border:none; border-radius:8px;
   padding:5px 10px; font-size:12px; font-weight:600; cursor:pointer; font-family:inherit;
 }
+.goblin-tool-link svg{ width:13px; height:13px; }
 .goblin-msg-empty{ color:var(--ink-faint); font-size:13px; text-align:center; padding: 30px 14px; font-style:italic; }
 .goblin-suggest-row{ display:flex; gap:6px; padding: 0 14px 10px; flex-wrap:wrap; flex-shrink:0; }
 .goblin-suggest-chip{
@@ -636,16 +611,15 @@ select.gob-select:focus{ border-color: var(--accent); }
 @keyframes gob-bounce{ 0%,60%,100%{ transform: translateY(0); opacity:0.5; } 30%{ transform: translateY(-4px); opacity:1; } }
 
 @media (max-width: 620px){
-  .goblin-fab{ bottom: calc(64px + 14px); right:14px; width:50px; height:50px; font-size:22px; }
+  .goblin-fab{ bottom: calc(64px + 14px); right:14px; width:50px; height:50px; }
+  .goblin-fab svg{ width:21px; height:21px; }
   .goblin-panel{ bottom: calc(64px + 78px); right:10px; width: calc(100vw - 20px); height: 62vh; }
 }
-   
-/* Cache/live indicator badge on output */
+
 .src-badge{ display:inline-flex; align-items:center; gap:5px; font-family:var(--font-mono); font-size:10.5px; color:var(--ink-faint); }
 .src-badge .sb-dot{ width:6px; height:6px; border-radius:50%; background: var(--accent); }
 .src-badge.cached .sb-dot{ background: var(--clay); }
 
-/* Responsive */
 @media (max-width: 900px){
   .sidebar{ position:fixed; left:0; top:0; z-index:100; box-shadow: var(--shadow-lg); }
   .sidebar:not(.mobile-open){ transform: translateX(-100%); }
@@ -678,21 +652,12 @@ select.gob-select:focus{ border-color: var(--accent); }
 
 <a href="#main-content" class="skip-link">Skip to content</a>
 
-<!-- ============================================================
-     TOAST STACK
-============================================================ -->
 <div class="toast-stack" id="toastStack" aria-live="polite" aria-atomic="true"></div>
 
-<!-- ============================================================
-     ONBOARDING MODAL
-============================================================ -->
 <div class="modal-overlay" id="onboardOverlay" role="dialog" aria-modal="true" aria-labelledby="onboardTitle">
   <div class="modal-card" id="onboardCard"></div>
 </div>
 
-<!-- ============================================================
-     COMMAND PALETTE
-============================================================ -->
 <div class="cmdk-overlay" id="cmdkOverlay">
   <div class="cmdk-box" role="dialog" aria-label="Command palette">
     <div class="cmdk-input-wrap">
@@ -704,9 +669,6 @@ select.gob-select:focus{ border-color: var(--accent); }
   </div>
 </div>
 
-<!-- ============================================================
-     SIDE DRAWER (History / Favorites / Settings)
-============================================================ -->
 <div class="overlay" id="drawerOverlay"></div>
 <aside class="drawer" id="drawer" aria-hidden="true">
   <div class="drawer-head">
@@ -742,20 +704,8 @@ select.gob-select:focus{ border-color: var(--accent); }
           <label class="switch"><input type="checkbox" id="setCompact"><span class="switch-track"></span></label>
         </div>
       </div>
-<div class="settings-group">
-        <h3>AI Behavior</h3>
-        <div class="settings-row" style="flex-direction:column; align-items:stretch; gap:8px;">
-          <div>
-            <div class="settings-row-label">API key</div>
-            <div class="settings-row-desc">Stored only in this browser's local storage. Never uploaded, never shared. Get a free key at <a href="https://openrouter.ai/keys" target="_blank" rel="noopener">openrouter.ai/keys</a>.</div>
-          </div>
-          <div style="display:flex; gap:8px;">
-            <input type="password" id="setApiKey" class="gob-input-line" placeholder="sk-or-v1-…" style="flex:1;" autocomplete="off">
-            <button class="btn btn-secondary btn-sm" id="setApiKeySave">Save</button>
-            <button class="btn btn-ghost btn-sm" id="setApiKeyClear">Clear</button>
-          </div>
-          <span class="src-badge" id="apiKeyStatus"></span>
-        </div>
+      <div class="settings-group">
+        <h3>Tool behavior</h3>
         <div class="settings-row">
           <div><div class="settings-row-label">Response caching</div><div class="settings-row-desc">Reuse recent identical requests instantly</div></div>
           <label class="switch"><input type="checkbox" id="setCaching" checked><span class="switch-track"></span></label>
@@ -766,11 +716,7 @@ select.gob-select:focus{ border-color: var(--accent); }
         </div>
         <div class="settings-row">
           <div><div class="settings-row-label">Default difficulty</div><div class="settings-row-desc">How much detail tools go into by default</div></div>
-          <div class="spice-group" id="setDefaultSpice">
-            <button data-val="1" aria-label="Mild">🌶️</button>
-            <button data-val="2" aria-label="Medium">🌶️</button>
-            <button data-val="3" aria-label="Extra">🌶️</button>
-          </div>
+          <div class="spice-group" id="setDefaultSpice"></div>
         </div>
       </div>
       <div class="settings-group">
@@ -779,7 +725,6 @@ select.gob-select:focus{ border-color: var(--accent); }
         <div class="settings-row"><div class="settings-row-label">Toggle theme</div><span class="kbd">⌘ / Ctrl + J</span></div>
         <div class="settings-row"><div class="settings-row-label">Toggle sidebar</div><span class="kbd">⌘ / Ctrl + B</span></div>
         <div class="settings-row"><div class="settings-row-label">Run tool</div><span class="kbd">⌘ / Ctrl + Enter</span></div>
-        <div class="settings-row"><div class="settings-row-label">Undo / Redo output</div><span class="kbd">⌘Z / ⌘⇧Z</span></div>
         <div class="settings-row"><div class="settings-row-label">Open history</div><span class="kbd">⌘ / Ctrl + H</span></div>
         <div class="settings-row"><div class="settings-row-label">Ask the Goblin</div><span class="kbd">⌘ / Ctrl + G</span></div>
       </div>
@@ -798,18 +743,14 @@ select.gob-select:focus{ border-color: var(--accent); }
   </div>
 </aside>
 
-<!-- ============================================================
-     APP SHELL
-============================================================ -->
 <div class="app">
 
-  <!-- Mobile top bar -->
   <div class="mobile-topbar">
     <button class="icon-btn" id="mobileMenuBtn" aria-label="Open navigation menu">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
     </button>
     <div style="display:flex; align-items:center; gap:9px;">
-      <div class="mascot" style="width:26px;height:26px;font-size:14px;">🧌</div>
+      <div class="mascot" style="width:26px;height:26px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C7 2 4 5.5 4 10c0 2.4 1 4.3 2.3 5.7L5 21l3.8-1.7c1 .3 2 .5 3.2.5s2.2-.2 3.2-.5L19 21l-1.3-5.3C19 14.3 20 12.4 20 10c0-4.5-3-8-8-8z"/><circle cx="9" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r="1" fill="currentColor" stroke="none"/></svg></div>
       <span class="brand" style="font-size:16px;">goblin.ai</span>
     </div>
     <button class="icon-btn" id="mobileSearchBtn" aria-label="Search tools">
@@ -817,10 +758,9 @@ select.gob-select:focus{ border-color: var(--accent); }
     </button>
   </div>
 
-  <!-- Sidebar -->
   <nav class="sidebar" id="sidebar" aria-label="Tool navigation">
     <div class="sidebar-header">
-      <div class="mascot">🧌</div>
+      <div class="mascot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C7 2 4 5.5 4 10c0 2.4 1 4.3 2.3 5.7L5 21l3.8-1.7c1 .3 2 .5 3.2.5s2.2-.2 3.2-.5L19 21l-1.3-5.3C19 14.3 20 12.4 20 10c0-4.5-3-8-8-8z"/><circle cx="9" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r="1" fill="currentColor" stroke="none"/></svg></div>
       <div>
         <div class="brand">goblin.ai</div>
         <div class="brand-sub">small tools, big feelings</div>
@@ -849,7 +789,6 @@ select.gob-select:focus{ border-color: var(--accent); }
     </div>
   </nav>
 
-  <!-- Main -->
   <div class="main">
     <div class="topbar">
       <div class="topbar-left">
@@ -878,7 +817,6 @@ select.gob-select:focus{ border-color: var(--accent); }
 
     <main class="content" id="main-content">
 
-      <!-- ===================== DASHBOARD VIEW ===================== -->
       <section class="view active" id="view-dashboard">
         <div class="dash-wrap">
           <div class="dash-hero">
@@ -902,47 +840,42 @@ select.gob-select:focus{ border-color: var(--accent); }
           </div>
         </div>
         <div class="footer">
-          Goblin AI is a fan-made reinterpretation inspired by <a href="https://goblin.tools" target="_blank" rel="noopener">goblin.tools</a> — a real, free resource. Not affiliated. Built for practice, not profit.
+          Goblin AI is a fan-made reinterpretation inspired by goblin.tools — a real, free resource. Not affiliated. Built for practice, not profit. UI demo only — no requests leave your browser.
         </div>
       </section>
 
-<!-- Tool views are injected here by JS -->
       <div id="toolViewsContainer"></div>
 
     </main>
   </div>
 </div>
 
-<!-- ============================================================
-     GOBLIN PERSONA — floating assistant launcher + chat panel
-============================================================ -->
 <button class="goblin-fab" id="goblinFab" aria-label="Open Goblin assistant" title="Ask the Goblin (⌘G)">
-  <span id="goblinFabIcon">🧌</span>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="goblinFabIcon"><path d="M12 2C7 2 4 5.5 4 10c0 2.4 1 4.3 2.3 5.7L5 21l3.8-1.7c1 .3 2 .5 3.2.5s2.2-.2 3.2-.5L19 21l-1.3-5.3C19 14.3 20 12.4 20 10c0-4.5-3-8-8-8z"/><circle cx="9" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r="1" fill="currentColor" stroke="none"/></svg>
 </button>
 
 <div class="goblin-panel" id="goblinPanel" aria-hidden="true">
   <div class="goblin-panel-head">
     <div style="display:flex; align-items:center; gap:10px;">
-      <div class="mascot" style="width:30px;height:30px;font-size:16px;">🧌</div>
+      <div class="mascot" style="width:30px;height:30px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M12 2C7 2 4 5.5 4 10c0 2.4 1 4.3 2.3 5.7L5 21l3.8-1.7c1 .3 2 .5 3.2.5s2.2-.2 3.2-.5L19 21l-1.3-5.3C19 14.3 20 12.4 20 10c0-4.5-3-8-8-8z"/></svg></div>
       <div>
         <div style="font-weight:700; font-size:14.5px;">Goblin</div>
         <div style="font-size:11px; color:var(--ink-faint);" id="goblinStatusLine">Ask me anything, or tell me what you're stuck on</div>
       </div>
     </div>
-<div style="display:flex; gap:4px;">
-      <button class="icon-btn" id="goblinClearBtn" title="Clear chat" aria-label="Clear chat"></button>
-      <button class="icon-btn" id="goblinCloseBtn" aria-label="Close assistant"></button>
+    <div style="display:flex; gap:4px;">
+      <button class="icon-btn" id="goblinClearBtn" title="Clear chat" aria-label="Clear chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0l-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg></button>
+      <button class="icon-btn" id="goblinCloseBtn" aria-label="Close assistant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
     </div>
   </div>
   <div class="goblin-messages" id="goblinMessages"></div>
   <div class="goblin-suggest-row" id="goblinSuggestRow"></div>
   <div class="goblin-input-row">
     <textarea id="goblinInput" class="goblin-textarea" placeholder="Ask the Goblin…" rows="1"></textarea>
-    <button class="icon-btn" id="goblinSendBtn" aria-label="Send" title="Send (Enter)"></button>
+    <button class="icon-btn" id="goblinSendBtn" aria-label="Send" title="Send (Enter)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg></button>
   </div>
 </div>
 
-<!-- Mobile bottom nav -->
 <nav class="mobile-bottomnav" id="mobileBottomNav" aria-label="Quick navigation"></nav>
 
 <script>
@@ -950,48 +883,7 @@ select.gob-select:focus{ border-color: var(--accent); }
 "use strict";
 
 /* ============================================================
-   CONFIG
-   ============================================================ */
-// SECURITY NOTE: never commit a real key here. This file is plain client-side
-// HTML/JS — anything placed in this constant is visible to any visitor via
-// "view source". Set OPENROUTER_KEY via one of:
-//   1) window.GOBLIN_CONFIG.apiKey (see the small <script> block right before
-//      this file's closing </body>, safe to edit per-deployment), or
-//   2) a localStorage value under "goblin.apiKeyOverride" (set from Settings).
-// For any real/public deployment, proxy this through a server-side function
-// instead of embedding a key at all.
-const OPENROUTER_KEY = (window.GOBLIN_CONFIG && window.GOBLIN_CONFIG.apiKey) || "YOUR_API_KEY_HERE";
-const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
-
-// Model selection: "openrouter/auto" lets OpenRouter pick a suitable free-tier
-// model automatically per-request. MODEL_CHAIN is kept as an explicit fallback
-// list in case auto-routing fails or returns an error for a given prompt.
-const AUTO_MODEL = "openrouter/auto";
-const MODEL_CHAIN = [
-  AUTO_MODEL,
-  "meta-llama/llama-3.3-70b-instruct:free",
-  "google/gemini-2.0-flash-exp:free",
-  "meta-llama/llama-3.1-405b-instruct:free",
-  "mistralai/mistral-7b-instruct:free",
-  "qwen/qwen-2.5-72b-instruct:free",
-  "google/gemma-2-9b-it:free"
-];
-
-function hasUsableApiKey(){
-  const key = (window.GOBLIN_CONFIG && window.GOBLIN_CONFIG.apiKey) || localStorage.getItem("goblin.apiKeyOverride") || OPENROUTER_KEY;
-  return !!key && key !== "YOUR_API_KEY_HERE" && key.trim().length > 10;
-}
-function getActiveApiKey(){
-  return localStorage.getItem("goblin.apiKeyOverride") || (window.GOBLIN_CONFIG && window.GOBLIN_CONFIG.apiKey) || OPENROUTER_KEY;
-}
-
-const MAX_RETRIES_PER_MODEL = 2;
-const REQUEST_TIMEOUT_MS = 30000;
-const CACHE_MAX_AGE_MS = 1000 * 60 * 60 * 6; // 6 hours
-const HISTORY_MAX_PER_TOOL = 50;
-
-/* ============================================================
-   ICONS (inline SVG factory — no external icon font)
+   ICONS (inline SVG factory — no emoji anywhere)
    ============================================================ */
 const ICONS = {
   check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>',
@@ -1016,59 +908,157 @@ const ICONS = {
   plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>',
   refresh: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.5 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.65 4.36A9 9 0 0 0 20.5 15"/></svg>',
   bolt: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L4.09 12.5H11L11 22l8.91-10.5H13L13 2z"/></svg>',
-  clockFav: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>'
+  seedling: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22V13"/><path d="M12 13C12 8 8 6 4 6c0 4 2 8 8 7z"/><path d="M12 13c0-5 4-7 8-7 0 4-2 8-8 7z"/></svg>',
+  pepper: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 4c1-1.5 3-2 4-1"/><path d="M9 5c-3 0-6 3-6 8 0 5 3 8 6 8 4 0 9-4 9-11 0-3-2-5-4-5-2 0-3.5 1-5 0z"/></svg>',
+  sparkle: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M18 6l-2.5 2.5M8.5 15.5L6 18"/></svg>',
+  send: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>',
+  goblin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C7 2 4 5.5 4 10c0 2.4 1 4.3 2.3 5.7L5 21l3.8-1.7c1 .3 2 .5 3.2.5s2.2-.2 3.2-.5L19 21l-1.3-5.3C19 14.3 20 12.4 20 10c0-4.5-3-8-8-8z"/><circle cx="9" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r="1" fill="currentColor" stroke="none"/></svg>'
 };
 
 /* ============================================================
-   TOOL REGISTRY (source of truth for nav, dashboard, routing)
+   TOOL REGISTRY
    ============================================================ */
 const TOOLS = [
-  {
-    id: "magic-todo",
-    name: "Magic ToDo",
-    tagline: "Breaking tasks down so you don't have to",
-    blurb: "Turn one overwhelming to-do into small, doable steps.",
-    icon: "check", color: "accent", status: "live",
-    view: buildMagicTodoView
-  },
-  {
-    id: "formalizer",
-    name: "Formalizer",
-    tagline: "Rephrase your words into a different register",
-    blurb: "Text transformers for tone — casual, professional, and beyond.",
-    icon: "wand", color: "clay", status: "live",
-    view: buildFormalizerView
-  },
-  {
-    id: "judge",
-    name: "The Judge",
-    tagline: "Am I misreading the tone of this?",
-    blurb: "Get a second opinion on how a message really comes across.",
-    icon: "scale", color: "accent", status: "live",
-    view: buildJudgeView
-  },
- {
-    id: "taskmaster", name: "Taskmaster", tagline: "Focus on one task at a time",
-    blurb: "A calm, single-task focus mode built from your Magic ToDo list.",
-    icon: "play", color: "clay", status: "live",
-    view: buildTaskmasterView
-  },
-  {
-    id: "professor", name: "The Professor", tagline: "Give me the crash course",
-    blurb: "Plain-language explanations for anything, at any depth.",
-    icon: "cap", color: "accent", status: "live",
-    view: buildProfessorView
-  },
-  {
-    id: "consultant", name: "The Consultant", tagline: "But what are the pros and cons?",
-    blurb: "Weigh a decision with clear-eyed pros, cons, and a recommendation.",
-    icon: "bulb", color: "clay", status: "live",
-    view: buildConsultantView
-  },
-  { id: "estimator", name: "Estimator", tagline: "Just tell me how long this will take", blurb: "A realistic time estimate for any task, chore, or errand.", icon: "clock", color: "accent", status: "soon" },
+  { id: "magic-todo", name: "Magic ToDo", tagline: "Breaking tasks down so you don't have to",
+    blurb: "Turn one overwhelming to-do into small, doable steps.", icon: "check", color: "accent", status: "live", isNew:false,
+    view: buildMagicTodoView },
+  { id: "formalizer", name: "Formalizer", tagline: "Rephrase your words into a different register",
+    blurb: "Text transformers for tone — casual, professional, and beyond.", icon: "wand", color: "clay", status: "live", isNew:false,
+    view: buildFormalizerView },
+  { id: "judge", name: "The Judge", tagline: "Am I misreading the tone of this?",
+    blurb: "Get a second opinion on how a message really comes across.", icon: "scale", color: "accent", status: "live", isNew:false,
+    view: buildJudgeView },
+  { id: "taskmaster", name: "Taskmaster", tagline: "Focus on one task at a time",
+    blurb: "A calm, single-task focus mode built from your Magic ToDo list.", icon: "play", color: "clay", status: "live", isNew:true,
+    view: buildTaskmasterView },
+  { id: "professor", name: "The Professor", tagline: "Give me the crash course",
+    blurb: "Plain-language explanations for anything, at any depth.", icon: "cap", color: "accent", status: "live", isNew:false,
+    view: buildProfessorView },
+  { id: "consultant", name: "The Consultant", tagline: "But what are the pros and cons?",
+    blurb: "Weigh a decision with clear-eyed pros, cons, and a recommendation.", icon: "bulb", color: "clay", status: "live", isNew:false,
+    view: buildConsultantView },
+  { id: "estimator", name: "Estimator", tagline: "Just tell me how long this will take",
+    blurb: "A realistic time estimate for any task, chore, or errand.", icon: "clock", color: "accent", status: "soon" },
+  { id: "compiler", name: "Compiler", tagline: "Turn a braindump into actions",
+    blurb: "Feed in a messy stream of thoughts, get back a clean task list.", icon: "brain", color: "clay", status: "soon" },
+  { id: "chef", name: "The Chef", tagline: "What am I having for dinner?",
+    blurb: "Suggests a recipe from whatever ingredients you already have.", icon: "chef", color: "accent", status: "soon" },
 ];
 
 const toolById = id => TOOLS.find(t => t.id === id);
+
+/* ============================================================
+   MOCK AI ENGINE
+   UI-only demo: no network calls. Produces plausible, varied
+   mock responses with simulated "thinking" latency and streaming.
+   ============================================================ */
+const MOCK_MODELS = ["goblin-mock-small", "goblin-mock-standard", "goblin-mock-plus"];
+
+function sleep(ms){ return new Promise(r=>setTimeout(r, ms)); }
+
+function mockMagicTodoSteps(task, spice){
+  const n = {1:4, 2:6, 3:10}[spice] || 6;
+  const verbs = ["Find", "Gather", "Set aside time for", "Start with", "Clear space for", "Handle", "Sort", "Set out", "Check on", "Finish up", "Put away", "Wipe down", "Label", "Box up", "Take a short break after"];
+  const steps = [];
+  for(let i=0;i<n;i++){
+    steps.push(`${verbs[i % verbs.length]} the ${i===0 ? "first part of" : i===n-1 ? "last bit of" : "next piece of"} "${task}".`);
+  }
+  return steps.map((s,i)=>`${i+1}. ${s}`).join("\n");
+}
+
+function mockFormalizerOutput(text, mode){
+  const trimmed = text.trim();
+  const prefix = {
+    "More professional": "I wanted to follow up regarding the following:",
+    "More casual": "Hey, just wanted to say —",
+    "More concise": "In short:",
+    "More assertive": "To be direct:",
+    "More diplomatic": "I hope this lands well, but I wanted to gently note:",
+    "Simpler / plain language": "Here's the simple version:",
+    "More enthusiastic": "Quick note, and I'm genuinely excited about this —"
+  }[mode] || "Rewritten:";
+  return `${prefix} ${trimmed}`;
+}
+
+function mockJudgeOutput(text, mode){
+  if(mode === "suggest"){
+    return `Thanks for sending this over — I've read it and wanted to reply directly. I think the core point comes through clearly, and I'm happy to move forward on this basis. Let me know if you'd like to talk it through further.`;
+  }
+  const readings = [
+    "mostly neutral and matter-of-fact, though a reader who doesn't know you well might read it as slightly blunt",
+    "warm overall, with just a little formality that could come across as distant in a casual setting",
+    "clear and direct — most readers would take this at face value with no hidden edge",
+    "a bit rushed in tone, which could read as curt even if that's not the intent"
+  ];
+  return `Your text comes across as ${readings[text.length % readings.length]}. If you want it to land differently, consider softening the opening line or adding one sentence of context.`;
+}
+
+function mockProfessorOutput(topic, style){
+  const openers = {
+    "Explain like I'm new to this": `Let's start from the very basics of "${topic}".`,
+    "Explain with an analogy": `Think of "${topic}" like this:`,
+    "Explain like a quick reference": `Quick reference — "${topic}":`,
+    "Explain the history / why it exists": `"${topic}" exists because of a specific problem people kept running into.`
+  };
+  return `${openers[style] || `Here's an explanation of "${topic}":`} At its core, this is about a small set of ideas working together in a predictable way. Once you see the pattern, the rest tends to click into place — most people find it much less intimidating after one clear pass through the basics.`;
+}
+
+function mockConsultantOutput(decision, extra, spice){
+  const n = {1:3, 2:5, 3:7}[spice] || 5;
+  const pros = Array.from({length:n}, (_,i)=> `Pro ${i+1}: this could genuinely make things easier in the short term.`).join("\n");
+  const cons = Array.from({length:n}, (_,i)=> `Con ${i+1}: there's a real tradeoff to weigh here before committing.`).join("\n");
+  const context = extra ? `\n\nGiven the context you shared ("${extra}"), that tradeoff matters a bit more than usual.` : "";
+  return `Pros:\n${pros}\n\nCons:\n${cons}${context}\n\nRecommendation: this is a close call, but leaning toward moving forward carefully beats staying stuck — you can always adjust course once you have more information.`;
+}
+
+/**
+ * Simulates a model call with fake latency + streaming callback.
+ * Always "succeeds" in this UI-only build.
+ */
+async function mockAICall(kind, payload, opts={}){
+  const model = MOCK_MODELS[Math.floor(Math.random()*MOCK_MODELS.length)];
+  const latency = 500 + Math.random()*700;
+  await sleep(latency);
+
+  let text = "";
+  if(kind === "todo") text = mockMagicTodoSteps(payload.task, payload.spice);
+  else if(kind === "formalize") text = mockFormalizerOutput(payload.text, payload.mode);
+  else if(kind === "judge") text = mockJudgeOutput(payload.text, payload.mode);
+  else if(kind === "professor") text = mockProfessorOutput(payload.topic, payload.style);
+  else if(kind === "consultant") text = mockConsultantOutput(payload.decision, payload.extra, payload.spice);
+  else if(kind === "persona") text = mockPersonaReply(payload.userText);
+  else text = "Here's a mock result for this tool.";
+
+  if(typeof opts.onToken === "function" && state.settings.streaming){
+    let acc = "";
+    const chunkSize = Math.max(2, Math.floor(text.length/28));
+    for(let i=0;i<text.length;i+=chunkSize){
+      acc = text.slice(0, i+chunkSize);
+      opts.onToken(acc);
+      await sleep(18);
+    }
+    opts.onToken(text);
+  }
+  return {text, model, cached:false};
+}
+
+function mockPersonaReply(userText){
+  const lower = userText.toLowerCase();
+  const map = [
+    {kw:["start", "overwhelm", "big task", "where do i"], tool:"magic-todo", msg:"Sounds like Magic ToDo is the move here — hand it one task and it'll split it into small, doable steps."},
+    {kw:["email", "soften", "tone", "professional", "rewrite"], tool:"formalizer", msg:"Formalizer can rework the wording for you — pick a tone and it rewrites the whole thing."},
+    {kw:["come across", "misread", "reading this wrong", "harsh"], tool:"judge", msg:"The Judge is built exactly for this — paste the message in and it'll tell you honestly how it reads."},
+    {kw:["focus", "one step", "distracted"], tool:"taskmaster", msg:"Taskmaster walks through a step list one item at a time with an optional timer — good for staying with just one thing."},
+    {kw:["explain", "what is", "how does", "learn"], tool:"professor", msg:"The Professor gives a plain-language crash course on pretty much anything — want me to send you there?"},
+    {kw:["decide", "pros and cons", "should i"], tool:"consultant", msg:"The Consultant lays out honest pros and cons for a decision like that, plus a lightly-held recommendation."}
+  ];
+  for(const entry of map){
+    if(entry.kw.some(k=> lower.includes(k))){
+      return `${entry.msg}\n[[tool:${entry.tool}]]`;
+    }
+  }
+  return "I hear you. If you want, describe the task or feeling a bit more and I can point you to the right tool — or we can just talk it through here.";
+}
 
 /* ============================================================
    STATE + LOCAL STORAGE
@@ -1079,7 +1069,6 @@ const LS_KEYS = {
   favorites: "goblin.favorites",
   history: "goblin.history",
   onboarded: "goblin.onboarded",
-  cache: "goblin.cache",
   toolState: "goblin.toolstate"
 };
 
@@ -1101,8 +1090,7 @@ const state = {
     reduceMotion: false, compact: false, caching: true, streaming: true, defaultSpice: 2
   }),
   favorites: loadJSON(LS_KEYS.favorites, []),
-  history: loadJSON(LS_KEYS.history, {}), // { toolId: [ {id, input, output, meta, ts} ] }
-  cache: loadJSON(LS_KEYS.cache, {}), // { hash: {output, ts, model} }
+  history: loadJSON(LS_KEYS.history, {}),
   sidebarCollapsed: false,
   currentView: "dashboard",
   drawerOpen: false,
@@ -1113,7 +1101,6 @@ function persistAll(){
   saveJSON(LS_KEYS.settings, state.settings);
   saveJSON(LS_KEYS.favorites, state.favorites);
   saveJSON(LS_KEYS.history, state.history);
-  saveJSON(LS_KEYS.cache, state.cache);
 }
 
 /* ============================================================
@@ -1142,7 +1129,7 @@ document.querySelectorAll(".theme-toggle button").forEach(btn=>{
 });
 
 /* ============================================================
-   MOUSE VS KEYBOARD FOCUS DETECTION (for focus rings)
+   FOCUS RING (mouse vs keyboard)
    ============================================================ */
 document.body.classList.add("using-mouse");
 window.addEventListener("mousedown", ()=> document.body.classList.add("using-mouse"));
@@ -1191,11 +1178,10 @@ function renderNav(){
     navList.appendChild(li);
   });
 
-  // Mobile bottom nav: dashboard + first 3 live tools + more
   const bottomNav = document.getElementById("mobileBottomNav");
   const liveTools = TOOLS.filter(t=>t.status==="live").slice(0,3);
   bottomNav.innerHTML = `
-    <button class="mbn-item active" data-view="dashboard">${ICONS.check.replace('viewBox="0 0 24 24"','viewBox="0 0 24 24" style="width:19px;height:19px"')}<span>Home</span></button>
+    <button class="mbn-item active" data-view="dashboard">${ICONS.check}<span>Home</span></button>
     ${liveTools.map(t=>`<button class="mbn-item" data-view="tool:${t.id}">${ICONS[t.icon]}<span>${t.name.split(" ")[0]}</span></button>`).join("")}
     <button class="mbn-item" data-view="drawer:history">${ICONS.clock}<span>History</span></button>
   `;
@@ -1273,13 +1259,14 @@ function toolCardHTML(tool, {withFavToggle=true} = {}){
   const isFav = state.favorites.includes(tool.id);
   const disabled = tool.status === "soon";
   return `
-    <button class="tool-card ${disabled ? "disabled" : ""}" data-view="${disabled ? "" : "tool:"+tool.id}" style="--tc-bg: var(--${tool.color}-soft); --tc-fg: var(--${tool.color});" ${disabled ? "" : ""}>
+    <button class="tool-card ${disabled ? "disabled" : ""}" data-view="${disabled ? "" : "tool:"+tool.id}" style="--tc-bg: var(--${tool.color}-soft); --tc-fg: var(--${tool.color});">
       <div class="tool-icon-wrap">${ICONS[tool.icon]}</div>
       <h3>${tool.name}</h3>
       <p>${tool.blurb}</p>
-      ${disabled ? `<span class="tool-card-badges"><span class="chip chip-soon">Soon</span></span>` :
-        withFavToggle ? `<button class="fav-toggle ${isFav ? "is-fav" : ""}" data-fav-toggle="${tool.id}" aria-label="${isFav ? "Remove from favorites" : "Add to favorites"}" aria-pressed="${isFav}">${isFav ? ICONS.star : ICONS.starOutline}</button>` : ""
-      }
+      <span class="tool-card-badges">
+        ${disabled ? `<span class="chip chip-soon">Soon</span>` : tool.isNew ? `<span class="chip chip-new">New</span>` : ""}
+      </span>
+      ${!disabled && withFavToggle ? `<button class="fav-toggle ${isFav ? "is-fav" : ""}" data-fav-toggle="${tool.id}" aria-label="${isFav ? "Remove from favorites" : "Add to favorites"}" aria-pressed="${isFav}" style="${tool.isNew || disabled ? "top:46px;" : ""}">${isFav ? ICONS.star : ICONS.starOutline}</button>` : ""}
     </button>`;
 }
 
@@ -1311,7 +1298,7 @@ function renderGreeting(){
   } else {
     msg = `${timeGreeting}. You've run <strong>${totalRuns}</strong> ${totalRuns===1?"request":"requests"} through Goblin AI so far.`;
   }
-  strip.innerHTML = `<span>🌱</span><span>${msg}</span>`;
+  strip.innerHTML = `<span class="gs-icon">${ICONS.seedling}</span><span>${msg}</span>`;
 }
 
 document.body.addEventListener("click", (e)=>{
@@ -1343,7 +1330,7 @@ function toggleFavorite(toolId){
    ============================================================ */
 const ONBOARD_SLIDES = [
   {
-    icon: "🧌",
+    icon: "goblin",
     title: "Welcome to Goblin AI",
     body: "A pocket full of small tools for when a task, a feeling, or a to-do list feels too big to face head-on.",
     features: [
@@ -1353,7 +1340,7 @@ const ONBOARD_SLIDES = [
     ]
   },
   {
-    icon: "🧠",
+    icon: "brain",
     title: "More ways to think things through",
     body: "A few more tools to help you focus, learn, and decide.",
     features: [
@@ -1363,17 +1350,17 @@ const ONBOARD_SLIDES = [
     ]
   },
   {
-    icon: "⌨️",
+    icon: "bolt",
     title: "Built for speed",
     body: "Everything here is keyboard-friendly, works offline for your saved data, and remembers what you've made.",
     features: [
       {icon:"bolt", title:"Command palette", desc:"Press ⌘K / Ctrl+K to jump anywhere instantly"},
-      {icon:"clockFav", title:"History & favorites", desc:"Every result is saved locally — nothing leaves your device"},
+      {icon:"clock", title:"History & favorites", desc:"Every result is saved locally — nothing leaves your device"},
       {icon:"undo", title:"Undo & redo", desc:"Re-run, tweak, and step back through your results freely"}
     ]
   },
   {
-    icon: "🧌",
+    icon: "goblin",
     title: "Meet the Goblin",
     body: "Not sure which tool fits? Ask the floating Goblin in the corner — it knows every tool and can recommend one, explain a result, or just chat.",
     features: [
@@ -1388,7 +1375,7 @@ function renderOnboardSlide(){
   const s = ONBOARD_SLIDES[onboardIndex];
   const card = document.getElementById("onboardCard");
   card.innerHTML = `
-    <span class="onboard-icon">${s.icon}</span>
+    <div class="onboard-icon">${ICONS[s.icon]}</div>
     <h2 id="onboardTitle">${s.title}</h2>
     <p>${s.body}</p>
     <div class="onboard-feature-list">
@@ -1499,7 +1486,7 @@ function renderFavoritesDrawer(){
   }
   list.innerHTML = favTools.map(t=>`
     <div class="hist-item" data-view="tool:${t.id}">
-      <div class="hi-top"><span class="hi-input">${ICONS[t.icon]} ${t.name}</span></div>
+      <div class="hi-top"><span class="hi-input" style="display:flex;align-items:center;gap:7px;">${ICONS[t.icon]} ${t.name}</span></div>
       <div class="hi-preview">${escapeHTML(t.blurb)}</div>
     </div>`).join("");
 }
@@ -1544,7 +1531,7 @@ document.getElementById("clearHistoryBtn").addEventListener("click", ()=>{
   }
 });
 document.getElementById("eraseDataBtn").addEventListener("click", ()=>{
-  if(confirm("This erases all Goblin AI data on this device: history, favorites, settings, and cache. Continue?")){
+  if(confirm("This erases all Goblin AI data on this device: history, favorites, settings. Continue?")){
     Object.values(LS_KEYS).forEach(k=> localStorage.removeItem(k));
     location.reload();
   }
@@ -1583,12 +1570,26 @@ function downloadText(filename, text){
 /* ============================================================
    SETTINGS BINDINGS
    ============================================================ */
+function buildSpiceGroupInto(container, initialVal, onChange){
+  container.innerHTML = [1,2,3].map(n=>`<button type="button" data-val="${n}" aria-label="Level ${n}">${ICONS.pepper}</button>`).join("");
+  updateSpiceGroupUI(container, initialVal);
+  container.addEventListener("click", e=>{
+    const btn = e.target.closest("button"); if(!btn) return;
+    const val = parseInt(btn.dataset.val,10);
+    updateSpiceGroupUI(container, val);
+    onChange(val);
+  });
+}
+
 function initSettingsUI(){
   document.getElementById("setReduceMotion").checked = state.settings.reduceMotion;
   document.getElementById("setCompact").checked = state.settings.compact;
   document.getElementById("setCaching").checked = state.settings.caching;
   document.getElementById("setStreaming").checked = state.settings.streaming;
-  updateSpiceGroupUI(document.getElementById("setDefaultSpice"), state.settings.defaultSpice);
+  buildSpiceGroupInto(document.getElementById("setDefaultSpice"), state.settings.defaultSpice, (val)=>{
+    state.settings.defaultSpice = val;
+    saveJSON(LS_KEYS.settings, state.settings);
+  });
 
   document.getElementById("setReduceMotion").addEventListener("change", e=>{
     state.settings.reduceMotion = e.target.checked;
@@ -1604,36 +1605,8 @@ function initSettingsUI(){
     state.settings.caching = e.target.checked;
     saveJSON(LS_KEYS.settings, state.settings);
   });
-const apiKeyInput = document.getElementById("setApiKey");
-  const apiKeyStatus = document.getElementById("apiKeyStatus");
-  function refreshApiKeyStatus(){
-    const ok = hasUsableApiKey();
-    apiKeyStatus.innerHTML = ok
-      ? `<span class="sb-dot"></span>Key configured — ready to use`
-      : `<span class="sb-dot" style="background:var(--danger);"></span>No key set — tools will show an error until one is added`;
-  }
-  const existingOverride = localStorage.getItem("goblin.apiKeyOverride");
-  if(existingOverride) apiKeyInput.value = existingOverride;
-  refreshApiKeyStatus();
-
-  document.getElementById("setApiKeySave").addEventListener("click", ()=>{
-    const val = apiKeyInput.value.trim();
-    if(!val){ showToast("Enter a key first"); return; }
-    localStorage.setItem("goblin.apiKeyOverride", val);
-    refreshApiKeyStatus();
-    showToast("API key saved to this browser", {icon: ICONS.check});
-  });
-  document.getElementById("setApiKeyClear").addEventListener("click", ()=>{
-    localStorage.removeItem("goblin.apiKeyOverride");
-    apiKeyInput.value = "";
-    refreshApiKeyStatus();
-    showToast("API key cleared");
-  });
-  document.getElementById("setDefaultSpice").addEventListener("click", e=>{
-    const btn = e.target.closest("button");
-    if(!btn) return;
-    state.settings.defaultSpice = parseInt(btn.dataset.val, 10);
-    updateSpiceGroupUI(document.getElementById("setDefaultSpice"), state.settings.defaultSpice);
+  document.getElementById("setStreaming").addEventListener("change", e=>{
+    state.settings.streaming = e.target.checked;
     saveJSON(LS_KEYS.settings, state.settings);
   });
 }
@@ -1736,154 +1709,15 @@ document.addEventListener("keydown", (e)=>{
 });
 
 /* ============================================================
-   OPENROUTER CLIENT — model chain, retries, cache, streaming
-   ============================================================ */
-function hashKey(str){
-  let h = 0;
-  for(let i=0;i<str.length;i++){ h = (h<<5) - h + str.charCodeAt(i); h |= 0; }
-  return "h" + h;
-}
-
-function getCached(cacheKey){
-  if(!state.settings.caching) return null;
-  const entry = state.cache[cacheKey];
-  if(!entry) return null;
-  if(Date.now() - entry.ts > CACHE_MAX_AGE_MS){ delete state.cache[cacheKey]; return null; }
-  return entry;
-}
-function setCached(cacheKey, output, model){
-  state.cache[cacheKey] = {output, model, ts: Date.now()};
-  saveJSON(LS_KEYS.cache, state.cache);
-}
-
-/**
- * Calls OpenRouter with automatic model fallback + retry + optional streaming.
- * @param {Array} messages - chat messages [{role,content}]
- * @param {Object} opts - {onToken(text), signal, cacheKey}
- * @returns {Promise<{text, model, cached}>}
- */
-async function callGoblinAI(messages, opts={}){
-  // Explicitly passing cacheKey: null means "do not cache this call" (e.g. live chat).
-  // Only fall back to an auto-generated key when cacheKey is undefined (not provided).
-  const noCache = opts.cacheKey === null;
-  const cacheKey = noCache ? null : (opts.cacheKey || hashKey(JSON.stringify(messages)));
-  const cached = noCache ? null : getCached(cacheKey);
-  if(cached){
-    return {text: cached.output, model: cached.model, cached: true};
-  }
-
-  let lastError = null;
-
-  for(const model of MODEL_CHAIN){
-    for(let attempt=0; attempt <= MAX_RETRIES_PER_MODEL; attempt++){
-      try{
-        const result = await requestModel(model, messages, opts);
-        if(!noCache) setCached(cacheKey, result.text, model);
-        return {text: result.text, model, cached:false};
-      }catch(err){
-        lastError = err;
-        // Don't retry on 4xx client errors except 429 (rate limit)
-        if(err.status && err.status < 500 && err.status !== 429){
-          break; // move to next model, no point retrying this one
-        }
-        if(attempt < MAX_RETRIES_PER_MODEL){
-          await sleep(400 * Math.pow(2, attempt)); // exponential backoff
-        }
-      }
-    }
-  }
-  throw lastError || new Error("All models failed.");
-}
-
-function sleep(ms){ return new Promise(r=>setTimeout(r, ms)); }
-
-async function requestModel(model, messages, opts){
-  const controller = new AbortController();
-  const timeout = setTimeout(()=> controller.abort(), REQUEST_TIMEOUT_MS);
-  const wantStream = state.settings.streaming && typeof opts.onToken === "function";
-
-  try{
-if(!hasUsableApiKey()){
-      const err = new Error("No API key configured. Add one in Settings → AI Behavior → API Key.");
-      err.status = 401;
-      throw err;
-    }
-
-    const res = await fetch(OPENROUTER_URL, {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${getActiveApiKey()}`,
-        "Content-Type": "application/json",
-        "HTTP-Referer": location.href,
-        "X-Title": "Goblin AI"
-      },
-      body: JSON.stringify({
-        model,
-        messages,
-        stream: wantStream,
-        temperature: opts.temperature ?? 0.7
-      }),
-      signal: controller.signal
-    });
-
-    if(!res.ok){
-      const errBody = await res.text().catch(()=> "");
-      const err = new Error(`Model ${model} returned ${res.status}: ${errBody.slice(0,200)}`);
-      err.status = res.status;
-      throw err;
-    }
-
-    if(wantStream && res.body){
-      return await consumeStream(res, opts.onToken);
-    } else {
-      const data = await res.json();
-      const text = data?.choices?.[0]?.message?.content;
-      if(!text) throw new Error(`Model ${model} returned an empty response.`);
-      return {text};
-    }
-  } finally {
-    clearTimeout(timeout);
-  }
-}
-
-async function consumeStream(res, onToken){
-  const reader = res.body.getReader();
-  const decoder = new TextDecoder();
-  let full = "";
-  let buffer = "";
-  while(true){
-    const {done, value} = await reader.read();
-    if(done) break;
-    buffer += decoder.decode(value, {stream:true});
-    const lines = buffer.split("\n");
-    buffer = lines.pop(); // keep incomplete line for next chunk
-    for(const line of lines){
-      const trimmed = line.trim();
-      if(!trimmed.startsWith("data:")) continue;
-      const payload = trimmed.slice(5).trim();
-      if(payload === "[DONE]") continue;
-      try{
-        const json = JSON.parse(payload);
-        const delta = json?.choices?.[0]?.delta?.content;
-        if(delta){ full += delta; onToken(full); }
-      }catch(e){ /* ignore partial/malformed chunk */ }
-    }
-  }
-  if(!full) throw new Error("Streamed response was empty.");
-  return {text: full};
-}
-
-/* ============================================================
    SHARED TOOL FRAMEWORK
-   Every tool gets: input, run button, spice selector, output panel
-   with copy/export/undo/redo/favorite/history, loading + error states.
    ============================================================ */
+const HISTORY_MAX_PER_TOOL = 50;
 
-function spiceGroupHTML(id, selected){
+function spiceGroupHTML(id){
   return `
     <div class="spice-group" id="${id}" role="group" aria-label="Response depth">
       <span class="spice-label">Depth</span>
-      ${[1,2,3].map(n=>`<button type="button" data-val="${n}" aria-label="Level ${n}">🌶️</button>`).join("")}
+      ${[1,2,3].map(n=>`<button type="button" data-val="${n}" aria-label="Level ${n}">${ICONS.pepper}</button>`).join("")}
     </div>`;
 }
 
@@ -1944,29 +1778,23 @@ function loadingHTML(){
     </div>`;
 }
 
-function errorHTML(message, {onRetry}={}){
-  const noKey = !hasUsableApiKey();
+function errorHTML(message, opts={}){
   return `
     <div class="error-banner">
       ${ICONS.alert}
       <div class="eb-body">
-        <strong>${noKey ? "No API key configured" : "Something went wrong"}</strong>
+        <strong>Something went wrong</strong>
         <span>${escapeHTML(message)}</span>
         <div class="eb-actions">
-          ${noKey ? `<button class="btn btn-secondary btn-sm" data-open-settings-action>Open Settings</button>` : `<button class="btn btn-secondary btn-sm" data-retry-action>Try again</button>`}
+          <button class="btn btn-secondary btn-sm" data-retry-action>Try again</button>
         </div>
       </div>
     </div>`;
 }
 
-/* Generic history/undo-redo controller factory for a tool */
 function makeToolController(tool){
   return {
     tool,
-    undoStack: [],
-    redoStack: [],
-    current: null, // {input, output, meta}
-
     pushHistory(input, output, meta={}){
       const item = {id: "r"+Date.now()+Math.random().toString(36).slice(2,6), input, output, meta, ts: Date.now()};
       if(!state.history[tool.id]) state.history[tool.id] = [];
@@ -1974,22 +1802,14 @@ function makeToolController(tool){
       state.history[tool.id] = state.history[tool.id].slice(0, HISTORY_MAX_PER_TOOL);
       saveJSON(LS_KEYS.history, state.history);
       return item;
-    },
-    pushUndo(snapshot){
-      this.undoStack.push(snapshot);
-      this.redoStack = [];
-    },
-    undo(){
-      if(!this.undoStack.length) return null;
-      this.redoStack.push(this.current);
-      return this.undoStack.pop();
-    },
-    redo(){
-      if(!this.redoStack.length) return null;
-      this.undoStack.push(this.current);
-      return this.redoStack.pop();
     }
   };
+}
+
+function modelBadgeHTML(result){
+  return result.cached
+    ? `<span class="sb-dot"></span>cached`
+    : `<span class="sb-dot"></span>${result.model}`;
 }
 
 /* ============================================================
@@ -2005,7 +1825,7 @@ function buildMagicTodoView(tool){
       </div>
       <div class="controls-row">
         <button class="btn btn-primary" id="mt-run"><span class="spinner"></span><span class="btn-label">${ICONS.check} Break it down</span></button>
-        ${spiceGroupHTML("mt-spice", state.settings.defaultSpice)}
+        ${spiceGroupHTML("mt-spice")}
       </div>
     </div>
     <div class="panel output-panel" id="mt-output-panel" style="display:none;">
@@ -2013,8 +1833,6 @@ function buildMagicTodoView(tool){
         <h3>Steps</h3>
         <div class="output-actions">
           <span class="src-badge" id="mt-src"></span>
-          <button class="icon-btn" id="mt-undo" title="Undo" disabled>${ICONS.undo}</button>
-          <button class="icon-btn" id="mt-redo" title="Redo" disabled>${ICONS.redo}</button>
           <button class="icon-btn" id="mt-fav" title="Save to favorites view">${ICONS.starOutline}</button>
           <button class="icon-btn" id="mt-copy" title="Copy">${ICONS.copy}</button>
           <button class="icon-btn" id="mt-export" title="Export as text">${ICONS.download}</button>
@@ -2049,14 +1867,13 @@ function initMagicTodo(tool){
   input.addEventListener("input", ()=> charcount.textContent = input.value.length);
   input.addEventListener("keydown", e=>{ if(e.key === "Enter") run(); });
   document.addEventListener("keydown", e=>{
-    if((e.metaKey||e.ctrlKey) && e.key === "Enter" && document.getElementById("view-magic-todo").classList.contains("active")) run();
+    if((e.metaKey||e.ctrlKey) && e.key === "Enter" && document.getElementById("view-magic-todo")?.classList.contains("active")) run();
   });
 
   function renderSteps(text){
-    // Split on numbered lines or newlines into a checklist
     const lines = text.split("\n").map(l=>l.replace(/^\s*[\d.\-•]+\s*/, "").trim()).filter(Boolean);
     if(!lines.length){ outputBody.innerHTML = `<span class="empty">No steps generated.</span>`; return; }
-    outputBody.innerHTML = `<div style="display:flex;flex-direction:column;gap:8px;">${lines.map((l,i)=>`
+    outputBody.innerHTML = `<div style="display:flex;flex-direction:column;gap:8px;">${lines.map((l)=>`
       <label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;">
         <input type="checkbox" style="margin-top:4px; width:16px; height:16px; accent-color: var(--accent);">
         <span>${escapeHTML(l)}</span>
@@ -2073,27 +1890,17 @@ function initMagicTodo(tool){
     outputBody.innerHTML = loadingHTML();
     document.getElementById("mt-src").textContent = "";
 
-    const depthMap = {1:"3-5 broad steps", 2:"5-8 clear steps", 3:"8-14 very granular, small steps"};
-    const messages = [
-      {role:"system", content:"You are Magic ToDo, part of Goblin AI. You break an overwhelming task into small, concrete, achievable steps. Reply with ONLY a numbered list of steps, one per line, no preamble, no closing remarks. Each step should be an action starting with a verb."},
-      {role:"user", content: `Break this task down into ${depthMap[spiceVal]}: "${task}"`}
-    ];
-
     try{
-      const result = await callGoblinAI(messages, {
-        cacheKey: hashKey("mt:"+spiceVal+":"+task),
+      const result = await mockAICall("todo", {task, spice: spiceVal}, {
         onToken: (partial)=> renderSteps(partial)
       });
       renderSteps(result.text);
       ctrl.pushHistory(task, result.text, {spice: spiceVal});
-      ctrl.current = {input: task, output: result.text};
-      document.getElementById("mt-src").innerHTML = result.cached
-        ? `<span class="sb-dot"></span>cached`
-        : `<span class="sb-dot"></span>${result.model.split("/")[1]?.split(":")[0] || result.model}`;
+      document.getElementById("mt-src").innerHTML = modelBadgeHTML(result);
       document.getElementById("mt-src").className = "src-badge" + (result.cached ? " cached" : "");
     }catch(err){
       outputPanel.style.display = "none";
-      errorSlot.innerHTML = errorHTML(err.message || "Couldn't reach the AI. Check your connection and try again.");
+      errorSlot.innerHTML = errorHTML("Couldn't generate steps. Try again.");
       errorSlot.querySelector("[data-retry-action]").addEventListener("click", run);
     }finally{
       runBtn.classList.remove("loading");
@@ -2116,8 +1923,6 @@ function initMagicTodo(tool){
 
 /* ============================================================
    TOOL 4: TASKMASTER
-   Pulls a Magic ToDo run from history and walks through it
-   one step at a time with a focus timer.
    ============================================================ */
 function buildTaskmasterView(tool){
   const body = `
@@ -2169,7 +1974,7 @@ function buildTaskmasterView(tool){
     </div>
 
     <div class="panel" id="tm-done-panel" style="display:none; text-align:center;">
-      <div style="font-size:34px; margin-bottom:6px;">🌱</div>
+      <div style="width:52px;height:52px;border-radius:14px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">${ICONS.seedling}</div>
       <h3 style="font-size:18px; margin-bottom:6px;">All steps cleared.</h3>
       <p style="color:var(--ink-soft); font-size:13.5px; margin-bottom:14px;">Nice work getting through that.</p>
       <button class="btn btn-secondary btn-sm" id="tm-restart">Start another list</button>
@@ -2280,7 +2085,6 @@ function initTaskmaster(tool){
   });
 }
 
-   
 /* ============================================================
    TOOL 2: FORMALIZER
    ============================================================ */
@@ -2305,7 +2109,7 @@ function buildFormalizerView(tool){
           </select>
         </div>
         <button class="btn btn-primary" id="fz-run"><span class="spinner"></span><span class="btn-label">${ICONS.wand} Convert</span></button>
-        ${spiceGroupHTML("fz-spice", state.settings.defaultSpice)}
+        ${spiceGroupHTML("fz-spice")}
       </div>
     </div>
     <div class="panel output-panel" id="fz-output-panel" style="display:none;">
@@ -2362,27 +2166,20 @@ function initFormalizer(tool){
     outputBody.innerHTML = loadingHTML();
     document.getElementById("fz-src").textContent = "";
 
-    const intensity = {1:"a light touch", 2:"a clear, noticeable shift", 3:"a strong, thorough transformation"}[spiceVal];
     const mode = modeSel.value;
-    const messages = [
-      {role:"system", content:"You are Formalizer, part of Goblin AI. You rewrite text into a requested tone. Reply with ONLY the rewritten text — no preamble, no quotation marks, no explanation."},
-      {role:"user", content:`Rewrite the following text to be "${mode}", with ${intensity}:\n\n${text}`}
-    ];
-
     try{
-      const result = await callGoblinAI(messages, {
-        cacheKey: hashKey("fz:"+mode+":"+spiceVal+":"+text),
+      const result = await mockAICall("formalize", {text, mode, spice: spiceVal}, {
         onToken: partial => outputBody.textContent = partial
       });
       if(outputBody.textContent) history_undo.push(outputBody.textContent);
       outputBody.textContent = result.text;
       ctrl.pushHistory(text, result.text, {mode, spice: spiceVal});
-      document.getElementById("fz-src").innerHTML = result.cached ? `<span class="sb-dot"></span>cached` : `<span class="sb-dot"></span>${result.model.split("/")[1]?.split(":")[0] || result.model}`;
+      document.getElementById("fz-src").innerHTML = modelBadgeHTML(result);
       document.getElementById("fz-src").className = "src-badge" + (result.cached ? " cached" : "");
       document.getElementById("fz-undo").disabled = history_undo.length === 0;
     }catch(err){
       outputPanel.style.display = "none";
-      errorSlot.innerHTML = errorHTML(err.message || "Couldn't reach the AI. Check your connection and try again.");
+      errorSlot.innerHTML = errorHTML("Couldn't convert this text. Try again.");
       errorSlot.querySelector("[data-retry-action]").addEventListener("click", run);
     }finally{
       runBtn.classList.remove("loading"); runBtn.disabled = false;
@@ -2430,7 +2227,7 @@ function buildJudgeView(tool){
       <div class="controls-row">
         <button class="btn btn-primary" id="jg-run"><span class="spinner"></span><span class="btn-label">${ICONS.scale} Judge tone</span></button>
         <button class="btn btn-secondary" id="jg-suggest"><span class="spinner"></span><span class="btn-label">Suggest a response</span></button>
-        ${spiceGroupHTML("jg-spice", state.settings.defaultSpice)}
+        ${spiceGroupHTML("jg-spice")}
       </div>
     </div>
     <div class="panel output-panel" id="jg-output-panel" style="display:none;">
@@ -2463,7 +2260,6 @@ function initJudge(tool){
   const charcount = document.getElementById("jg-charcount");
   let spiceVal = state.settings.defaultSpice;
   updateSpiceGroupUI(spiceGroup, spiceVal);
-  let lastMode = "judge";
 
   bindHelp(tool, `Paste any message you're second-guessing. The Judge reads it the way a stranger might and tells you honestly how the tone comes across — or, if you tap "Suggest a response," drafts a reply in the same conversation.`);
 
@@ -2480,7 +2276,6 @@ function initJudge(tool){
   async function run(mode){
     const text = input.value.trim();
     if(!text){ input.focus(); return; }
-    lastMode = mode;
     errorSlot.innerHTML = "";
     const activeBtn = mode === "judge" ? runBtn : suggestBtn;
     activeBtn.classList.add("loading"); activeBtn.disabled = true;
@@ -2489,29 +2284,17 @@ function initJudge(tool){
     outputBody.innerHTML = loadingHTML();
     document.getElementById("jg-src").textContent = "";
 
-    const depth = {1:"one clear sentence", 2:"2-3 sentences with a little nuance", 3:"a thorough breakdown covering multiple possible readings"}[spiceVal];
-    const messages = mode === "judge"
-      ? [
-          {role:"system", content:"You are The Judge, part of Goblin AI. You read a piece of text and describe honestly how its tone is likely to come across to a reader, including any tone that could be misread. Be direct and kind. Reply with ONLY the assessment, no preamble."},
-          {role:"user", content:`In ${depth}, describe how this text is likely to come across to someone reading it:\n\n${text}`}
-        ]
-      : [
-          {role:"system", content:"You are The Judge, part of Goblin AI. Draft a short, appropriate reply to the given message, matching a reasonable, level tone. Reply with ONLY the suggested response text."},
-          {role:"user", content:`Suggest a reply to this message:\n\n${text}`}
-        ];
-
     try{
-      const result = await callGoblinAI(messages, {
-        cacheKey: hashKey("jg:"+mode+":"+spiceVal+":"+text),
+      const result = await mockAICall("judge", {text, mode, spice: spiceVal}, {
         onToken: partial => outputBody.textContent = partial
       });
       outputBody.textContent = result.text;
       ctrl.pushHistory(text, result.text, {mode, spice: spiceVal});
-      document.getElementById("jg-src").innerHTML = result.cached ? `<span class="sb-dot"></span>cached` : `<span class="sb-dot"></span>${result.model.split("/")[1]?.split(":")[0] || result.model}`;
+      document.getElementById("jg-src").innerHTML = modelBadgeHTML(result);
       document.getElementById("jg-src").className = "src-badge" + (result.cached ? " cached" : "");
     }catch(err){
       outputPanel.style.display = "none";
-      errorSlot.innerHTML = errorHTML(err.message || "Couldn't reach the AI. Check your connection and try again.");
+      errorSlot.innerHTML = errorHTML("Couldn't process this text. Try again.");
       errorSlot.querySelector("[data-retry-action]").addEventListener("click", ()=>run(mode));
     }finally{
       activeBtn.classList.remove("loading"); activeBtn.disabled = false;
@@ -2552,7 +2335,7 @@ function buildProfessorView(tool){
           </select>
         </div>
         <button class="btn btn-primary" id="pf-run"><span class="spinner"></span><span class="btn-label">${ICONS.cap} Explain it</span></button>
-        ${spiceGroupHTML("pf-spice", state.settings.defaultSpice)}
+        ${spiceGroupHTML("pf-spice")}
       </div>
     </div>
     <div class="panel output-panel" id="pf-output-panel" style="display:none;">
@@ -2590,7 +2373,6 @@ function initProfessor(tool){
   const followupBtn = document.getElementById("pf-followup-btn");
   let spiceVal = state.settings.defaultSpice;
   updateSpiceGroupUI(spiceGroup, spiceVal);
-  let convo = []; // running chat context for follow-ups
 
   bindHelp(tool, `Ask about anything — a concept, a term, a process — and The Professor gives a plain-language crash course. Choose a style, adjust the depth, and ask follow-up questions right in the same thread.`);
 
@@ -2611,25 +2393,18 @@ function initProfessor(tool){
     outputBody.innerHTML = loadingHTML();
     document.getElementById("pf-src").textContent = "";
 
-    const depth = {1:"a short, simple 3-4 sentence explanation", 2:"a clear explanation of a few paragraphs", 3:"a thorough, detailed crash course covering nuance and edge cases"}[spiceVal];
     const style = styleSel.value;
-    const sysMsg = {role:"system", content:"You are The Professor, part of Goblin AI. You explain topics in plain, friendly language, avoiding jargon unless you define it. Reply with ONLY the explanation, no preamble."};
-    const userMsg = {role:"user", content:`${style}. Give ${depth} of: "${topic}"`};
-    convo = [sysMsg, userMsg];
-
     try{
-      const result = await callGoblinAI(convo, {
-        cacheKey: hashKey("pf:"+style+":"+spiceVal+":"+topic),
+      const result = await mockAICall("professor", {topic, style, spice: spiceVal}, {
         onToken: partial => outputBody.textContent = partial
       });
       outputBody.textContent = result.text;
-      convo.push({role:"assistant", content: result.text});
       ctrl.pushHistory(topic, result.text, {style, spice: spiceVal});
-      document.getElementById("pf-src").innerHTML = result.cached ? `<span class="sb-dot"></span>cached` : `<span class="sb-dot"></span>${result.model.split("/")[1]?.split(":")[0] || result.model}`;
+      document.getElementById("pf-src").innerHTML = modelBadgeHTML(result);
       document.getElementById("pf-src").className = "src-badge" + (result.cached ? " cached" : "");
     }catch(err){
       outputPanel.style.display = "none";
-      errorSlot.innerHTML = errorHTML(err.message || "Couldn't reach the AI. Check your connection and try again.");
+      errorSlot.innerHTML = errorHTML("Couldn't generate an explanation. Try again.");
       errorSlot.querySelector("[data-retry-action]").addEventListener("click", run);
     }finally{
       runBtn.classList.remove("loading"); runBtn.disabled = false;
@@ -2637,28 +2412,26 @@ function initProfessor(tool){
   }
   runBtn.addEventListener("click", run);
 
-async function askFollowup(){
+  async function askFollowup(){
     if(followupBtn.disabled) return;
     const q = followupInput.value.trim();
-    if(!q || !convo.length) return;
-    convo.push({role:"user", content: q});
+    if(!q) return;
     followupBtn.disabled = true;
     const prevText = outputBody.textContent;
     outputBody.textContent = prevText + "\n\n— " + q + " —\n";
     try{
-      const result = await callGoblinAI(convo, {
+      const result = await mockAICall("professor", {topic: q, style: styleSel.value, spice: spiceVal}, {
         onToken: partial => outputBody.textContent = prevText + "\n\n— " + q + " —\n" + partial
       });
       outputBody.textContent = prevText + "\n\n— " + q + " —\n" + result.text;
-      convo.push({role:"assistant", content: result.text});
       followupInput.value = "";
     }catch(err){
-      showToast("Follow-up failed: " + (err.message||"try again"));
+      showToast("Follow-up failed — try again");
     }finally{
       followupBtn.disabled = false;
     }
   }
-followupBtn.addEventListener("click", askFollowup);
+  followupBtn.addEventListener("click", askFollowup);
   followupInput.addEventListener("keydown", e=>{
     if(e.key === "Enter" && !followupBtn.disabled) askFollowup();
   });
@@ -2672,7 +2445,6 @@ followupBtn.addEventListener("click", askFollowup);
     if(item.meta?.style) styleSel.value = item.meta.style;
     outputPanel.style.display = "";
     outputBody.textContent = item.output;
-    convo = [{role:"system", content:"You are The Professor, part of Goblin AI."}, {role:"user", content:item.input}, {role:"assistant", content:item.output}];
   };
 }
 
@@ -2691,7 +2463,7 @@ function buildConsultantView(tool){
       <input type="text" id="cn-context" class="gob-input-line" placeholder="e.g. I have chronic back pain and a small apartment">
       <div class="controls-row">
         <button class="btn btn-primary" id="cn-run"><span class="spinner"></span><span class="btn-label">${ICONS.bulb} Weigh it</span></button>
-        ${spiceGroupHTML("cn-spice", state.settings.defaultSpice)}
+        ${spiceGroupHTML("cn-spice")}
       </div>
     </div>
     <div class="panel output-panel" id="cn-output-panel" style="display:none;">
@@ -2742,25 +2514,18 @@ function initConsultant(tool){
     outputBody.innerHTML = loadingHTML();
     document.getElementById("cn-src").textContent = "";
 
-    const depth = {1:"3 pros and 3 cons, plus a one-line recommendation", 2:"5 pros and 5 cons with brief reasoning, plus a short recommendation", 3:"a thorough breakdown of pros, cons, risks, and a detailed reasoned recommendation"}[spiceVal];
     const extra = contextInput.value.trim();
-    const messages = [
-      {role:"system", content:"You are The Consultant, part of Goblin AI. You weigh a decision with honest, balanced pros and cons, then give a clearly-labeled lightly-held recommendation. Format with a 'Pros' section, a 'Cons' section, and a 'Recommendation' section. Reply with ONLY this, no preamble."},
-      {role:"user", content:`Decision: "${decision}"${extra ? `\nRelevant context: ${extra}` : ""}\n\nGive me ${depth}.`}
-    ];
-
     try{
-      const result = await callGoblinAI(messages, {
-        cacheKey: hashKey("cn:"+spiceVal+":"+decision+":"+extra),
+      const result = await mockAICall("consultant", {decision, extra, spice: spiceVal}, {
         onToken: partial => outputBody.textContent = partial
       });
       outputBody.textContent = result.text;
       ctrl.pushHistory(decision, result.text, {spice: spiceVal, context: extra});
-      document.getElementById("cn-src").innerHTML = result.cached ? `<span class="sb-dot"></span>cached` : `<span class="sb-dot"></span>${result.model.split("/")[1]?.split(":")[0] || result.model}`;
+      document.getElementById("cn-src").innerHTML = modelBadgeHTML(result);
       document.getElementById("cn-src").className = "src-badge" + (result.cached ? " cached" : "");
     }catch(err){
       outputPanel.style.display = "none";
-      errorSlot.innerHTML = errorHTML(err.message || "Couldn't reach the AI. Check your connection and try again.");
+      errorSlot.innerHTML = errorHTML("Couldn't weigh this decision. Try again.");
       errorSlot.querySelector("[data-retry-action]").addEventListener("click", run);
     }finally{
       runBtn.classList.remove("loading"); runBtn.disabled = false;
@@ -2822,35 +2587,13 @@ function initToolView(tool){
 }
 
 /* ============================================================
-   GOBLIN PERSONA — tool-aware assistant
+   GOBLIN PERSONA — tool-aware mock assistant
    ============================================================ */
 const GOBLIN_LS_KEY = "goblin.persona.chat";
 
-function toolCatalogForPersona(){
-  return TOOLS.map(t=> `- ${t.name} (id: ${t.id}, ${t.status}): ${t.tagline}. ${t.blurb}`).join("\n");
-}
-
-function goblinSystemPrompt(){
-  return `You are Goblin, the friendly built-in assistant for Goblin AI, a suite of small tools that help people who feel overwhelmed by tasks, wording, or decisions. You are warm, brief, and practical — never preachy.
-
-You know the following tools that exist in this app:
-${toolCatalogForPersona()}
-
-Your job:
-1. If the user describes a problem or task, recommend the single best-fitting tool by name and explain briefly why, in one or two sentences.
-2. If the user asks what a tool does or how to use it, explain plainly.
-3. If the user pastes a result from a tool and asks you to explain it, do so simply.
-4. If the user just wants to chat or vent briefly, respond kindly and briefly, then gently point back to a relevant tool if one applies.
-5. Never invent tools that aren't listed above. If nothing fits, say so honestly and offer to just help directly in chat.
-
-Keep responses under 120 words unless the user clearly wants more detail. When recommending a tool, end your message with exactly one line in this exact format so the app can render a button:
-[[tool:TOOL_ID]]
-Only include that line if you're recommending a specific live tool. Omit it otherwise.`;
-}
-
 const goblinState = {
   open: false,
-  messages: loadJSON(GOBLIN_LS_KEY, []), // [{role, content}]
+  messages: loadJSON(GOBLIN_LS_KEY, []),
   streaming: false
 };
 
@@ -2863,10 +2606,9 @@ function renderGoblinMessages(){
     return;
   }
   wrap.innerHTML = goblinState.messages.map(m=>{
-    if(m.role === "system") return "";
     let content = escapeHTML(m.content);
     let toolBtn = "";
-const match = m.content.match(/\[\[tool:([a-z-]+)\]\]/);
+    const match = m.content.match(/\[\[tool:([a-z-]+)\]\]/);
     if(match){
       content = escapeHTML(m.content.replace(match[0], "").trim());
       const t = toolById(match[1]);
@@ -2874,7 +2616,6 @@ const match = m.content.match(/\[\[tool:([a-z-]+)\]\]/);
         toolBtn = `<button class="goblin-tool-link" data-goblin-open-tool="${t.id}">${ICONS[t.icon]} Open ${t.name}</button>`;
       }
     } else {
-      // Defensive: strip any dangling/truncated tag fragment that never closed
       content = escapeHTML(m.content.replace(/\[\[tool:[a-z-]*$/,"").trim());
     }
     return `<div class="goblin-msg ${m.role === "user" ? "user" : "assistant"}">${content.replace(/\n/g,"<br>")}${toolBtn}</div>`;
@@ -2928,24 +2669,16 @@ async function sendGoblinMessage(text){
   goblinState.streaming = true;
   document.getElementById("goblinSendBtn").disabled = true;
 
-  const contextMessages = [
-    {role:"system", content: goblinSystemPrompt()},
-    ...goblinState.messages.slice(-10) // keep recent context bounded
-  ];
-
   let liveBubble = null;
   try{
-    const result = await callGoblinAI(contextMessages, {
-      cacheKey: null, // persona chat should not be cached — it's conversational
-onToken: (partial)=>{
+    const result = await mockAICall("persona", {userText: text}, {
+      onToken: (partial)=>{
         if(!liveBubble){
           typing.remove();
           liveBubble = document.createElement("div");
           liveBubble.className = "goblin-msg assistant";
           wrap.appendChild(liveBubble);
         }
-        // Strip both complete tags and any in-progress/dangling tag fragment
-        // (e.g. "[[tool:mag" while still streaming, or a truncated tag at the end).
         liveBubble.textContent = partial
           .replace(/\[\[tool:[a-z-]+\]\]/g, "")
           .replace(/\[\[tool:[a-z-]*$/,"")
@@ -2961,7 +2694,7 @@ onToken: (partial)=>{
     typing.remove();
     const errBubble = document.createElement("div");
     errBubble.className = "goblin-msg assistant";
-    errBubble.textContent = "I couldn't reach the AI just now — " + (err.message || "give it another try in a moment") + ".";
+    errBubble.textContent = "I couldn't think of a reply just now — give it another try in a moment.";
     wrap.appendChild(errBubble);
     wrap.scrollTop = wrap.scrollHeight;
   }finally{
@@ -2973,9 +2706,6 @@ onToken: (partial)=>{
 function initGoblinPersona(){
   document.getElementById("goblinFab").addEventListener("click", toggleGoblinPanel);
   document.getElementById("goblinCloseBtn").addEventListener("click", closeGoblinPanel);
-  document.getElementById("goblinCloseBtn").innerHTML = ICONS.check.replace("<svg","<svg style='width:16px;height:16px;transform:rotate(45deg)'").replace('d="M20 6L9 17l-5-5"','d="M18 6L6 18M6 6l12 12"');
-  document.getElementById("goblinClearBtn").innerHTML = ICONS.trash;
-  document.getElementById("goblinSendBtn").innerHTML = ICONS.wand;
 
   document.getElementById("goblinClearBtn").addEventListener("click", ()=>{
     if(!goblinState.messages.length) return;
@@ -2991,7 +2721,7 @@ function initGoblinPersona(){
   const sendBtn = document.getElementById("goblinSendBtn");
   function autoGrow(){ textarea.style.height = "auto"; textarea.style.height = Math.min(textarea.scrollHeight, 100) + "px"; }
   textarea.addEventListener("input", autoGrow);
-textarea.addEventListener("keydown", e=>{
+  textarea.addEventListener("keydown", e=>{
     if(e.key === "Enter" && !e.shiftKey){
       e.preventDefault();
       if(goblinState.streaming) return;
@@ -3029,7 +2759,7 @@ textarea.addEventListener("keydown", e=>{
 
   renderGoblinMessages();
 }
-   
+
 /* ============================================================
    BOOTSTRAP
    ============================================================ */
@@ -3049,12 +2779,6 @@ function boot(){
   if(!loadJSON(LS_KEYS.onboarded, false)){
     setTimeout(openOnboarding, 400);
   }
-
-  // Periodically clean expired cache entries
-  Object.keys(state.cache).forEach(k=>{
-    if(Date.now() - state.cache[k].ts > CACHE_MAX_AGE_MS) delete state.cache[k];
-  });
-  saveJSON(LS_KEYS.cache, state.cache);
 
   window.addEventListener("beforeunload", persistAll);
 }
