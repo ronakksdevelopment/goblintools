@@ -237,7 +237,7 @@ body:not(.using-mouse) :focus-visible{
 /* ============================================================
    LANDING / DASHBOARD
    ============================================================ */
-.dash-wrap{ max-width: 1080px; margin:0 auto; padding: 56px 32px 80px; }
+.dash-wrap{ max-width: 1080px; width:100%; margin:0 auto; padding: 56px 32px 80px; box-sizing:border-box; }
 .dash-hero{ margin-bottom: 44px; }
 .dash-eyebrow{
   display:inline-flex; align-items:center; gap:7px;
@@ -265,12 +265,19 @@ body:not(.using-mouse) :focus-visible{
 .grid-section-head .count{ font-family:var(--font-mono); font-size:12px; color:var(--ink-faint); }
 
 .tool-grid{
-  display:grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  display:grid !important;
+  grid-template-columns: 1fr 1fr 1fr !important;
+  grid-auto-rows: 1fr;
+  gap: 18px;
   align-items: stretch;
+  width: 100%;
 }
-.tool-card-shell{ display:flex; }
+.tool-card-shell{
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+  width:100%;
+}
 .tool-card{
   position:relative;
   background: var(--bg-raised);
@@ -280,8 +287,10 @@ body:not(.using-mouse) :focus-visible{
   cursor:pointer;
   text-align:left;
   display:flex; flex-direction:column; gap:12px;
+  width:100%;
   height:100%;
-  min-height:180px;
+  min-height:190px;
+  box-sizing:border-box;
   transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), border-color 0.2s var(--ease);
 }
 .tool-card:hover{ transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--border-strong); }
@@ -317,8 +326,8 @@ body:not(.using-mouse) :focus-visible{
 .fav-toggle.is-fav{ color: var(--clay); }
 .fav-toggle svg{ width:16px; height:16px; }
 
-@media (max-width: 860px){ .tool-grid{ grid-template-columns: repeat(2,minmax(0,1fr)); } }
-@media (max-width: 560px){ .tool-grid{ grid-template-columns: 1fr; } .dash-wrap{ padding: 28px 18px 80px; } }
+@media (max-width: 900px){ .tool-grid{ grid-template-columns: 1fr 1fr !important; } }
+@media (max-width: 560px){ .tool-grid{ grid-template-columns: 1fr !important; } .dash-wrap{ padding: 28px 18px 80px; } }
 
 /* ============================================================
    TOOL VIEW SHELL
@@ -1325,13 +1334,11 @@ window.addEventListener("popstate", ()=>{
    DASHBOARD RENDERING
    ============================================================ */
 function toolCardHTML(tool, {withFavToggle=true} = {}){
-  // wrapper closes at end of returned template
   const isFav = state.favorites.includes(tool.id);
   const disabled = tool.status === "soon";
   return `
-   <div class="tool-card-shell" style="position:relative;">
-<div class="tool-card-shell" style="position:relative;">
-      <button class="tool-card ${disabled ? "disabled" : ""}" data-view="${disabled ? "" : "tool:"+tool.id}" style="--tc-bg: var(--${tool.color}-soft); --tc-fg: var(--${tool.color}); width:100%;">
+    <div class="tool-card-shell">
+      <button class="tool-card ${disabled ? "disabled" : ""}" data-view="${disabled ? "" : "tool:"+tool.id}" style="--tc-bg: var(--${tool.color}-soft); --tc-fg: var(--${tool.color});">
         <div class="tool-icon-wrap">${ICONS[tool.icon]}</div>
         <h3>${tool.name}</h3>
         <p>${tool.blurb}</p>
