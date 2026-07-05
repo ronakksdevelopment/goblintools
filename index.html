@@ -957,7 +957,7 @@ const MOCK_MODELS = ["goblin-mock-small", "goblin-mock-standard", "goblin-mock-p
 function sleep(ms){ return new Promise(r=>setTimeout(r, ms)); }
 
 function mockMagicTodoSteps(task, spice){
-  const n = {1:4, 2:6, 3:10}[spice] || 6;
+  const n = {1:3, 2:5, 3:7, 4:9, 5:12}[spice] || 7;
   const verbs = ["Find", "Gather", "Set aside time for", "Start with", "Clear space for", "Handle", "Sort", "Set out", "Check on", "Finish up", "Put away", "Wipe down", "Label", "Box up", "Take a short break after"];
   const steps = [];
   for(let i=0;i<n;i++){
@@ -1004,7 +1004,7 @@ function mockProfessorOutput(topic, style){
 }
 
 function mockConsultantOutput(decision, extra, spice){
-  const n = {1:3, 2:5, 3:7}[spice] || 5;
+  const n = {1:2, 2:3, 3:5, 4:6, 5:8}[spice] || 5;
   const pros = Array.from({length:n}, (_,i)=> `Pro ${i+1}: this could genuinely make things easier in the short term.`).join("\n");
   const cons = Array.from({length:n}, (_,i)=> `Con ${i+1}: there's a real tradeoff to weigh here before committing.`).join("\n");
   const context = extra ? `\n\nGiven the context you shared ("${extra}"), that tradeoff matters a bit more than usual.` : "";
@@ -1086,8 +1086,8 @@ function saveJSON(key, val){
 
 const state = {
   theme: loadJSON(LS_KEYS.theme, null),
-  settings: loadJSON(LS_KEYS.settings, {
-    reduceMotion: false, compact: false, caching: true, streaming: true, defaultSpice: 2
+settings: loadJSON(LS_KEYS.settings, {
+    reduceMotion: false, compact: false, caching: true, streaming: true, defaultSpice: 3
   }),
   favorites: loadJSON(LS_KEYS.favorites, []),
   history: loadJSON(LS_KEYS.history, {}),
@@ -1571,7 +1571,7 @@ function downloadText(filename, text){
    SETTINGS BINDINGS
    ============================================================ */
 function buildSpiceGroupInto(container, initialVal, onChange){
-  container.innerHTML = [1,2,3].map(n=>`<button type="button" data-val="${n}" aria-label="Level ${n}">${ICONS.pepper}</button>`).join("");
+  container.innerHTML = [1,2,3,4,5].map(n=>`<button type="button" data-val="${n}" aria-label="Level ${n}">${ICONS.pepper}</button>`).join("");
   updateSpiceGroupUI(container, initialVal);
   container.addEventListener("click", e=>{
     const btn = e.target.closest("button"); if(!btn) return;
@@ -1717,7 +1717,7 @@ function spiceGroupHTML(id){
   return `
     <div class="spice-group" id="${id}" role="group" aria-label="Response depth">
       <span class="spice-label">Depth</span>
-      ${[1,2,3].map(n=>`<button type="button" data-val="${n}" aria-label="Level ${n}">${ICONS.pepper}</button>`).join("")}
+      ${[1,2,3,4,5].map(n=>`<button type="button" data-val="${n}" aria-label="Level ${n}">${ICONS.pepper}</button>`).join("")}
     </div>`;
 }
 
