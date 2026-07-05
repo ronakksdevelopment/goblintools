@@ -952,10 +952,6 @@ select.gob-select:focus{ border-color: var(--accent); }
 /* ============================================================
    CONFIG
    ============================================================ */
-// SECURITY NOTE: this key is embedded client-side and is visible to anyone who
-// views source on this page. Set a hard spend limit on this key in the
-// OpenRouter dashboard and rotate it periodically. Do not push this file to a
-// public repo without swapping to a server-side proxy.
 // SECURITY NOTE: never commit a real key here. This file is plain client-side
 // HTML/JS — anything placed in this constant is visible to any visitor via
 // "view source". Set OPENROUTER_KEY via one of:
@@ -983,7 +979,7 @@ const MODEL_CHAIN = [
 
 function hasUsableApiKey(){
   const key = (window.GOBLIN_CONFIG && window.GOBLIN_CONFIG.apiKey) || localStorage.getItem("goblin.apiKeyOverride") || OPENROUTER_KEY;
-  return !!key && key !== "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" && key.trim().length > 10;
+  return !!key && key !== "YOUR_API_KEY_HERE" && key.trim().length > 10;
 }
 function getActiveApiKey(){
   return localStorage.getItem("goblin.apiKeyOverride") || (window.GOBLIN_CONFIG && window.GOBLIN_CONFIG.apiKey) || OPENROUTER_KEY;
@@ -1319,13 +1315,16 @@ function renderGreeting(){
 }
 
 document.body.addEventListener("click", (e)=>{
-  if(e.target.closest("[data-open-settings-action]")){
-    openDrawer("settings");
-  }
-});
+  const favBtn = e.target.closest("[data-fav-toggle]");
   if(favBtn){
     e.stopPropagation();
     toggleFavorite(favBtn.dataset.favToggle);
+  }
+});
+
+document.body.addEventListener("click", (e)=>{
+  if(e.target.closest("[data-open-settings-action]")){
+    openDrawer("settings");
   }
 });
 
