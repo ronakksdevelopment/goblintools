@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Goblin AI — small tools for big feelings</title>
+<title>Goblin AI, small tools for big feelings</title>
 <meta name="description" content="A collection of small, simple AI tools for when things feel too big or complicated.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -268,6 +268,7 @@ body:not(.using-mouse) :focus-visible{
   display:grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
+  align-items: stretch;
 }
 .tool-card-shell{ display:flex; }
 .tool-card{
@@ -279,8 +280,9 @@ body:not(.using-mouse) :focus-visible{
   cursor:pointer;
   text-align:left;
   display:flex; flex-direction:column; gap:12px;
-  min-height:172px;
-  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), border-color 0.2s var(--ease), background 0.2s var(--ease);
+  height:100%;
+  min-height:180px;
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), border-color 0.2s var(--ease);
 }
 .tool-card:hover{ transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--border-strong); }
 .tool-card:focus-visible{ outline: 2.5px solid var(--focus-ring); outline-offset: 3px; }
@@ -549,6 +551,18 @@ select.gob-select:focus{ border-color: var(--accent); }
 .onboard-feature .of-text span{ font-size:12.5px; color:var(--ink-faint); }
 .modal-actions{ display:flex; gap:10px; justify-content:center; }
 
+.confirm-card{ max-width:400px; padding:32px 30px; }
+.confirm-icon{
+  width:52px; height:52px; margin:0 auto 14px; border-radius:14px;
+  background: var(--danger-soft); color: var(--danger); display:flex; align-items:center; justify-content:center;
+}
+.confirm-icon svg{ width:24px; height:24px; }
+.confirm-icon.neutral{ background: var(--accent-soft); color: var(--accent); }
+#confirmTitle{ font-size:19px; margin-bottom:8px; }
+#confirmBody{ font-size:14px; color:var(--ink-soft); margin-bottom:22px; line-height:1.5; }
+.modal-card.confirm-card .btn-primary.danger-confirm{ background: var(--danger); }
+.modal-card.confirm-card .btn-primary.danger-confirm:hover{ background: var(--danger); opacity:0.9; }
+
 .cmdk-overlay{ position:fixed; inset:0; background: rgba(20,18,15,0.45); z-index:170; display:none; align-items:flex-start; justify-content:center; padding-top:14vh; }
 .cmdk-overlay.open{ display:flex; }
 .cmdk-box{ background: var(--bg-raised); border-radius: var(--radius-lg); width:560px; max-width:90vw; box-shadow:var(--shadow-lg); overflow:hidden; border:1px solid var(--border); }
@@ -669,6 +683,18 @@ select.gob-select:focus{ border-color: var(--accent); }
   <div class="modal-card" id="onboardCard"></div>
 </div>
 
+<div class="modal-overlay" id="confirmOverlay" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle" aria-describedby="confirmBody">
+  <div class="modal-card confirm-card">
+    <div class="confirm-icon" id="confirmIcon"></div>
+    <h2 id="confirmTitle"></h2>
+    <p id="confirmBody"></p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="confirmCancelBtn">Cancel</button>
+      <button class="btn btn-primary" id="confirmOkBtn">Confirm</button>
+    </div>
+  </div>
+</div>
+
 <div class="cmdk-overlay" id="cmdkOverlay">
   <div class="cmdk-box" role="dialog" aria-label="Command palette">
     <div class="cmdk-input-wrap">
@@ -746,7 +772,7 @@ select.gob-select:focus{ border-color: var(--accent); }
           <button class="btn btn-ghost btn-sm" id="resetOnboardBtn">Show tour</button>
         </div>
         <div class="settings-row">
-          <div><div class="settings-row-label">Erase all local data</div><div class="settings-row-desc">History, favorites, settings — this device only</div></div>
+          <div><div class="settings-row-label">Erase all local data</div><div class="settings-row-desc">History, favorites, settings, this device only</div></div>
           <button class="btn btn-danger-ghost btn-sm" id="eraseDataBtn">Erase</button>
         </div>
       </div>
@@ -934,7 +960,7 @@ const TOOLS = [
     blurb: "Turn one overwhelming to-do into small, doable steps.", icon: "check", color: "accent", status: "live", isNew:false,
     view: buildMagicTodoView },
   { id: "formalizer", name: "Formalizer", tagline: "Rephrase your words into a different register",
-    blurb: "Text transformers for tone — casual, professional, and beyond.", icon: "wand", color: "clay", status: "live", isNew:false,
+    blurb: "Text transformers for tone: casual, professional, and beyond.", icon: "wand", color: "clay", status: "live", isNew:false,
     view: buildFormalizerView },
   { id: "judge", name: "The Judge", tagline: "Am I misreading the tone of this?",
     blurb: "Get a second opinion on how a message really comes across.", icon: "scale", color: "accent", status: "live", isNew:false,
@@ -984,24 +1010,24 @@ function mockFormalizerOutput(text, mode){
   const trimmed = text.trim();
   const prefix = {
     "More professional": "I wanted to follow up regarding the following:",
-    "More casual": "Hey, just wanted to say —",
+    "More casual": "Hey, just wanted to say,",
     "More concise": "In short:",
     "More assertive": "To be direct:",
     "More diplomatic": "I hope this lands well, but I wanted to gently note:",
     "Simpler / plain language": "Here's the simple version:",
-    "More enthusiastic": "Quick note, and I'm genuinely excited about this —"
+    "More enthusiastic": "Quick note, and I'm genuinely excited about this,"
   }[mode] || "Rewritten:";
   return `${prefix} ${trimmed}`;
 }
 
 function mockJudgeOutput(text, mode){
-  if(mode === "suggest"){
-    return `Thanks for sending this over — I've read it and wanted to reply directly. I think the core point comes through clearly, and I'm happy to move forward on this basis. Let me know if you'd like to talk it through further.`;
+if(mode === "suggest"){
+    return `Thanks for sending this over, I've read it and wanted to reply directly. I think the core point comes through clearly, and I'm happy to move forward on this basis. Let me know if you'd like to talk it through further.`;
   }
   const readings = [
     "mostly neutral and matter-of-fact, though a reader who doesn't know you well might read it as slightly blunt",
     "warm overall, with just a little formality that could come across as distant in a casual setting",
-    "clear and direct — most readers would take this at face value with no hidden edge",
+    "clear and direct, most readers would take this at face value with no hidden edge",
     "a bit rushed in tone, which could read as curt even if that's not the intent"
   ];
   return `Your text comes across as ${readings[text.length % readings.length]}. If you want it to land differently, consider softening the opening line or adding one sentence of context.`;
@@ -1011,10 +1037,10 @@ function mockProfessorOutput(topic, style){
   const openers = {
     "Explain like I'm new to this": `Let's start from the very basics of "${topic}".`,
     "Explain with an analogy": `Think of "${topic}" like this:`,
-    "Explain like a quick reference": `Quick reference — "${topic}":`,
+    "Explain like a quick reference": `Quick reference, "${topic}":`,
     "Explain the history / why it exists": `"${topic}" exists because of a specific problem people kept running into.`
   };
-  return `${openers[style] || `Here's an explanation of "${topic}":`} At its core, this is about a small set of ideas working together in a predictable way. Once you see the pattern, the rest tends to click into place — most people find it much less intimidating after one clear pass through the basics.`;
+  return `${openers[style] || `Here's an explanation of "${topic}":`} At its core, this is about a small set of ideas working together in a predictable way. Once you see the pattern, the rest tends to click into place, most people find it much less intimidating after one clear pass through the basics.`;
 }
 
 function mockEstimatorOutput(task, spice){
@@ -1088,7 +1114,7 @@ function mockPersonaReply(userText){
     {kw:["start", "overwhelm", "big task", "where do i"], tool:"magic-todo", msg:"Sounds like Magic ToDo is the move here. Hand it one task and it'll split it into small, doable steps."},
     {kw:["email", "soften", "tone", "professional", "rewrite"], tool:"formalizer", msg:"Formalizer can rework the wording for you. Pick a tone and it rewrites the whole thing."},
     {kw:["come across", "misread", "reading this wrong", "harsh"], tool:"judge", msg:"The Judge is built exactly for this. Paste the message in and it'll tell you honestly how it reads."},
-    {kw:["focus", "one step", "distracted"], tool:"taskmaster", msg:"Taskmaster walks through a step list one item at a time with an optional timer — good for staying with just one thing."},
+    {kw:["focus", "one step", "distracted"], tool:"taskmaster", msg:"Taskmaster walks through a step list one item at a time with an optional timer, good for staying with just one thing."},
     {kw:["explain", "what is", "how does", "learn"], tool:"professor", msg:"The Professor gives a plain-language crash course on pretty much anything. Want me to send you there?"},
     {kw:["decide", "pros and cons", "should i"], tool:"consultant", msg:"The Consultant lays out honest pros and cons for a decision like that, plus a lightly-held recommendation."},
     {kw:["how long", "estimate", "how much time"], tool:"estimator", msg:"Estimator can give you a realistic time range for that so it feels less like a guess."},
@@ -1100,7 +1126,7 @@ function mockPersonaReply(userText){
       return `${entry.msg}\n[[tool:${entry.tool}]]`;
     }
   }
-  return "I hear you. If you want, describe the task or feeling a bit more and I can point you to the right tool — or we can just talk it through here.";
+  return "I hear you. If you want, describe the task or feeling a bit more and I can point you to the right tool, or we can just talk it through here.";
 }
 
 /* ============================================================
@@ -1412,7 +1438,7 @@ const ONBOARD_SLIDES = [
     body: "Everything here is keyboard-friendly, works offline for your saved data, and remembers what you've made.",
     features: [
       {icon:"bolt", title:"Command palette", desc:"Press ⌘K / Ctrl+K to jump anywhere instantly"},
-      {icon:"clock", title:"History & favorites", desc:"Every result is saved locally — nothing leaves your device"},
+      {icon:"clock", title:"History & favorites", desc:"Every result is saved locally, nothing leaves your device"},
       {icon:"undo", title:"Undo & redo", desc:"Re-run, tweak, and step back through your results freely"}
     ]
   },
@@ -1469,6 +1495,51 @@ function closeOnboarding(){
   saveJSON(LS_KEYS.onboarded, true);
 }
 document.getElementById("resetOnboardBtn").addEventListener("click", ()=>{ closeDrawer(); openOnboarding(); });
+
+/* ============================================================
+   CUSTOM CONFIRM MODAL (replaces native confirm())
+   ============================================================ */
+function showConfirm({title, body, confirmLabel="Confirm", tone="danger", icon=null}){
+  return new Promise((resolve)=>{
+    const overlay = document.getElementById("confirmOverlay");
+    const iconEl = document.getElementById("confirmIcon");
+    const titleEl = document.getElementById("confirmTitle");
+    const bodyEl = document.getElementById("confirmBody");
+    const okBtn = document.getElementById("confirmOkBtn");
+    const cancelBtn = document.getElementById("confirmCancelBtn");
+
+    titleEl.textContent = title;
+    bodyEl.textContent = body;
+    okBtn.textContent = confirmLabel;
+    iconEl.className = "confirm-icon" + (tone === "neutral" ? " neutral" : "");
+    iconEl.innerHTML = icon || ICONS.alert;
+    okBtn.className = "btn btn-primary" + (tone === "danger" ? " danger-confirm" : "");
+
+    function cleanup(result){
+      overlay.classList.remove("open");
+      okBtn.removeEventListener("click", onOk);
+      cancelBtn.removeEventListener("click", onCancel);
+      overlay.removeEventListener("click", onOverlayClick);
+      document.removeEventListener("keydown", onKeydown);
+      resolve(result);
+    }
+    function onOk(){ cleanup(true); }
+    function onCancel(){ cleanup(false); }
+    function onOverlayClick(e){ if(e.target === overlay) cleanup(false); }
+    function onKeydown(e){
+      if(e.key === "Escape") cleanup(false);
+      if(e.key === "Enter") cleanup(true);
+    }
+
+    okBtn.addEventListener("click", onOk);
+    cancelBtn.addEventListener("click", onCancel);
+    overlay.addEventListener("click", onOverlayClick);
+    document.addEventListener("keydown", onKeydown);
+
+    overlay.classList.add("open");
+    setTimeout(()=> cancelBtn.focus(), 30);
+  });
+}
 
 /* ============================================================
    DRAWER (History / Favorites / Settings)
@@ -1579,16 +1650,30 @@ document.body.addEventListener("click", (e)=>{
   }
 });
 
-document.getElementById("clearHistoryBtn").addEventListener("click", ()=>{
-  if(confirm("Clear all history? This can't be undone.")){
+document.getElementById("clearHistoryBtn").addEventListener("click", async ()=>{
+  const ok = await showConfirm({
+    title: "Clear all history?",
+    body: "This removes every saved result across all tools. This can't be undone.",
+    confirmLabel: "Clear history",
+    tone: "danger",
+    icon: ICONS.trash
+  });
+  if(ok){
     state.history = {};
     saveJSON(LS_KEYS.history, state.history);
     renderHistoryDrawer();
     showToast("History cleared");
   }
 });
-document.getElementById("eraseDataBtn").addEventListener("click", ()=>{
-  if(confirm("This erases all Goblin AI data on this device: history, favorites, settings. Continue?")){
+document.getElementById("eraseDataBtn").addEventListener("click", async ()=>{
+  const ok = await showConfirm({
+    title: "Erase all local data?",
+    body: "This clears history, favorites, and settings on this device. This can't be undone.",
+    confirmLabel: "Erase everything",
+    tone: "danger",
+    icon: ICONS.trash
+  });
+  if(ok){
     Object.values(LS_KEYS).forEach(k=> localStorage.removeItem(k));
     location.reload();
   }
@@ -1607,10 +1692,10 @@ function relativeTime(ts){
 
 function copyToClipboard(text){
   if(!text) return;
-  navigator.clipboard?.writeText(text).then(()=>{
+navigator.clipboard?.writeText(text).then(()=>{
     showToast("Copied to clipboard", {icon: ICONS.copy});
   }).catch(()=>{
-    showToast("Couldn't copy — try selecting manually");
+    showToast("Couldn't copy, try selecting manually");
   });
 }
 
@@ -2066,7 +2151,7 @@ function initTaskmaster(tool){
 
   function populateSourceOptions(){
     const runs = (state.history["magic-todo"] || []);
-    sourceSel.innerHTML = `<option value="">— Use pasted list below —</option>` +
+   sourceSel.innerHTML = `<option value="">Use pasted list below</option>` +
       runs.map((r,i)=> `<option value="${i}">${escapeHTML(r.input.slice(0,50))} (${relativeTime(r.ts)})</option>`).join("");
   }
   populateSourceOptions();
@@ -2325,6 +2410,7 @@ function initJudge(tool){
   const charcount = document.getElementById("jg-charcount");
   let spiceVal = state.settings.defaultSpice;
   updateSpiceGroupUI(spiceGroup, spiceVal);
+  document.getElementById("jg-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
 
   bindHelp(tool, `Paste any message you're second-guessing. The Judge reads it the way a stranger might and tells you honestly how the tone comes across, or if you tap "Suggest a response," drafts a reply in the same conversation.`);
 
@@ -2486,16 +2572,16 @@ function initProfessor(tool){
     const q = followupInput.value.trim();
     if(!q) return;
     followupBtn.disabled = true;
-    const prevText = outputBody.textContent;
-    outputBody.textContent = prevText + "\n\n— " + q + " —\n";
+const prevText = outputBody.textContent;
+    outputBody.textContent = prevText + "\n\n> " + q + "\n";
     try{
       const result = await mockAICall("professor", {topic: q, style: styleSel.value, spice: spiceVal}, {
-        onToken: partial => outputBody.textContent = prevText + "\n\n— " + q + " —\n" + partial
+        onToken: partial => outputBody.textContent = prevText + "\n\n> " + q + "\n" + partial
       });
-      outputBody.textContent = prevText + "\n\n— " + q + " —\n" + result.text;
+      outputBody.textContent = prevText + "\n\n> " + q + "\n" + result.text;
       followupInput.value = "";
-    }catch(err){
-      showToast("Follow-up failed — try again");
+}catch(err){
+      showToast("Follow-up failed, try again");
     }finally{
       followupBtn.disabled = false;
     }
@@ -3063,7 +3149,7 @@ async function sendGoblinMessage(text){
     typing.remove();
     const errBubble = document.createElement("div");
     errBubble.className = "goblin-msg assistant";
-    errBubble.textContent = "I couldn't think of a reply just now — give it another try in a moment.";
+    errBubble.textContent = "I couldn't think of a reply just now, give it another try in a moment.";
     wrap.appendChild(errBubble);
     wrap.scrollTop = wrap.scrollHeight;
   }finally{
@@ -3076,16 +3162,23 @@ function initGoblinPersona(){
   document.getElementById("goblinFab").addEventListener("click", toggleGoblinPanel);
   document.getElementById("goblinCloseBtn").addEventListener("click", closeGoblinPanel);
 
-  document.getElementById("goblinClearBtn").addEventListener("click", ()=>{
+document.getElementById("goblinClearBtn").addEventListener("click", async ()=>{
     if(!goblinState.messages.length) return;
-    if(confirm("Clear this chat with Goblin?")){
+    const ok = await showConfirm({
+      title: "Clear this chat?",
+      body: "Your conversation with the Goblin will be cleared from this device.",
+      confirmLabel: "Clear chat",
+      tone: "neutral",
+      icon: ICONS.goblin
+    });
+    if(ok){
       goblinState.messages = [];
       saveGoblinChat();
       renderGoblinMessages();
       renderGoblinSuggestions();
     }
   });
-
+   
   const textarea = document.getElementById("goblinInput");
   const sendBtn = document.getElementById("goblinSendBtn");
   function autoGrow(){ textarea.style.height = "auto"; textarea.style.height = Math.min(textarea.scrollHeight, 100) + "px"; }
