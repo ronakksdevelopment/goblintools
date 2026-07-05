@@ -49,9 +49,9 @@
   --bg:            #14120F;
   --bg-raised:     #1E1B17;
   --bg-sunken:     #0E0C0A;
-  --ink:           #F1ECE0;
-  --ink-soft:      #C4BCAC;
-  --ink-faint:     #837C6F;
+  --ink:           #FFFFFF;
+  --ink-soft:      #D4CCBC;
+  --ink-faint:     #93897A;
   --border:        #322E27;
   --border-strong: #423D33;
   --accent:        #6FA87F;
@@ -218,6 +218,7 @@ body:not(.using-mouse) :focus-visible{
 .icon-btn:hover{ background: var(--bg-sunken); color:var(--ink); }
 .icon-btn:active{ transform: scale(0.94); }
 .icon-btn.active{ background:var(--accent-soft); color:var(--accent); border-color: transparent; }
+.icon-btn:focus-visible{ outline: 2px solid var(--focus-ring); outline-offset: 2px; }
 
 .theme-toggle{ display:flex; background:var(--bg-sunken); border-radius: 10px; padding:3px; gap:2px; }
 .theme-toggle button{
@@ -244,7 +245,7 @@ body:not(.using-mouse) :focus-visible{
   color: var(--accent); background: var(--accent-soft); padding:5px 10px; border-radius:20px; margin-bottom:16px;
 }
 .dash-eyebrow .dot{ width:6px; height:6px; border-radius:50%; background:var(--accent); }
-.dash-title{ font-size: clamp(32px, 5vw, 48px); line-height:1.05; margin-bottom:14px; }
+.dash-title{ font-size: clamp(32px, 5vw, 48px); line-height:1.05; margin-bottom:14px; color: var(--ink); }
 .dash-title em{ font-style:italic; color: var(--accent); font-weight:500; }
 .dash-sub{ font-size:16.5px; color: var(--ink-soft); max-width:520px; }
 
@@ -268,6 +269,7 @@ body:not(.using-mouse) :focus-visible{
   grid-template-columns: repeat(3, 1fr);
   gap: 14px;
 }
+.tool-card-shell{ display:flex; }
 .tool-card{
   position:relative;
   background: var(--bg-raised);
@@ -280,6 +282,7 @@ body:not(.using-mouse) :focus-visible{
   transition: transform 0.18s var(--ease), box-shadow 0.18s var(--ease), border-color 0.18s var(--ease);
 }
 .tool-card:hover{ transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--border-strong); }
+.tool-card:focus-visible{ outline: 2.5px solid var(--focus-ring); outline-offset: 3px; }
 .tool-card:active{ transform: translateY(-1px); }
 .tool-card.disabled{ opacity:0.45; cursor:not-allowed; }
 .tool-card.disabled:hover{ transform:none; box-shadow:none; }
@@ -289,7 +292,7 @@ body:not(.using-mouse) :focus-visible{
   background: var(--tc-bg, var(--accent-soft));
 }
 .tool-icon-wrap svg{ width:22px; height:22px; color: var(--tc-fg, var(--accent)); }
-.tool-card h3{ font-size:16.5px; }
+.tool-card h3{ font-size:16.5px; color: var(--ink); }
 .tool-card p{ color:var(--ink-faint); font-size:13.5px; line-height:1.4; }
 .tool-card-badges{ position:absolute; top:16px; right:16px; display:flex; gap:6px; }
 .chip{
@@ -304,6 +307,10 @@ body:not(.using-mouse) :focus-visible{
   color: var(--border-strong); transition: color 0.15s var(--ease), transform 0.15s var(--ease);
 }
 .fav-toggle:hover{ color: var(--clay); transform: scale(1.12); }
+.fav-toggle:focus-visible{ outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+@media (max-width: 480px){
+  .fav-toggle{ width:30px; height:30px; }
+}
 .fav-toggle.is-fav{ color: var(--clay); }
 .fav-toggle svg{ width:16px; height:16px; }
 
@@ -322,7 +329,7 @@ body:not(.using-mouse) :focus-visible{
   background: var(--tc-bg, var(--accent-soft));
 }
 .tool-head-icon svg{ width:24px; height:24px; color: var(--tc-fg, var(--accent)); }
-.tool-head h1{ font-size:27px; margin-bottom:4px; }
+.tool-head h1{ font-size:27px; margin-bottom:4px; color: var(--ink); }
 .tool-head .tool-tagline{ color: var(--ink-soft); font-size:14.5px; }
 .tool-head-actions{ display:flex; gap:8px; flex-shrink:0; }
 
@@ -809,8 +816,8 @@ select.gob-select:focus{ border-color: var(--accent); }
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></svg>
           </button>
         </div>
-        <button class="icon-btn" id="favBtn" aria-label="Favorites" title="Favorites">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.1 5 5.6 5c2 0 3.3 1 4.4 2.5C11.1 6 12.4 5 14.4 5c3.5 0 5.2 3.4 3.6 6.7C19.5 16.4 12 21 12 21z"/></svg>
+<button class="icon-btn" id="favBtn" aria-label="Favorites" title="Favorites">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="favBtnIcon"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.1 5 5.6 5c2 0 3.3 1 4.4 2.5C11.1 6 12.4 5 14.4 5c3.5 0 5.2 3.4 3.6 6.7C19.5 16.4 12 21 12 21z"/></svg>
         </button>
       </div>
     </div>
@@ -840,7 +847,7 @@ select.gob-select:focus{ border-color: var(--accent); }
           </div>
         </div>
         <div class="footer">
-          Goblin AI is a fan-made reinterpretation inspired by goblin.tools — a real, free resource. Not affiliated. Built for practice, not profit. UI demo only — no requests leave your browser.
+          Goblin AI is a fan-made reinterpretation inspired by goblin.tools, a real, free resource. Not affiliated. Built for practice, not profit. UI demo only, no requests leave your browser.
         </div>
       </section>
 
@@ -937,12 +944,15 @@ const TOOLS = [
   { id: "consultant", name: "The Consultant", tagline: "But what are the pros and cons?",
     blurb: "Weigh a decision with clear-eyed pros, cons, and a recommendation.", icon: "bulb", color: "clay", status: "live", isNew:false,
     view: buildConsultantView },
-  { id: "estimator", name: "Estimator", tagline: "Just tell me how long this will take",
-    blurb: "A realistic time estimate for any task, chore, or errand.", icon: "clock", color: "accent", status: "soon" },
+{ id: "estimator", name: "Estimator", tagline: "Just tell me how long this will take",
+    blurb: "A realistic time estimate for any task, chore, or errand.", icon: "clock", color: "accent", status: "live", isNew:true,
+    view: buildEstimatorView },
   { id: "compiler", name: "Compiler", tagline: "Turn a braindump into actions",
-    blurb: "Feed in a messy stream of thoughts, get back a clean task list.", icon: "brain", color: "clay", status: "soon" },
+    blurb: "Feed in a messy stream of thoughts, get back a clean task list.", icon: "brain", color: "clay", status: "live", isNew:true,
+    view: buildCompilerView },
   { id: "chef", name: "The Chef", tagline: "What am I having for dinner?",
-    blurb: "Suggests a recipe from whatever ingredients you already have.", icon: "chef", color: "accent", status: "soon" },
+    blurb: "Suggests a recipe from whatever ingredients you already have.", icon: "chef", color: "accent", status: "live", isNew:true,
+    view: buildChefView },
 ];
 
 const toolById = id => TOOLS.find(t => t.id === id);
@@ -1003,12 +1013,35 @@ function mockProfessorOutput(topic, style){
   return `${openers[style] || `Here's an explanation of "${topic}":`} At its core, this is about a small set of ideas working together in a predictable way. Once you see the pattern, the rest tends to click into place — most people find it much less intimidating after one clear pass through the basics.`;
 }
 
+function mockEstimatorOutput(task, spice){
+  const ranges = {1:"a few minutes", 2:"15 to 30 minutes", 3:"30 minutes to an hour", 4:"1 to 2 hours", 5:"2 to 4 hours, possibly split across a day"};
+  const range = ranges[spice] || ranges[3];
+  return `Realistically, "${task}" will probably take ${range}. That estimate includes the setup and wind down, not just the active part, since those tend to eat more time than people expect. If it's your first time doing this specific task, add on a bit more for figuring things out as you go. Breaking it into smaller chunks with Magic ToDo can make the estimate feel less abstract.`;
+}
+
+function mockCompilerOutput(braindump, spice){
+  const lines = braindump.split(/[\n.;]/).map(s=>s.trim()).filter(Boolean);
+  const n = {1:3, 2:5, 3:7, 4:9, 5:12}[spice] || 6;
+  const items = lines.length ? lines : ["Follow up on the main thing you mentioned", "Sort out the smaller loose end", "Decide on next steps"];
+  const capped = items.slice(0, n);
+  while(capped.length < Math.min(n, 3)) capped.push("Review what's left and decide if it still matters");
+  return capped.map((l,i)=> `${i+1}. ${l.charAt(0).toUpperCase()+l.slice(1)}`).join("\n");
+}
+
+function mockChefOutput(ingredients, spice){
+  const list = ingredients.split(",").map(s=>s.trim()).filter(Boolean);
+  const dish = list.length ? `a simple dish built around ${list.slice(0,3).join(", ")}` : "a simple pantry meal";
+  const steps = {1:2, 2:3, 3:4, 4:5, 5:6}[spice] || 4;
+  const instructions = Array.from({length:steps}, (_,i)=> `${i+1}. ${i===0 ? "Prep and rinse what you're using" : i===steps-1 ? "Plate it up and taste for seasoning" : "Cook the next component and combine"}.`).join("\n");
+  return `Try ${dish}. It's forgiving and doesn't need much beyond what you already have.\n\n${instructions}`;
+}
+
 function mockConsultantOutput(decision, extra, spice){
   const n = {1:2, 2:3, 3:5, 4:6, 5:8}[spice] || 5;
   const pros = Array.from({length:n}, (_,i)=> `Pro ${i+1}: this could genuinely make things easier in the short term.`).join("\n");
   const cons = Array.from({length:n}, (_,i)=> `Con ${i+1}: there's a real tradeoff to weigh here before committing.`).join("\n");
   const context = extra ? `\n\nGiven the context you shared ("${extra}"), that tradeoff matters a bit more than usual.` : "";
-  return `Pros:\n${pros}\n\nCons:\n${cons}${context}\n\nRecommendation: this is a close call, but leaning toward moving forward carefully beats staying stuck — you can always adjust course once you have more information.`;
+  return `Pros:\n${pros}\n\nCons:\n${cons}${context}\n\nRecommendation: this is a close call, but leaning toward moving forward carefully beats staying stuck. You can always adjust course once you have more information.`;
 }
 
 /**
@@ -1026,6 +1059,9 @@ async function mockAICall(kind, payload, opts={}){
   else if(kind === "judge") text = mockJudgeOutput(payload.text, payload.mode);
   else if(kind === "professor") text = mockProfessorOutput(payload.topic, payload.style);
   else if(kind === "consultant") text = mockConsultantOutput(payload.decision, payload.extra, payload.spice);
+  else if(kind === "estimator") text = mockEstimatorOutput(payload.task, payload.spice);
+  else if(kind === "compiler") text = mockCompilerOutput(payload.braindump, payload.spice);
+  else if(kind === "chef") text = mockChefOutput(payload.ingredients, payload.spice);
   else if(kind === "persona") text = mockPersonaReply(payload.userText);
   else text = "Here's a mock result for this tool.";
 
@@ -1050,7 +1086,10 @@ function mockPersonaReply(userText){
     {kw:["come across", "misread", "reading this wrong", "harsh"], tool:"judge", msg:"The Judge is built exactly for this — paste the message in and it'll tell you honestly how it reads."},
     {kw:["focus", "one step", "distracted"], tool:"taskmaster", msg:"Taskmaster walks through a step list one item at a time with an optional timer — good for staying with just one thing."},
     {kw:["explain", "what is", "how does", "learn"], tool:"professor", msg:"The Professor gives a plain-language crash course on pretty much anything — want me to send you there?"},
-    {kw:["decide", "pros and cons", "should i"], tool:"consultant", msg:"The Consultant lays out honest pros and cons for a decision like that, plus a lightly-held recommendation."}
+    {kw:["decide", "pros and cons", "should i"], tool:"consultant", msg:"The Consultant lays out honest pros and cons for a decision like that, plus a lightly-held recommendation."},
+    {kw:["how long", "estimate", "how much time"], tool:"estimator", msg:"Estimator can give you a realistic time range for that so it feels less like a guess."},
+    {kw:["braindump", "messy thoughts", "brain dump", "so many thoughts"], tool:"compiler", msg:"Compiler takes a messy braindump and turns it into a clean list of actions."},
+    {kw:["dinner", "cook", "recipe", "what to make"], tool:"chef", msg:"The Chef can suggest something to cook from whatever ingredients you already have."}
   ];
   for(const entry of map){
     if(entry.kw.some(k=> lower.includes(k))){
@@ -1256,18 +1295,22 @@ window.addEventListener("popstate", ()=>{
    DASHBOARD RENDERING
    ============================================================ */
 function toolCardHTML(tool, {withFavToggle=true} = {}){
+  // wrapper closes at end of returned template
   const isFav = state.favorites.includes(tool.id);
   const disabled = tool.status === "soon";
   return `
-    <button class="tool-card ${disabled ? "disabled" : ""}" data-view="${disabled ? "" : "tool:"+tool.id}" style="--tc-bg: var(--${tool.color}-soft); --tc-fg: var(--${tool.color});">
-      <div class="tool-icon-wrap">${ICONS[tool.icon]}</div>
-      <h3>${tool.name}</h3>
-      <p>${tool.blurb}</p>
-      <span class="tool-card-badges">
-        ${disabled ? `<span class="chip chip-soon">Soon</span>` : tool.isNew ? `<span class="chip chip-new">New</span>` : ""}
-      </span>
+   <div class="tool-card-shell" style="position:relative;">
+<div class="tool-card-shell" style="position:relative;">
+      <button class="tool-card ${disabled ? "disabled" : ""}" data-view="${disabled ? "" : "tool:"+tool.id}" style="--tc-bg: var(--${tool.color}-soft); --tc-fg: var(--${tool.color}); width:100%;">
+        <div class="tool-icon-wrap">${ICONS[tool.icon]}</div>
+        <h3>${tool.name}</h3>
+        <p>${tool.blurb}</p>
+        <span class="tool-card-badges">
+          ${disabled ? `<span class="chip chip-soon">Soon</span>` : tool.isNew ? `<span class="chip chip-new">New</span>` : ""}
+        </span>
+      </button>
       ${!disabled && withFavToggle ? `<button class="fav-toggle ${isFav ? "is-fav" : ""}" data-fav-toggle="${tool.id}" aria-label="${isFav ? "Remove from favorites" : "Add to favorites"}" aria-pressed="${isFav}" style="${tool.isNew || disabled ? "top:46px;" : ""}">${isFav ? ICONS.star : ICONS.starOutline}</button>` : ""}
-    </button>`;
+    </div>`;
 }
 
 function renderDashboard(){
@@ -1294,7 +1337,7 @@ function renderGreeting(){
   const totalRuns = Object.values(state.history).reduce((sum, arr)=> sum + arr.length, 0);
   let msg;
   if(totalRuns === 0){
-    msg = `${timeGreeting}. Pick a tool below — nothing's too small to hand off.`;
+    msg = `${timeGreeting}. Pick a tool below, nothing's too small to hand off.`;
   } else {
     msg = `${timeGreeting}. You've run <strong>${totalRuns}</strong> ${totalRuns===1?"request":"requests"} through Goblin AI so far.`;
   }
@@ -1323,6 +1366,16 @@ function toggleFavorite(toolId){
   renderDashboard();
   renderNav();
   renderFavoritesDrawer();
+  updateFavBtnIcon();
+}
+function updateFavBtnIcon(){
+  const icon = document.getElementById("favBtnIcon");
+  const btn = document.getElementById("favBtn");
+  if(!icon || !btn) return;
+  const hasFavs = state.favorites.length > 0;
+  icon.setAttribute("fill", hasFavs ? "var(--clay)" : "none");
+  icon.setAttribute("stroke", hasFavs ? "var(--clay)" : "currentColor");
+  btn.classList.toggle("active", hasFavs);
 }
 
 /* ============================================================
@@ -1362,7 +1415,7 @@ const ONBOARD_SLIDES = [
   {
     icon: "goblin",
     title: "Meet the Goblin",
-    body: "Not sure which tool fits? Ask the floating Goblin in the corner — it knows every tool and can recommend one, explain a result, or just chat.",
+    body: "Not sure which tool fits? Ask the floating Goblin in the corner, it knows every tool and can recommend one, explain a result, or just chat.",
     features: [
       {icon:"wand", title:"Tool recommendations", desc:"Describe your problem and get pointed to the right tool"},
       {icon:"cap", title:"Explains results", desc:"Paste an output and ask what it means"},
@@ -1774,7 +1827,7 @@ function loadingHTML(){
         <path class="rl-path" d="M60 4 C64 22, 78 24, 88 42 C94 52, 102 54, 114 58"/>
         <path class="rl-path" d="M60 4 C60 24, 60 38, 60 60"/>
       </svg>
-      <span class="rl-text">thinking it through…</span>
+      <span class="rl-text">thinking it through...</span>
     </div>`;
 }
 
@@ -1911,7 +1964,10 @@ function initMagicTodo(tool){
 
   document.getElementById("mt-copy").addEventListener("click", ()=> copyToClipboard(outputBody.innerText));
   document.getElementById("mt-export").addEventListener("click", ()=> downloadText("magic-todo-steps.txt", outputBody.innerText));
-  document.getElementById("mt-fav").addEventListener("click", ()=>{ toggleFavorite(tool.id); document.getElementById("mt-fav").classList.toggle("is-fav"); });
+  document.getElementById("mt-fav").addEventListener("click", ()=>{
+    toggleFavorite(tool.id);
+    document.getElementById("mt-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
+  });
 
   window["restoreToolResult_magic-todo"] = (item)=>{
     input.value = item.input;
@@ -2032,9 +2088,9 @@ function initTaskmaster(tool){
     timerInterval = setInterval(()=>{
       timerRemaining--;
       updateTimerBadge();
-      if(timerRemaining <= 0){
+if(timerRemaining <= 0){
         stopTimer();
-        showToast("Time's up on this step — move on when ready", {icon: ICONS.clock});
+        showToast("Time's up on this step, move on when ready", {icon: ICONS.clock});
       }
     }, 1000);
   }
@@ -2203,7 +2259,10 @@ function initFormalizer(tool){
   });
   document.getElementById("fz-copy").addEventListener("click", ()=> copyToClipboard(outputBody.textContent));
   document.getElementById("fz-export").addEventListener("click", ()=> downloadText("formalizer-output.txt", outputBody.textContent));
-  document.getElementById("fz-fav").addEventListener("click", ()=>{ toggleFavorite(tool.id); document.getElementById("fz-fav").classList.toggle("is-fav"); });
+ document.getElementById("fz-fav").addEventListener("click", ()=>{
+    toggleFavorite(tool.id);
+    document.getElementById("fz-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
+  });
 
   window["restoreToolResult_formalizer"] = (item)=>{
     input.value = item.input; charcount.textContent = item.input.length;
@@ -2305,7 +2364,10 @@ function initJudge(tool){
 
   document.getElementById("jg-copy").addEventListener("click", ()=> copyToClipboard(outputBody.textContent));
   document.getElementById("jg-export").addEventListener("click", ()=> downloadText("judge-output.txt", outputBody.textContent));
-  document.getElementById("jg-fav").addEventListener("click", ()=>{ toggleFavorite(tool.id); document.getElementById("jg-fav").classList.toggle("is-fav"); });
+document.getElementById("pf-fav").addEventListener("click", ()=>{
+    toggleFavorite(tool.id);
+    document.getElementById("pf-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
+  });
 
   window["restoreToolResult_judge"] = (item)=>{
     input.value = item.input; charcount.textContent = item.input.length;
@@ -2438,7 +2500,10 @@ function initProfessor(tool){
 
   document.getElementById("pf-copy").addEventListener("click", ()=> copyToClipboard(outputBody.textContent));
   document.getElementById("pf-export").addEventListener("click", ()=> downloadText("professor-explanation.txt", outputBody.textContent));
-  document.getElementById("pf-fav").addEventListener("click", ()=>{ toggleFavorite(tool.id); document.getElementById("pf-fav").classList.toggle("is-fav"); });
+document.getElementById("pf-fav").addEventListener("click", ()=>{
+    toggleFavorite(tool.id);
+    document.getElementById("pf-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
+  });
 
   window["restoreToolResult_professor"] = (item)=>{
     input.value = item.input; charcount.textContent = item.input.length;
@@ -2535,11 +2600,301 @@ function initConsultant(tool){
 
   document.getElementById("cn-copy").addEventListener("click", ()=> copyToClipboard(outputBody.textContent));
   document.getElementById("cn-export").addEventListener("click", ()=> downloadText("consultant-output.txt", outputBody.textContent));
-  document.getElementById("cn-fav").addEventListener("click", ()=>{ toggleFavorite(tool.id); document.getElementById("cn-fav").classList.toggle("is-fav"); });
+  document.getElementById("cn-fav").addEventListener("click", ()=>{
+    toggleFavorite(tool.id);
+    document.getElementById("cn-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
+  });
 
   window["restoreToolResult_consultant"] = (item)=>{
     input.value = item.input; charcount.textContent = item.input.length;
     if(item.meta?.context) contextInput.value = item.meta.context;
+    outputPanel.style.display = "";
+    outputBody.textContent = item.output;
+  };
+}
+
+/* ============================================================
+   TOOL 7: ESTIMATOR
+   ============================================================ */
+function buildEstimatorView(tool){
+  const body = `
+    <div class="panel">
+      <div class="field-label"><span>What's the task?</span><span class="char-count" id="es-charcount">0</span></div>
+      <div class="input-shell line">
+        <input type="text" id="es-input" class="gob-input-line" placeholder="e.g. Repainting the spare room" maxlength="300" autocomplete="off">
+        <button class="mic-btn" id="es-mic" aria-label="Use voice input" title="Voice input">${ICONS.mic}</button>
+      </div>
+      <div class="controls-row">
+        <button class="btn btn-primary" id="es-run"><span class="spinner"></span><span class="btn-label">${ICONS.clock} Estimate time</span></button>
+        ${spiceGroupHTML("es-spice")}
+      </div>
+    </div>
+    <div class="panel output-panel" id="es-output-panel" style="display:none;">
+      <div class="panel-toolbar">
+        <h3>Time estimate</h3>
+        <div class="output-actions">
+          <span class="src-badge" id="es-src"></span>
+          <button class="icon-btn" id="es-fav" title="Favorite this tool">${ICONS.starOutline}</button>
+          <button class="icon-btn" id="es-copy" title="Copy">${ICONS.copy}</button>
+          <button class="icon-btn" id="es-export" title="Export as text">${ICONS.download}</button>
+        </div>
+      </div>
+      <div class="output-body" id="es-output-body"></div>
+    </div>
+    <div id="es-error-slot"></div>
+  `;
+  return toolShellHTML(tool, body);
+}
+
+function initEstimator(tool){
+  const ctrl = makeToolController(tool);
+  const input = document.getElementById("es-input");
+  const runBtn = document.getElementById("es-run");
+  const spiceGroup = document.getElementById("es-spice");
+  const outputPanel = document.getElementById("es-output-panel");
+  const outputBody = document.getElementById("es-output-body");
+  const errorSlot = document.getElementById("es-error-slot");
+  const charcount = document.getElementById("es-charcount");
+  let spiceVal = state.settings.defaultSpice;
+  updateSpiceGroupUI(spiceGroup, spiceVal);
+
+  bindHelp(tool, `Describe a task, chore, or errand and Estimator gives you a realistic time range, including the setup and wind down most people forget to account for. Turn up the depth for a wider, more cautious range.`);
+
+  spiceGroup.addEventListener("click", e=>{
+    const btn = e.target.closest("button"); if(!btn) return;
+    spiceVal = parseInt(btn.dataset.val,10);
+    updateSpiceGroupUI(spiceGroup, spiceVal);
+  });
+  input.addEventListener("input", ()=> charcount.textContent = input.value.length);
+  input.addEventListener("keydown", e=>{ if(e.key === "Enter") run(); });
+
+  async function run(){
+    const task = input.value.trim();
+    if(!task){ input.focus(); return; }
+    errorSlot.innerHTML = "";
+    runBtn.classList.add("loading"); runBtn.disabled = true;
+    outputPanel.style.display = "";
+    outputBody.innerHTML = loadingHTML();
+    document.getElementById("es-src").textContent = "";
+
+    try{
+      const result = await mockAICall("estimator", {task, spice: spiceVal}, {
+        onToken: partial => outputBody.textContent = partial
+      });
+      outputBody.textContent = result.text;
+      ctrl.pushHistory(task, result.text, {spice: spiceVal});
+      document.getElementById("es-src").innerHTML = modelBadgeHTML(result);
+      document.getElementById("es-src").className = "src-badge" + (result.cached ? " cached" : "");
+    }catch(err){
+      outputPanel.style.display = "none";
+      errorSlot.innerHTML = errorHTML("Couldn't produce an estimate. Try again.");
+      errorSlot.querySelector("[data-retry-action]").addEventListener("click", run);
+    }finally{
+      runBtn.classList.remove("loading"); runBtn.disabled = false;
+    }
+  }
+  runBtn.addEventListener("click", run);
+
+  document.getElementById("es-copy").addEventListener("click", ()=> copyToClipboard(outputBody.textContent));
+  document.getElementById("es-export").addEventListener("click", ()=> downloadText("estimator-output.txt", outputBody.textContent));
+  document.getElementById("es-fav").addEventListener("click", ()=>{
+    toggleFavorite(tool.id);
+    document.getElementById("es-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
+  });
+
+  window["restoreToolResult_estimator"] = (item)=>{
+    input.value = item.input; charcount.textContent = item.input.length;
+    outputPanel.style.display = "";
+    outputBody.textContent = item.output;
+  };
+}
+
+/* ============================================================
+   TOOL 8: COMPILER
+   ============================================================ */
+function buildCompilerView(tool){
+  const body = `
+    <div class="panel">
+      <div class="field-label"><span>Dump your thoughts here</span><span class="char-count" id="cp-charcount">0</span></div>
+      <div class="input-shell">
+        <textarea id="cp-input" class="gob-input" placeholder="Write out everything on your mind, in any order, no need to organize it…" maxlength="3000"></textarea>
+        <button class="mic-btn" id="cp-mic" aria-label="Use voice input" title="Voice input">${ICONS.mic}</button>
+      </div>
+      <div class="controls-row">
+        <button class="btn btn-primary" id="cp-run"><span class="spinner"></span><span class="btn-label">${ICONS.brain} Turn into actions</span></button>
+        ${spiceGroupHTML("cp-spice")}
+      </div>
+    </div>
+    <div class="panel output-panel" id="cp-output-panel" style="display:none;">
+      <div class="panel-toolbar">
+        <h3>Action list</h3>
+        <div class="output-actions">
+          <span class="src-badge" id="cp-src"></span>
+          <button class="icon-btn" id="cp-fav" title="Favorite this tool">${ICONS.starOutline}</button>
+          <button class="icon-btn" id="cp-copy" title="Copy">${ICONS.copy}</button>
+          <button class="icon-btn" id="cp-export" title="Export as text">${ICONS.download}</button>
+        </div>
+      </div>
+      <div class="output-body" id="cp-output-body"></div>
+    </div>
+    <div id="cp-error-slot"></div>
+  `;
+  return toolShellHTML(tool, body);
+}
+
+function initCompiler(tool){
+  const ctrl = makeToolController(tool);
+  const input = document.getElementById("cp-input");
+  const runBtn = document.getElementById("cp-run");
+  const spiceGroup = document.getElementById("cp-spice");
+  const outputPanel = document.getElementById("cp-output-panel");
+  const outputBody = document.getElementById("cp-output-body");
+  const errorSlot = document.getElementById("cp-error-slot");
+  const charcount = document.getElementById("cp-charcount");
+  let spiceVal = state.settings.defaultSpice;
+  updateSpiceGroupUI(spiceGroup, spiceVal);
+
+  bindHelp(tool, `Paste in a messy stream of thoughts, no structure needed, and Compiler sorts it into a clean, ordered list of actual next steps.`);
+
+  spiceGroup.addEventListener("click", e=>{
+    const btn = e.target.closest("button"); if(!btn) return;
+    spiceVal = parseInt(btn.dataset.val,10);
+    updateSpiceGroupUI(spiceGroup, spiceVal);
+  });
+  input.addEventListener("input", ()=> charcount.textContent = input.value.length);
+
+  async function run(){
+    const braindump = input.value.trim();
+    if(!braindump){ input.focus(); return; }
+    errorSlot.innerHTML = "";
+    runBtn.classList.add("loading"); runBtn.disabled = true;
+    outputPanel.style.display = "";
+    outputBody.innerHTML = loadingHTML();
+    document.getElementById("cp-src").textContent = "";
+
+    try{
+      const result = await mockAICall("compiler", {braindump, spice: spiceVal}, {
+        onToken: partial => outputBody.textContent = partial
+      });
+      outputBody.textContent = result.text;
+      ctrl.pushHistory(braindump, result.text, {spice: spiceVal});
+      document.getElementById("cp-src").innerHTML = modelBadgeHTML(result);
+      document.getElementById("cp-src").className = "src-badge" + (result.cached ? " cached" : "");
+    }catch(err){
+      outputPanel.style.display = "none";
+      errorSlot.innerHTML = errorHTML("Couldn't compile this into actions. Try again.");
+      errorSlot.querySelector("[data-retry-action]").addEventListener("click", run);
+    }finally{
+      runBtn.classList.remove("loading"); runBtn.disabled = false;
+    }
+  }
+  runBtn.addEventListener("click", run);
+
+  document.getElementById("cp-copy").addEventListener("click", ()=> copyToClipboard(outputBody.textContent));
+  document.getElementById("cp-export").addEventListener("click", ()=> downloadText("compiler-output.txt", outputBody.textContent));
+  document.getElementById("cp-fav").addEventListener("click", ()=>{
+    toggleFavorite(tool.id);
+    document.getElementById("cp-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
+  });
+
+  window["restoreToolResult_compiler"] = (item)=>{
+    input.value = item.input; charcount.textContent = item.input.length;
+    outputPanel.style.display = "";
+    outputBody.textContent = item.output;
+  };
+}
+
+/* ============================================================
+   TOOL 9: THE CHEF
+   ============================================================ */
+function buildChefView(tool){
+  const body = `
+    <div class="panel">
+      <div class="field-label"><span>What ingredients do you have?</span><span class="char-count" id="cf-charcount">0</span></div>
+      <div class="input-shell line">
+        <input type="text" id="cf-input" class="gob-input-line" placeholder="e.g. eggs, spinach, rice, garlic" maxlength="300" autocomplete="off">
+        <button class="mic-btn" id="cf-mic" aria-label="Use voice input" title="Voice input">${ICONS.mic}</button>
+      </div>
+      <div class="controls-row">
+        <button class="btn btn-primary" id="cf-run"><span class="spinner"></span><span class="btn-label">${ICONS.chef} Suggest a recipe</span></button>
+        ${spiceGroupHTML("cf-spice")}
+      </div>
+    </div>
+    <div class="panel output-panel" id="cf-output-panel" style="display:none;">
+      <div class="panel-toolbar">
+        <h3>Recipe idea</h3>
+        <div class="output-actions">
+          <span class="src-badge" id="cf-src"></span>
+          <button class="icon-btn" id="cf-fav" title="Favorite this tool">${ICONS.starOutline}</button>
+          <button class="icon-btn" id="cf-copy" title="Copy">${ICONS.copy}</button>
+          <button class="icon-btn" id="cf-export" title="Export as text">${ICONS.download}</button>
+        </div>
+      </div>
+      <div class="output-body" id="cf-output-body"></div>
+    </div>
+    <div id="cf-error-slot"></div>
+  `;
+  return toolShellHTML(tool, body);
+}
+
+function initChef(tool){
+  const ctrl = makeToolController(tool);
+  const input = document.getElementById("cf-input");
+  const runBtn = document.getElementById("cf-run");
+  const spiceGroup = document.getElementById("cf-spice");
+  const outputPanel = document.getElementById("cf-output-panel");
+  const outputBody = document.getElementById("cf-output-body");
+  const errorSlot = document.getElementById("cf-error-slot");
+  const charcount = document.getElementById("cf-charcount");
+  let spiceVal = state.settings.defaultSpice;
+  updateSpiceGroupUI(spiceGroup, spiceVal);
+
+  bindHelp(tool, `List whatever ingredients you have on hand, separated by commas, and The Chef suggests a simple dish along with steps to make it.`);
+
+  spiceGroup.addEventListener("click", e=>{
+    const btn = e.target.closest("button"); if(!btn) return;
+    spiceVal = parseInt(btn.dataset.val,10);
+    updateSpiceGroupUI(spiceGroup, spiceVal);
+  });
+  input.addEventListener("input", ()=> charcount.textContent = input.value.length);
+  input.addEventListener("keydown", e=>{ if(e.key === "Enter") run(); });
+
+  async function run(){
+    const ingredients = input.value.trim();
+    if(!ingredients){ input.focus(); return; }
+    errorSlot.innerHTML = "";
+    runBtn.classList.add("loading"); runBtn.disabled = true;
+    outputPanel.style.display = "";
+    outputBody.innerHTML = loadingHTML();
+    document.getElementById("cf-src").textContent = "";
+
+    try{
+      const result = await mockAICall("chef", {ingredients, spice: spiceVal}, {
+        onToken: partial => outputBody.textContent = partial
+      });
+      outputBody.textContent = result.text;
+      ctrl.pushHistory(ingredients, result.text, {spice: spiceVal});
+      document.getElementById("cf-src").innerHTML = modelBadgeHTML(result);
+      document.getElementById("cf-src").className = "src-badge" + (result.cached ? " cached" : "");
+    }catch(err){
+      outputPanel.style.display = "none";
+      errorSlot.innerHTML = errorHTML("Couldn't come up with a recipe. Try again.");
+      errorSlot.querySelector("[data-retry-action]").addEventListener("click", run);
+    }finally{
+      runBtn.classList.remove("loading"); runBtn.disabled = false;
+    }
+  }
+  runBtn.addEventListener("click", run);
+
+  document.getElementById("cf-copy").addEventListener("click", ()=> copyToClipboard(outputBody.textContent));
+  document.getElementById("cf-export").addEventListener("click", ()=> downloadText("chef-recipe.txt", outputBody.textContent));
+  document.getElementById("cf-fav").addEventListener("click", ()=>{
+    toggleFavorite(tool.id);
+    document.getElementById("cf-fav").classList.toggle("is-fav", state.favorites.includes(tool.id));
+  });
+
+  window["restoreToolResult_chef"] = (item)=>{
+    input.value = item.input; charcount.textContent = item.input.length;
     outputPanel.style.display = "";
     outputBody.textContent = item.output;
   };
@@ -2584,6 +2939,9 @@ function initToolView(tool){
   if(tool.id === "taskmaster"){ initTaskmaster(tool); }
   if(tool.id === "professor"){ initProfessor(tool); bindMic("pf-mic", document.getElementById("pf-input")); }
   if(tool.id === "consultant"){ initConsultant(tool); bindMic("cn-mic", document.getElementById("cn-input")); }
+  if(tool.id === "estimator"){ initEstimator(tool); bindMic("es-mic", document.getElementById("es-input")); }
+  if(tool.id === "compiler"){ initCompiler(tool); bindMic("cp-mic", document.getElementById("cp-input")); }
+  if(tool.id === "chef"){ initChef(tool); bindMic("cf-mic", document.getElementById("cf-input")); }
 }
 
 /* ============================================================
@@ -2768,6 +3126,7 @@ function boot(){
   renderNav();
   bindNavClicks();
   renderDashboard();
+  updateFavBtnIcon();
   initSettingsUI();
   initGoblinPersona();
   if(state.settings.reduceMotion){ document.documentElement.style.setProperty("--ease","linear"); }
