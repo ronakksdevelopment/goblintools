@@ -388,6 +388,10 @@ body:not(.using-mouse) :focus-visible{
 :root[data-theme="dark"] .dash-title{ color:#FFFFFF; }
 :root[data-theme="dark"] .tool-card h3{ color:#FFFFFF; }
 .tool-head-actions{ display:flex; gap:8px; flex-shrink:0; }
+.tool-head-fav{ color: var(--border-strong); }
+.tool-head-fav:hover{ color: var(--clay); background: var(--clay-soft); }
+.tool-head-fav.is-fav{ color: var(--clay); }
+.tool-head-fav.is-fav:hover{ background: var(--clay-soft); }
 
 .panel{
   background: var(--bg-raised); border:1px solid var(--border); border-radius: var(--radius-lg);
@@ -1734,6 +1738,7 @@ function toggleFavorite(toolId){
   renderNav();
   renderFavoritesDrawer();
   updateFavBtnIcon();
+  refreshToolFavButtons(toolId);
 }
 function updateFavBtnIcon(){
   const icon = document.getElementById("favBtnIcon");
@@ -2419,6 +2424,7 @@ function spiceGroupHTML(id){
 }
 
 function toolShellHTML(tool, bodyHTML){
+  const isFav = state.favorites.includes(tool.id);
   return `
     <div class="tool-wrap">
       <div class="tool-head">
@@ -2430,6 +2436,7 @@ function toolShellHTML(tool, bodyHTML){
           </div>
         </div>
         <div class="tool-head-actions">
+          <button class="icon-btn tool-head-fav ${isFav ? "is-fav" : ""}" id="tool-head-fav-${tool.id}" data-fav-toggle="${tool.id}" aria-label="${isFav ? "Remove from favorites" : "Add to favorites"}" aria-pressed="${isFav}" title="${isFav ? "Remove from favorites" : "Pin to favorites"}">${isFav ? ICONS.star : ICONS.starOutline}</button>
           <div style="position:relative;">
             <button class="btn btn-ghost btn-sm" data-help-toggle="${tool.id}">${ICONS.help} Help</button>
           </div>
@@ -2438,6 +2445,31 @@ function toolShellHTML(tool, bodyHTML){
       <div id="help-pop-${tool.id}"></div>
       ${bodyHTML}
     </div>`;
+}
+
+function refreshToolFavButtons(toolId){
+  const isFav = state.favorites.includes(toolId);
+  document.querySelectorAll(`[data-fav-toggle="${toolId}"]`).forEach(btn=>{
+    btn.classList.toggle("is-fav", isFav);
+    btn.setAttribute("aria-pressed", String(isFav));
+    btn.innerHTML = isFav ? ICONS.star : ICONS.starOutline;
+    if(btn.classList.contains("tool-head-fav")){
+      btn.title = isFav ? "Remove from favorites" : "Pin to favorites";
+      btn.setAttribute("aria-label", isFav ? "Remove from favorites" : "Add to favorites");
+    }
+  });
+  document.querySelectorAll(`.tool-card[data-view="tool:${toolId}"]`).forEach(card=>{
+    const shell = card.closest(".tool-card-shell");
+    const favBtn = shell && shell.querySelector(".fav-toggle");
+    if(favBtn){
+      favBtn.classList.toggle("is-fav", isFav);
+      favBtn.setAttribute("aria-pressed", String(isFav));
+      favBtn.setAttribute("aria-label", isFav ? "Remove from favorites" : "Add to favorites");
+      favBtn.innerHTML = isFav ? ICONS.star : ICONS.starOutline;
+    }
+  });
+  const navItem = document.querySelector(`.nav-item[data-view="tool:${toolId}"]`);
+  if(navItem) navItem.classList.toggle("is-favorite", isFav);
 }
 
 function bindHelp(tool, helpText){
